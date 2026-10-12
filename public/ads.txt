@@ -1,0 +1,2 @@
+# Pega aquí la línea que te da AdSense, ej:
+# google.com, pub-XXXXXXXXXXXXXXXX, DIRECT, f08c47fec0942fa0

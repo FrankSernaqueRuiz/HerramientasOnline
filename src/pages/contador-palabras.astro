@@ -1,0 +1,266 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+---
+<Base
+  title="Contador de Palabras y Caracteres Online"
+  description="Cuenta palabras, caracteres y tiempo de lectura. Admite texto directo y carga de documentos Word (.docx) y PDF."
+>
+  <div class="page-header">
+    <h1>Contador de palabras</h1>
+    <p class="lead">Pega tu texto o sube un documento Word o PDF para obtener estadísticas detalladas al instante.</p>
+  </div>
+
+  <!-- Sección para subir archivos Word o PDF -->
+  <section class="panel file-zone-panel">
+    <div class="file-dropzone" id="dropzone">
+      <div class="drop-icon">
+        <Icon name="upload" size={26} />
+      </div>
+      <div class="drop-info">
+        <strong>Subir documento Word (.docx), PDF o texto</strong>
+        <p>Arrastra tu archivo aquí o haz clic para seleccionarlo. El conteo se realiza de forma local en tu navegador.</p>
+      </div>
+      <input type="file" id="file-input" accept=".docx,.pdf,.txt" style="display: none;" />
+      <button type="button" id="btn-browse" class="browse-btn">Seleccionar archivo</button>
+    </div>
+    <div id="file-status" class="file-status" style="display: none;">
+      <span id="file-name"></span>
+      <button type="button" id="btn-remove-file" class="remove-btn">Quitar archivo</button>
+    </div>
+  </section>
+
+  <!-- Panel de conteo y editor de texto -->
+  <section class="panel" style="margin-top: 1.5rem;">
+    <div class="stats" aria-live="polite">
+      <div><b id="s-words">0</b><small>Palabras</small></div>
+      <div><b id="s-chars">0</b><small>Caracteres</small></div>
+      <div><b id="s-nospace">0</b><small>Sin espacios</small></div>
+      <div><b id="s-sent">0</b><small>Oraciones</small></div>
+      <div><b id="s-read">0 min</b><small>Lectura aprox.</small></div>
+    </div>
+
+    <textarea id="txt" aria-label="Texto" placeholder="Escribe aquí, pega tu texto o carga un archivo arriba…"></textarea>
+
+    <div class="actions">
+      <button data-act="upper">MAYÚSCULAS</button>
+      <button data-act="lower">minúsculas</button>
+      <button data-act="title">Capitalizar</button>
+      <button data-act="spaces">Limpiar espacios</button>
+      <button data-act="breaks">Quitar saltos</button>
+      <button data-act="dups">Quitar duplicados</button>
+      <button data-act="copy" class="primary">Copiar texto</button>
+      <button data-act="clear">Limpiar</button>
+    </div>
+  </section>
+
+  <section class="seo-section">
+    <h2>Información sobre el contador</h2>
+    <p>Esta utilidad permite calcular el volumen de texto para artículos, publicaciones, tareas académicas o traducciones. Compatible con archivos Word (.docx), PDF y texto sin límite de longitud.</p>
+  </section>
+</Base>
+
+<style>
+  .file-zone-panel {
+    border: 1px dashed var(--line);
+    background: var(--surface);
+    transition: border-color 0.2s, background-color 0.2s;
+  }
+  .file-zone-panel.dragover {
+    border-color: var(--accent);
+    background: var(--surface-card);
+  }
+  .file-dropzone {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1.25rem;
+    cursor: pointer;
+  }
+  .drop-icon {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--surface-card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    color: var(--accent);
+  }
+  .drop-info {
+    flex: 1;
+    min-width: 240px;
+  }
+  .drop-info strong {
+    font-size: 1rem;
+    display: block;
+    margin-bottom: 0.2rem;
+  }
+  .drop-info p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.88rem;
+  }
+  .browse-btn {
+    border-color: var(--line);
+    color: var(--ink);
+    background: var(--surface-card);
+  }
+  .file-status {
+    margin-top: 1rem;
+    padding: 0.75rem 1rem;
+    background: var(--surface-card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.92rem;
+  }
+  .remove-btn {
+    padding: 0.25rem 0.6rem;
+    font-size: 0.82rem;
+    color: #ef4444;
+    border-color: transparent;
+    background: transparent;
+  }
+  .remove-btn:hover {
+    border-color: #ef4444;
+  }
+</style>
+
+<script is:inline src="https://cdn.jsdelivr.net/npm/mammoth@1.6.0/mammoth.browser.min.js"></script>
+<script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
+<script>
+  declare const pdfjsLib: any;
+  declare const mammoth: any;
+
+  if (typeof pdfjsLib !== 'undefined') {
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  }
+
+  const $ = (id: string) => document.getElementById(id)!;
+  const txt = $('txt') as HTMLTextAreaElement;
+  const fileInput = $('file-input') as HTMLInputElement;
+  const dropzone = $('dropzone');
+  const dropPanel = document.querySelector('.file-zone-panel') as HTMLElement;
+  const btnBrowse = $('btn-browse');
+  const fileStatus = $('file-status');
+  const fileName = $('file-name');
+  const btnRemoveFile = $('btn-remove-file');
+
+  const actions: Record<string, (s: string) => string> = {
+    upper: (s) => s.toUpperCase(),
+    lower: (s) => s.toLowerCase(),
+    title: (s) => s.toLowerCase().replace(/(^|\s)(\p{L})/gu, (_, a, b) => a + b.toUpperCase()),
+    spaces: (s) => s.replace(/[ \t]+/g, ' ').replace(/ *\n */g, '\n').trim(),
+    breaks: (s) => s.replace(/\s*\n+\s*/g, ' ').trim(),
+    dups: (s) => [...new Set(s.split('\n'))].join('\n'),
+  };
+
+  function update() {
+    const s = txt.value;
+    const words = s.trim() ? s.trim().split(/\s+/).length : 0;
+    $('s-words').textContent = words.toLocaleString();
+    $('s-chars').textContent = s.length.toLocaleString();
+    $('s-nospace').textContent = s.replace(/\s/g, '').length.toLocaleString();
+    $('s-sent').textContent = String((s.match(/[^.!?¿¡]+[.!?]+/g) || []).length);
+    $('s-read').textContent = Math.max(words ? 1 : 0, Math.round(words / 200)) + ' min';
+  }
+
+  async function handleFile(file: File) {
+    fileName.textContent = `Procesando: ${file.name}...`;
+    fileStatus.style.display = 'flex';
+
+    try {
+      const ext = file.name.split('.').pop()?.toLowerCase();
+      let extractedText = '';
+
+      if (ext === 'docx') {
+        const arrayBuffer = await file.arrayBuffer();
+        const result = await mammoth.extractRawText({ arrayBuffer });
+        extractedText = result.value;
+      } else if (ext === 'pdf') {
+        const arrayBuffer = await file.arrayBuffer();
+        const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+        let pagesText = [];
+        for (let i = 1; i <= pdf.numPages; i++) {
+          const page = await pdf.getPage(i);
+          const content = await page.getTextContent();
+          const pageStrings = content.items.map((item: any) => item.str).join(' ');
+          pagesText.push(pageStrings);
+        }
+        extractedText = pagesText.join('\n\n');
+      } else if (ext === 'txt') {
+        extractedText = await file.text();
+      } else {
+        alert('Formato no soportado. Selecciona un archivo .docx, .pdf o .txt');
+        fileStatus.style.display = 'none';
+        return;
+      }
+
+      txt.value = extractedText;
+      fileName.textContent = `${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
+      update();
+    } catch (err) {
+      console.error(err);
+      alert('Error al leer el archivo.');
+      fileStatus.style.display = 'none';
+    }
+  }
+
+  btnBrowse.addEventListener('click', (e) => {
+    e.stopPropagation();
+    fileInput.click();
+  });
+  dropzone.addEventListener('click', () => fileInput.click());
+
+  fileInput.addEventListener('change', () => {
+    if (fileInput.files && fileInput.files[0]) {
+      handleFile(fileInput.files[0]);
+    }
+  });
+
+  dropPanel.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    dropPanel.classList.add('dragover');
+  });
+  dropPanel.addEventListener('dragleave', () => dropPanel.classList.remove('dragover'));
+  dropPanel.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropPanel.classList.remove('dragover');
+    if (e.dataTransfer && e.dataTransfer.files[0]) {
+      handleFile(e.dataTransfer.files[0]);
+    }
+  });
+
+  btnRemoveFile.addEventListener('click', () => {
+    fileInput.value = '';
+    fileStatus.style.display = 'none';
+    txt.value = '';
+    update();
+  });
+
+  document.querySelectorAll<HTMLButtonElement>('button[data-act]').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const act = btn.dataset.act!;
+      if (act === 'clear') {
+        txt.value = '';
+        fileStatus.style.display = 'none';
+        fileInput.value = '';
+      } else if (act === 'copy') {
+        await navigator.clipboard.writeText(txt.value);
+        const old = btn.textContent; btn.textContent = 'Copiado';
+        setTimeout(() => (btn.textContent = old), 1200);
+      } else {
+        txt.value = actions[act](txt.value);
+      }
+      update();
+    });
+  });
+
+  txt.addEventListener('input', update);
+  update();
+</script>

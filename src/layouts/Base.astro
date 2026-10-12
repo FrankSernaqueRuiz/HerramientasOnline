@@ -1,0 +1,74 @@
+---
+import '../styles/global.css';
+import AdSlot from '../components/AdSlot.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  topAd?: boolean;
+}
+
+const { title, description, topAd = false } = Astro.props;
+const client = import.meta.env.PUBLIC_ADSENSE_CLIENT;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta name="theme-color" content="#0d1117" />
+    {client && (
+      <script async src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${client}`} crossorigin="anonymous"></script>
+    )}
+  </head>
+  <body>
+    <header class="site">
+      <div class="wrap">
+        <a class="brand" href="/">
+          Herramientas Online
+        </a>
+        <nav>
+          <a href="/contador-palabras">Contador de palabras</a>
+          <a href="/generador-contrasenas">Contraseñas</a>
+          <a href="/texto-a-voz">Texto a voz</a>
+          <a href="/contador-meses">Fechas</a>
+          <a href="/generador-qr">Códigos QR</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="wrap">
+      {topAd && <AdSlot position="Superior" />}
+      <slot />
+      <AdSlot position="Inferior" />
+    </main>
+
+    <footer class="site">
+      <div class="wrap footer-content">
+        <div>
+          © {new Date().getFullYear()} Herramientas Online · Privado y en tu navegador.
+        </div>
+        <div class="footer-links">
+          <a href="/">Inicio</a>
+          <a href="/acerca">Acerca de</a>
+          <a href="/privacidad">Privacidad</a>
+          <a href="/terminos">Términos</a>
+          <a href="/contacto">Contacto</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

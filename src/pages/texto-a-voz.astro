@@ -1,0 +1,211 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base
+  title="Texto a Voz Online - Descargar Audio MP3"
+  description="Convierte texto en voz sintetizada natural y descarga el archivo de audio en formato MP3."
+>
+  <div class="page-header">
+    <h1>Texto a voz</h1>
+    <p class="lead">Convierte texto a audio con voces naturales y descarga el archivo MP3 al instante.</p>
+  </div>
+
+  <section class="panel">
+    <textarea id="tts-text" placeholder="Escribe o pega aquí el texto que deseas convertir a audio…">Hola, bienvenido. Ahora puedes convertir texto a voz y descargar el archivo MP3 directamente a tu dispositivo.</textarea>
+
+    <div class="controls-grid">
+      <div class="field">
+        <label for="tts-lang">Idioma y región:</label>
+        <select id="tts-lang">
+          <optgroup label="Español">
+            <option value="es" selected>Español (Estándar / Neutro)</option>
+            <option value="es-ES">Español (España)</option>
+            <option value="es-US">Español (Estados Unidos)</option>
+          </optgroup>
+          <optgroup label="Otros idiomas">
+            <option value="en">Inglés (English)</option>
+            <option value="pt">Portugués (Português)</option>
+            <option value="fr">Francés (Français)</option>
+            <option value="it">Italiano</option>
+            <option value="de">Alemán (Deutsch)</option>
+          </optgroup>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="tts-slow">Velocidad:</label>
+        <select id="tts-slow">
+          <option value="false" selected>Normal</option>
+          <option value="true">Lenta</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button id="btn-preview" class="primary">Escuchar audio</button>
+      <button id="btn-download" class="download-btn">Descargar MP3</button>
+      <button id="btn-clear">Limpiar</button>
+    </div>
+
+    <div id="player-container" class="audio-player-box" style="display: none;">
+      <audio id="audio-player" controls style="width: 100%;"></audio>
+    </div>
+
+    <div id="status-bar" class="status-box" style="display: none;">
+      <span id="status-text">Generando locución...</span>
+    </div>
+  </section>
+
+  <section class="seo-section">
+    <h2>Información del conversor</h2>
+    <p>Esta herramienta genera archivos de audio estándar <code>.mp3</code> listos para reproducción en cualquier dispositivo o para su uso en proyectos multimedia, videos y presentaciones.</p>
+  </section>
+</Base>
+
+<style>
+  .controls-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.25rem;
+    margin-top: 1.2rem;
+    margin-bottom: 1.5rem;
+  }
+  .field label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 0.92rem;
+    font-weight: 500;
+  }
+  .download-btn {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: transparent;
+  }
+  .download-btn:hover {
+    background: var(--surface-hover);
+  }
+  .audio-player-box {
+    margin-top: 1.5rem;
+    background: var(--surface-card);
+    padding: 1rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--line);
+  }
+  .status-box {
+    margin-top: 1.25rem;
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius-sm);
+    background: var(--surface-card);
+    border: 1px solid var(--line);
+    font-size: 0.92rem;
+  }
+</style>
+
+<script>
+  const textInput = document.getElementById('tts-text') as HTMLTextAreaElement;
+  const langSelect = document.getElementById('tts-lang') as HTMLSelectElement;
+  const slowSelect = document.getElementById('tts-slow') as HTMLSelectElement;
+
+  const btnPreview = document.getElementById('btn-preview') as HTMLButtonElement;
+  const btnDownload = document.getElementById('btn-download') as HTMLButtonElement;
+  const btnClear = document.getElementById('btn-clear') as HTMLButtonElement;
+
+  const playerContainer = document.getElementById('player-container')!;
+  const audioPlayer = document.getElementById('audio-player') as HTMLAudioElement;
+  const statusBar = document.getElementById('status-bar')!;
+  const statusText = document.getElementById('status-text')!;
+
+  function setStatus(msg: string, isError = false) {
+    statusBar.style.display = 'block';
+    statusText.textContent = msg;
+    statusText.style.color = isError ? '#ef4444' : 'var(--accent)';
+  }
+
+  function hideStatus() {
+    statusBar.style.display = 'none';
+  }
+
+  async function fetchMp3Blob(text: string, lang: string, slow: string): Promise<Blob> {
+    const res = await fetch('/api/tts', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        text,
+        lang,
+        slow: slow === 'true'
+      })
+    });
+
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      throw new Error(errData.error || 'No se pudo generar el audio');
+    }
+
+    return await res.blob();
+  }
+
+  btnPreview.addEventListener('click', async () => {
+    const text = textInput.value.trim();
+    if (!text) {
+      alert('Escribe algún texto.');
+      return;
+    }
+
+    btnPreview.disabled = true;
+    setStatus('Procesando audio...');
+
+    try {
+      const blob = await fetchMp3Blob(text, langSelect.value, slowSelect.value);
+      const url = URL.createObjectURL(blob);
+      audioPlayer.src = url;
+      playerContainer.style.display = 'block';
+      await audioPlayer.play();
+      setStatus('Reproduciendo audio MP3.');
+    } catch (err: any) {
+      console.error(err);
+      setStatus(err.message || 'Error al procesar el audio', true);
+    } finally {
+      btnPreview.disabled = false;
+    }
+  });
+
+  btnDownload.addEventListener('click', async () => {
+    const text = textInput.value.trim();
+    if (!text) {
+      alert('Escribe algún texto antes de descargar.');
+      return;
+    }
+
+    btnDownload.disabled = true;
+    setStatus('Generando archivo MP3...');
+
+    try {
+      const blob = await fetchMp3Blob(text, langSelect.value, slowSelect.value);
+      const url = URL.createObjectURL(blob);
+
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `audio-${Date.now()}.mp3`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 5000);
+
+      setStatus('Audio MP3 descargado.');
+      setTimeout(hideStatus, 3000);
+    } catch (err: any) {
+      console.error(err);
+      setStatus(err.message || 'Error al generar el archivo MP3', true);
+    } finally {
+      btnDownload.disabled = false;
+    }
+  });
+
+  btnClear.addEventListener('click', () => {
+    textInput.value = '';
+    audioPlayer.pause();
+    audioPlayer.src = '';
+    playerContainer.style.display = 'none';
+    hideStatus();
+  });
+</script>

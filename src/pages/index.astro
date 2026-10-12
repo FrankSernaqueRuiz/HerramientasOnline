@@ -1,0 +1,71 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+
+const tools = [
+  { 
+    href: '/contador-palabras', 
+    name: 'Contador de Palabras', 
+    desc: 'Estadísticas precisas de palabras, caracteres y lectura. Admite documentos Word (.docx), PDF y texto.',
+    icon: 'file-text' as const
+  },
+  { 
+    href: '/generador-contrasenas', 
+    name: 'Generador de Contraseñas', 
+    desc: 'Crea claves aleatorias de alta seguridad mediante criptografía nativa con medidor de fuerza y entropía.',
+    icon: 'shield' as const
+  },
+  { 
+    href: '/texto-a-voz', 
+    name: 'Texto a Voz (MP3)', 
+    desc: 'Sintetiza texto con voces naturales y descarga el archivo MP3 directamente a tu dispositivo sin esperas.',
+    icon: 'volume' as const
+  },
+  { 
+    href: '/contador-meses', 
+    name: 'Calculadora de Fechas', 
+    desc: 'Cálculo de meses, semanas y días entre dos fechas. Incluye cuenta regresiva para días festivos.',
+    icon: 'calendar' as const
+  },
+  { 
+    href: '/generador-qr', 
+    name: 'Generador de Códigos QR', 
+    desc: 'Genera códigos QR de alta resolución listos para imprimir o compartir en formato PNG.',
+    icon: 'qr' as const
+  },
+];
+---
+<Base 
+  title="Herramientas Online · Utilidades Rápidas para el Navegador" 
+  description="Colección de herramientas web rápidas y privadas para texto, seguridad, audio, fechas y códigos QR."
+>
+  <div class="hero-header">
+    <h1>Herramientas Online</h1>
+    <p class="lead">Utilidades gratuitas diseñadas para ejecutarse directamente en tu navegador, sin registros ni complicaciones.</p>
+  </div>
+
+  <ul class="grid">
+    {tools.map((t) => (
+      <li>
+        <a class="tool-card" href={t.href}>
+          <div class="tool-icon">
+            <Icon name={t.icon} size={22} />
+          </div>
+          <div class="tool-content">
+            <strong>{t.name}</strong>
+            <span>{t.desc}</span>
+          </div>
+          <div class="tool-action">
+            <span>Abrir</span>
+            <Icon name="arrow-right" size={16} />
+          </div>
+        </a>
+      </li>
+    ))}
+  </ul>
+
+  <section class="seo-section">
+    <h2>Utilidades web ligeras y seguras</h2>
+    <p>Nuestras herramientas están optimizadas para ofrecer respuestas instantáneas y privacidad. El procesamiento de texto, archivos, contraseñas y códigos se ejecuta en el entorno de tu dispositivo sin enviar datos sensibles a servidores externos.</p>
+  </section>
+</Base>

@@ -1,0 +1,39 @@
+---
+// Bloque de anuncio flexible con altura reservada para evitar saltos de layout (CLS).
+// - En desarrollo (DEV) muestra una maqueta visual clara indicando la ubicación del banner publicitario.
+// - En producción activa Google AdSense si están las variables configuradas.
+interface Props {
+  position?: string;
+  size?: 'banner' | 'box';
+}
+
+const { position = 'Anuncio Publicitario', size = 'banner' } = Astro.props;
+const client = import.meta.env.PUBLIC_ADSENSE_CLIENT;
+const slot = import.meta.env.PUBLIC_ADSENSE_SLOT;
+---
+
+<div class={`ad-slot-container ${size === 'box' ? 'ad-box-style' : ''}`}>
+  <span class="ad-label">PUBLICIDAD · {position}</span>
+  {client && slot ? (
+    <div class="ad">
+      <ins
+        class="adsbygoogle"
+        style="display:block"
+        data-ad-client={client}
+        data-ad-slot={slot}
+        data-ad-format="auto"
+        data-full-width-responsive="true"
+      ></ins>
+      <script is:inline>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+  ) : import.meta.env.DEV ? (
+    <div class="ad-dev">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"></path>
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"></path>
+      </svg>
+      <strong>Espacio de Anuncio ({position})</strong>
+      <small>Banner adaptable optimizado para Google AdSense</small>
+    </div>
+  ) : null}
+</div>

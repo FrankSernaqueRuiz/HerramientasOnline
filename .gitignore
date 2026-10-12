@@ -1,0 +1,19 @@
+# Dependencias
+node_modules/
+package-lock.json
+
+# Builds y temporales de Astro
+dist/
+.astro/
+
+# Variables de entorno secretas
+.env
+.env.production
+.env.local
+*.env
+
+# Archivos del sistema y editores
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

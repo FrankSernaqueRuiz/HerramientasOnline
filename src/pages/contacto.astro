@@ -1,0 +1,26 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base 
+  title="Contacto y Soporte · HerramientasOnline" 
+  description="Ponte en contacto con el equipo de HerramientasOnline para sugerencias, reportar fallos o proponer nuevas herramientas."
+>
+  <h1>Contacto y Soporte</h1>
+  <p class="lead">¿Tienes alguna duda, sugerencia o quieres proponer una nueva herramienta? Escríbenos.</p>
+
+  <section class="panel" style="max-width: 600px;">
+    <h2>Envíanos un mensaje</h2>
+    <p>Estamos siempre abiertos a sugerencias y feedback de nuestros usuarios.</p>
+    
+    <div style="margin-top: 1.5rem; display: flex; flex-direction: column; gap: 1rem;">
+      <div>
+        <label style="display: block; margin-bottom: .3rem; font-weight: 600;">Correo Electrónico:</label>
+        <input type="text" readonly value="contacto@tudominio.com" style="font-family: monospace;" />
+      </div>
+      <div>
+        <label style="display: block; margin-bottom: .3rem; font-weight: 600;">Tiempo de respuesta:</label>
+        <p style="margin: 0; color: var(--muted);">Normalmente respondemos en menos de 24 a 48 horas laborables.</p>
+      </div>
+    </div>
+  </section>
+</Base>

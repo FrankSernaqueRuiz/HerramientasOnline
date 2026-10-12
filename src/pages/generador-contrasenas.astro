@@ -1,0 +1,234 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base
+  title="Generador de Contraseñas Seguras Online"
+  description="Genera contraseñas aleatorias seguras con opciones de caracteres y medidor de entropía criptográfica."
+>
+  <div class="page-header">
+    <h1>Generador de contraseñas</h1>
+    <p class="lead">Crea claves seguras y aleatorias con algoritmos criptográficos del navegador.</p>
+  </div>
+
+  <section class="panel">
+    <div class="result-box">
+      <input type="text" id="pass-output" readonly placeholder="La contraseña aparecerá aquí" aria-label="Contraseña generada" />
+      <button id="btn-copy" class="primary">Copiar clave</button>
+      <button id="btn-generate">Generar otra</button>
+    </div>
+
+    <div class="strength-meter">
+      <div id="strength-bar"></div>
+    </div>
+    <div class="strength-info">
+      <span id="strength-text">Nivel de seguridad</span>
+      <span id="entropy-text" style="color: var(--muted); font-size: 0.85rem;">Entropía calculada</span>
+    </div>
+
+    <div class="options-wrapper">
+      <div class="option-row">
+        <div class="range-header">
+          <label for="length-range">Longitud:</label>
+          <strong id="length-val">16 caracteres</strong>
+        </div>
+        <input type="range" id="length-range" min="8" max="64" value="16" />
+      </div>
+
+      <div class="checkbox-grid">
+        <label><input type="checkbox" id="opt-upper" checked /> Mayúsculas (A-Z)</label>
+        <label><input type="checkbox" id="opt-lower" checked /> Minúsculas (a-z)</label>
+        <label><input type="checkbox" id="opt-numbers" checked /> Números (0-9)</label>
+        <label><input type="checkbox" id="opt-symbols" checked /> Símbolos especiales (!@#$%&*)</label>
+        <label><input type="checkbox" id="opt-exclude-similar" /> Evitar caracteres similares (i, l, 1, o, 0)</label>
+      </div>
+    </div>
+  </section>
+
+  <section class="seo-section">
+    <h2>Seguridad de las contraseñas</h2>
+    <p>Esta herramienta utiliza <code>crypto.getRandomValues</code>, un generador criptográficamente seguro disponible en los navegadores modernos. Las claves se generan de forma aislada en tu dispositivo sin transmitirse por internet.</p>
+  </section>
+</Base>
+
+<style>
+  .result-box {
+    display: flex;
+    gap: 0.6rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+  }
+  .result-box input {
+    flex: 1;
+    min-width: 260px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 1.15rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    padding: 0.8rem 1rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--line);
+    background: var(--surface-card);
+    color: var(--ink);
+  }
+  .strength-meter {
+    height: 6px;
+    background: var(--surface-card);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    overflow: hidden;
+    margin-bottom: 0.4rem;
+  }
+  #strength-bar {
+    height: 100%;
+    width: 60%;
+    background: #eab308;
+    transition: width 0.3s ease, background-color 0.3s ease;
+  }
+  .strength-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+  }
+  .options-wrapper {
+    background: var(--surface-card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    padding: 1.25rem;
+  }
+  .range-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+  }
+  .range-header strong {
+    color: var(--accent);
+  }
+  .option-row input[type="range"] {
+    width: 100%;
+    margin-bottom: 1.25rem;
+  }
+  .checkbox-grid {
+    display: grid;
+    gap: 0.85rem;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  }
+  .checkbox-grid label {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    cursor: pointer;
+    font-size: 0.92rem;
+  }
+</style>
+
+<script>
+  const output = document.getElementById('pass-output') as HTMLInputElement;
+  const btnCopy = document.getElementById('btn-copy') as HTMLButtonElement;
+  const btnGen = document.getElementById('btn-generate') as HTMLButtonElement;
+  const range = document.getElementById('length-range') as HTMLInputElement;
+  const lenVal = document.getElementById('length-val')!;
+  const bar = document.getElementById('strength-bar')!;
+  const strengthText = document.getElementById('strength-text')!;
+  const entropyText = document.getElementById('entropy-text')!;
+
+  const optUpper = document.getElementById('opt-upper') as HTMLInputElement;
+  const optLower = document.getElementById('opt-lower') as HTMLInputElement;
+  const optNum = document.getElementById('opt-numbers') as HTMLInputElement;
+  const optSym = document.getElementById('opt-symbols') as HTMLInputElement;
+  const optSimilar = document.getElementById('opt-exclude-similar') as HTMLInputElement;
+
+  const UPPER = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  const LOWER = 'abcdefghijklmnopqrstuvwxyz';
+  const NUMBERS = '0123456789';
+  const SYMBOLS = '!@#$%^&*()_+~`|}{[]:;?><,./-=';
+  const SIMILAR = /[il1Lo0O]/g;
+
+  function generatePassword() {
+    let pool = '';
+    let upper = UPPER;
+    let lower = LOWER;
+    let num = NUMBERS;
+
+    if (optSimilar.checked) {
+      upper = upper.replace(SIMILAR, '');
+      lower = lower.replace(SIMILAR, '');
+      num = num.replace(SIMILAR, '');
+    }
+
+    if (optUpper.checked) pool += upper;
+    if (optLower.checked) pool += lower;
+    if (optNum.checked) pool += num;
+    if (optSym.checked) pool += SYMBOLS;
+
+    if (!pool) {
+      output.value = 'Selecciona al menos un tipo de caracter';
+      bar.style.width = '0%';
+      strengthText.textContent = 'Seguridad: Ninguna';
+      return;
+    }
+
+    const len = parseInt(range.value, 10);
+    const array = new Uint32Array(len);
+    window.crypto.getRandomValues(array);
+
+    let pass = '';
+    for (let i = 0; i < len; i++) {
+      pass += pool[array[i] % pool.length];
+    }
+
+    output.value = pass;
+    updateStrength(pass, pool.length);
+  }
+
+  function updateStrength(pass: string, poolSize: number) {
+    let score = 0;
+    if (pass.length >= 10) score += 25;
+    if (pass.length >= 14) score += 25;
+    if (pass.length >= 18) score += 15;
+    if (/[a-z]/.test(pass) && /[A-Z]/.test(pass)) score += 15;
+    if (/[0-9]/.test(pass)) score += 10;
+    if (/[^a-zA-Z0-9]/.test(pass)) score += 10;
+
+    score = Math.min(score, 100);
+    bar.style.width = score + '%';
+
+    const entropy = Math.round(pass.length * Math.log2(poolSize));
+    entropyText.textContent = `Entropía: ~${entropy} bits`;
+
+    if (score < 45) {
+      bar.style.backgroundColor = '#ef4444';
+      strengthText.textContent = 'Seguridad: Baja';
+    } else if (score < 75) {
+      bar.style.backgroundColor = '#f59e0b';
+      strengthText.textContent = 'Seguridad: Media';
+    } else {
+      bar.style.backgroundColor = '#10b981';
+      strengthText.textContent = 'Seguridad: Alta';
+    }
+  }
+
+  range.addEventListener('input', () => {
+    lenVal.textContent = `${range.value} caracteres`;
+    generatePassword();
+  });
+
+  [optUpper, optLower, optNum, optSym, optSimilar].forEach(el => {
+    el.addEventListener('change', generatePassword);
+  });
+
+  btnGen.addEventListener('click', generatePassword);
+
+  btnCopy.addEventListener('click', async () => {
+    if (!output.value || output.value.includes('Selecciona')) return;
+    await navigator.clipboard.writeText(output.value);
+    const old = btnCopy.textContent;
+    btnCopy.textContent = 'Copiado';
+    setTimeout(() => { btnCopy.textContent = old; }, 1400);
+  });
+
+  generatePassword();
+</script>

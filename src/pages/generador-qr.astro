@@ -1,0 +1,131 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base
+  title="Generador de Códigos QR Online"
+  description="Genera códigos QR personalizados para enlaces y textos en formato PNG de alta resolución."
+>
+  <div class="page-header">
+    <h1>Generador de códigos QR</h1>
+    <p class="lead">Crea códigos QR nítidos para enlaces o texto listos para descargar en formato PNG.</p>
+  </div>
+
+  <section class="panel">
+    <div class="qr-layout">
+      <div class="qr-controls">
+        <label for="qr-input">Contenido (enlace o texto):</label>
+        <textarea id="qr-input" placeholder="https://ejemplo.com o el texto que quieras codificar…">https://herramientas.online</textarea>
+
+        <div class="qr-options">
+          <div>
+            <label for="qr-size">Resolución:</label>
+            <select id="qr-size">
+              <option value="250">250 x 250 px</option>
+              <option value="400" selected>400 x 400 px</option>
+              <option value="600">600 x 600 px</option>
+            </select>
+          </div>
+          <div>
+            <label for="qr-margin">Margen:</label>
+            <select id="qr-margin">
+              <option value="1">Reducido</option>
+              <option value="2" selected>Normal</option>
+              <option value="4">Amplio</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="qr-preview-box">
+        <div id="qr-canvas-wrap">
+          <img id="qr-img" alt="Código QR generado" src="" />
+        </div>
+        <a id="btn-download" class="primary button-link" href="#" download="codigo-qr.png">Descargar PNG</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="seo-section">
+    <h2>Usos habituales</h2>
+    <p>Los códigos QR permiten enlazar rápidamente sitios web, accesos Wi-Fi, cartas digitales, documentos o perfiles de contacto desde cualquier cámara móvil.</p>
+  </section>
+</Base>
+
+<style>
+  .qr-layout {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    align-items: start;
+  }
+  .qr-controls label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    font-size: 0.92rem;
+  }
+  .qr-controls textarea {
+    min-height: 120px;
+    margin-bottom: 1.25rem;
+  }
+  .qr-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  .qr-preview-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: var(--surface-card);
+    border-radius: var(--radius-sm);
+    padding: 2rem 1.5rem;
+    border: 1px solid var(--line);
+  }
+  #qr-canvas-wrap {
+    background: #ffffff;
+    padding: 14px;
+    border-radius: var(--radius-sm);
+    margin-bottom: 1.25rem;
+    display: flex;
+    justify-content: center;
+  }
+  #qr-img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+  }
+  .button-link {
+    display: inline-flex;
+    padding: 0.65rem 1.4rem;
+    border-radius: var(--radius-sm);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.92rem;
+  }
+</style>
+
+<script>
+  const qrInput = document.getElementById('qr-input') as HTMLTextAreaElement;
+  const qrSize = document.getElementById('qr-size') as HTMLSelectElement;
+  const qrMargin = document.getElementById('qr-margin') as HTMLSelectElement;
+  const qrImg = document.getElementById('qr-img') as HTMLImageElement;
+  const btnDownload = document.getElementById('btn-download') as HTMLAnchorElement;
+
+  function updateQR() {
+    const text = encodeURIComponent(qrInput.value.trim() || 'https://herramientas.online');
+    const size = `${qrSize.value}x${qrSize.value}`;
+    const margin = qrMargin.value;
+    const url = `https://api.qrserver.com/v1/create-qr-code/?size=${size}&margin=${margin}&data=${text}`;
+    qrImg.src = url;
+    btnDownload.href = url;
+    btnDownload.target = '_blank';
+  }
+
+  qrInput.addEventListener('input', updateQR);
+  qrSize.addEventListener('change', updateQR);
+  qrMargin.addEventListener('change', updateQR);
+
+  updateQR();
+</script>
