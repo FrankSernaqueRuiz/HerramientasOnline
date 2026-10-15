@@ -8,11 +8,120 @@ interface Props {
   title: string;
   description: string;
   topAd?: boolean;
+  keywords?: string;
 }
 
-const { title, description, topAd = false } = Astro.props;
+const { title, description, topAd = false, keywords = '' } = Astro.props;
 const client = import.meta.env.PUBLIC_ADSENSE_CLIENT;
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') || 'https://tudominio.com';
 const canonical = new URL(Astro.url.pathname, Astro.site);
+const pagePath = Astro.url.pathname;
+const isHome = pagePath === '/' || pagePath === '';
+
+// Find current tool info for individual tool pages
+const currentTool = ALL_TOOLS.find((t) => t.href === pagePath);
+
+// JSON-LD: WebSite schema (shown on all pages, enables sitelinks search box)
+const websiteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'HerramientasOnline',
+  url: siteUrl,
+  description: 'Herramientas web gratuitas que funcionan en tu navegador: calculadoras, generadores, convertidores y más.',
+  potentialAction: {
+    '@type': 'SearchAction',
+    target: {
+      '@type': 'EntryPoint',
+      urlTemplate: `${siteUrl}/?q={search_term_string}`
+    },
+    'query-input': 'required name=search_term_string'
+  }
+};
+
+// JSON-LD: SiteNavigationElement (helps Google generate sitelinks to individual tools)
+const navElements = ALL_TOOLS.filter(t => t.status === 'ready').map((tool) => ({
+  '@type': 'SiteNavigationElement',
+  name: tool.name,
+  description: tool.desc,
+  url: `${siteUrl}${tool.href}`
+}));
+
+const navigationSchema = {
+  '@context': 'https://schema.org',
+  '@graph': navElements
+};
+
+// JSON-LD: WebApplication schema for individual tool pages
+const toolSchema = currentTool ? {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: currentTool.name,
+  description: currentTool.desc,
+  url: `${siteUrl}${currentTool.href}`,
+  applicationCategory: 'UtilitiesApplication',
+  operatingSystem: 'Any',
+  offers: {
+    '@type': 'Offer',
+    price: '0',
+    priceCurrency: 'USD'
+  },
+  browserRequirements: 'Requires JavaScript. Works in Chrome, Firefox, Safari, Edge.',
+  isPartOf: {
+    '@type': 'WebSite',
+    name: 'HerramientasOnline',
+    url: siteUrl
+  }
+} : null;
+
+// JSON-LD: BreadcrumbList for tool pages
+const currentCategory = currentTool
+  ? CATEGORIES.find(c => c.id === currentTool.category)
+  : null;
+
+const breadcrumbSchema = currentTool && currentCategory ? {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: 'Inicio',
+      item: siteUrl
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: currentCategory.name,
+      item: `${siteUrl}/categoria/${currentCategory.id}`
+    },
+    {
+      '@type': 'ListItem',
+      position: 3,
+      name: currentTool.name,
+      item: `${siteUrl}${currentTool.href}`
+    }
+  ]
+} : null;
+
+// Auto-generate keywords for tool pages from tool name/desc if none explicitly passed
+const autoKeywords = (() => {
+  if (keywords) return keywords;
+  if (currentTool) {
+    const parts = [
+      currentTool.name,
+      'herramienta online',
+      'gratis',
+      'en línea',
+      currentTool.desc.split('.')[0]
+    ];
+    if (currentCategory) parts.push(currentCategory.name);
+    return parts.join(', ');
+  }
+  if (isHome) {
+    return 'herramientas online, herramientas gratis, calculadoras online, generadores online, convertidores, utilidades web';
+  }
+  return '';
+})();
 
 const SHORT_NAMES: Record<string, string> = {
   'redes-mensajeria': 'Redes',
@@ -33,16 +142,42 @@ const SHORT_NAMES: Record<string, string> = {
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    {autoKeywords && <meta name="keywords" content={autoKeywords} />}
+    <meta name="robots" content="index, follow" />
     <link rel="canonical" href={canonical} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
     
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- Open Graph -->
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical.toString()} />
+    <meta property="og:site_name" content="HerramientasOnline" />
+    <meta property="og:locale" content="es_ES" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+
     <meta name="theme-color" content="#0d1117" />
+
+    <!-- JSON-LD: WebSite (sitelinks + search box) -->
+    <script type="application/ld+json" set:html={JSON.stringify(websiteSchema)} />
+
+    <!-- JSON-LD: SiteNavigationElement (tool sitelinks in Google) -->
+    {isHome && <script type="application/ld+json" set:html={JSON.stringify(navigationSchema)} />}
+
+    <!-- JSON-LD: WebApplication (individual tool pages) -->
+    {toolSchema && <script type="application/ld+json" set:html={JSON.stringify(toolSchema)} />}
+
+    <!-- JSON-LD: BreadcrumbList -->
+    {breadcrumbSchema && <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />}
+
     {client && (
       <script async src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${client}`} crossorigin="anonymous"></script>
     )}
