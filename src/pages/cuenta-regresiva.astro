@@ -1,0 +1,119 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base title="Cuenta Regresiva con Enlace Compartible" description="Crea un contador en vivo para cualquier evento y comparte el enlace con amigos para que vean la cuenta atrás.">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="/">Herramientas</a> / <span>Fechas y tiempo</span></div>
+    <h1>Cuenta Regresiva con Enlace Compartible</h1>
+    <p class="lead">Define un evento y su fecha para generar un contador en tiempo real y un enlace que puedes enviar a quien quieras.</p>
+  </div>
+  <section class="panel">
+    <div class="cr-config" id="config-section">
+      <div class="cr-fields">
+        <div class="field"><label for="cr-name">Nombre del evento:</label><input type="text" id="cr-name" placeholder="Mi cumpleaños 🎂"/></div>
+        <div class="field"><label for="cr-date">Fecha y hora:</label><input type="datetime-local" id="cr-date"/></div>
+      </div>
+      <button type="button" id="btn-create" class="btn-primary btn-full">Crear cuenta regresiva</button>
+    </div>
+    <div id="countdown-display" class="countdown-display hidden">
+      <h2 id="cd-event-name" class="cd-title"></h2>
+      <div class="cd-grid" id="cd-grid"></div>
+      <div class="cd-share">
+        <label>Enlace para compartir:</label>
+        <div class="share-row">
+          <input type="text" id="cd-link" readonly/>
+          <button type="button" id="btn-copy-link" class="btn-secondary">Copiar</button>
+        </div>
+        <span id="cd-copy-msg" class="copy-msg"></span>
+      </div>
+      <button type="button" id="btn-new" class="btn-text">← Crear otro evento</button>
+    </div>
+  </section>
+</Base>
+<style>
+  .breadcrumb{font-size:.85rem;color:var(--muted);margin-bottom:.5rem}.breadcrumb a{color:var(--muted)}
+  .cr-fields{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem}@media(max-width:768px){.cr-fields{grid-template-columns:1fr}}
+  .field label{display:block;font-weight:600;font-size:.9rem;margin-bottom:.4rem}
+  .field input{width:100%;padding:.65rem;background:var(--bg);border:1px solid var(--line);border-radius:var(--radius-sm);color:var(--ink);font:inherit}
+  .btn-primary{background:var(--accent);color:var(--accent-ink);border:none;border-radius:var(--radius-sm);padding:.7rem 1.4rem;font-weight:700;cursor:pointer}
+  .btn-full{width:100%;font-size:1rem}
+  .btn-secondary{background:var(--surface);border:1px solid var(--line);color:var(--ink);border-radius:var(--radius-sm);padding:.55rem 1rem;cursor:pointer;font-weight:500;white-space:nowrap}
+  .btn-text{background:none;border:none;color:var(--accent);cursor:pointer;font-size:.9rem;margin-top:1.25rem;padding:0}
+  .hidden{display:none!important}
+  .countdown-display{text-align:center}
+  .cd-title{font-size:1.5rem;margin:0 0 1.5rem;color:var(--ink)}
+  .cd-grid{display:flex;justify-content:center;gap:1rem;flex-wrap:wrap;margin-bottom:2rem}
+  :global(.cd-unit){background:var(--surface-card);border:1px solid var(--line);border-radius:var(--radius-sm);padding:1.25rem 1rem;min-width:90px;text-align:center}
+  :global(.cd-unit .num){font-size:2.5rem;font-weight:800;color:var(--accent);display:block;line-height:1}
+  :global(.cd-unit .lbl){font-size:.75rem;color:var(--muted);text-transform:uppercase;font-weight:600;margin-top:.25rem;display:block}
+  .cd-share{margin-top:1.5rem;text-align:left;max-width:500px;margin-inline:auto}
+  .cd-share label{font-weight:600;font-size:.85rem;display:block;margin-bottom:.4rem}
+  .share-row{display:flex;gap:.5rem}
+  .share-row input{flex:1}
+  .copy-msg{font-size:.82rem;color:#3fb950;display:block;margin-top:.3rem;min-height:1.2rem}
+</style>
+<script>
+  const nameEl=document.getElementById('cr-name') as HTMLInputElement;
+  const dateEl=document.getElementById('cr-date') as HTMLInputElement;
+  const btnCreate=document.getElementById('btn-create')!;
+  const config=document.getElementById('config-section')!;
+  const display=document.getElementById('countdown-display')!;
+  const cdTitle=document.getElementById('cd-event-name')!;
+  const cdGrid=document.getElementById('cd-grid')!;
+  const cdLink=document.getElementById('cd-link') as HTMLInputElement;
+  const btnCopy=document.getElementById('btn-copy-link')!;
+  const copyMsg=document.getElementById('cd-copy-msg')!;
+  const btnNew=document.getElementById('btn-new')!;
+  let interval:number;
+
+  // Check URL params on load
+  const params=new URLSearchParams(window.location.search);
+  if(params.get('event')&&params.get('date')){
+    startCountdown(decodeURIComponent(params.get('event')!),params.get('date')!);
+  }
+
+  // Set default datetime to tomorrow
+  const tomorrow=new Date();tomorrow.setDate(tomorrow.getDate()+7);
+  dateEl.value=tomorrow.toISOString().slice(0,16);
+
+  btnCreate.addEventListener('click',()=>{
+    const name=nameEl.value.trim()||'Evento';
+    const date=dateEl.value;
+    if(!date)return;
+    const url=new URL(window.location.href);
+    url.search=`?event=${encodeURIComponent(name)}&date=${date}`;
+    window.history.replaceState(null,'',url.toString());
+    startCountdown(name,date);
+  });
+
+  function startCountdown(name:string,dateStr:string){
+    config.classList.add('hidden');display.classList.remove('hidden');
+    cdTitle.textContent=name;
+    cdLink.value=window.location.href;
+    if(interval)clearInterval(interval);
+
+    function update(){
+      const target=new Date(dateStr).getTime();
+      const now=Date.now();
+      const diff=target-now;
+      if(diff<=0){cdGrid.innerHTML='<div class="cd-unit"><span class="num">🎉</span><span class="lbl">¡El evento llegó!</span></div>';clearInterval(interval);return}
+      const d=Math.floor(diff/86400000);const h=Math.floor((diff%86400000)/3600000);
+      const m=Math.floor((diff%3600000)/60000);const s=Math.floor((diff%60000)/1000);
+      cdGrid.innerHTML=[
+        {num:d,lbl:'Días'},{num:h,lbl:'Horas'},{num:m,lbl:'Minutos'},{num:s,lbl:'Segundos'}
+      ].map(u=>`<div class="cd-unit"><span class="num">${String(u.num).padStart(2,'0')}</span><span class="lbl">${u.lbl}</span></div>`).join('');
+    }
+    update();interval=window.setInterval(update,1000);
+  }
+
+  btnCopy.addEventListener('click',async()=>{
+    await navigator.clipboard.writeText(cdLink.value);
+    copyMsg.textContent='✓ ¡Enlace copiado!';setTimeout(()=>copyMsg.textContent='',2500);
+  });
+
+  btnNew.addEventListener('click',()=>{
+    if(interval)clearInterval(interval);
+    display.classList.add('hidden');config.classList.remove('hidden');
+    window.history.replaceState(null,'',window.location.pathname);
+  });
+</script>

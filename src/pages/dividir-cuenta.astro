@@ -1,0 +1,123 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+---
+<Base title="Dividir la Cuenta con Propina – Calculadora Justa" description="Calcula cuánto paga cada persona según lo que consumió, incluyendo propina y gastos compartidos.">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="/">Herramientas</a> / <span>Dinero y compras</span></div>
+    <h1>Dividir la Cuenta con Propina</h1>
+    <p class="lead">Agrega personas y sus consumos individuales, define la propina y los ítems compartidos. La calculadora distribuye todo de forma justa.</p>
+  </div>
+  <section class="panel">
+    <div class="dc-section">
+      <h3>Personas y consumos individuales</h3>
+      <div id="people-list"></div>
+      <button type="button" id="btn-add-person" class="btn-secondary"><Icon name="users" size={15}/> Agregar persona</button>
+    </div>
+    <div class="dc-section">
+      <h3>Gastos compartidos (entre todos)</h3>
+      <div class="shared-row">
+        <input type="number" id="shared-amount" min="0" step="0.01" value="0" placeholder="0.00"/>
+        <span class="field-hint">Ej: entrada, botella, pan de mesa</span>
+      </div>
+    </div>
+    <div class="dc-section">
+      <h3>Propina</h3>
+      <div class="tip-row">
+        <button type="button" class="tip-btn" data-pct="0">Sin propina</button>
+        <button type="button" class="tip-btn active" data-pct="10">10%</button>
+        <button type="button" class="tip-btn" data-pct="15">15%</button>
+        <button type="button" class="tip-btn" data-pct="20">20%</button>
+        <div class="tip-custom"><label>Otro:</label><input type="number" id="tip-custom" min="0" step="1" placeholder="%"/></div>
+      </div>
+    </div>
+    <button type="button" id="btn-calculate" class="btn-primary btn-full">Calcular división</button>
+    <div id="dc-results" class="dc-results hidden"></div>
+  </section>
+</Base>
+<style>
+  .breadcrumb{font-size:.85rem;color:var(--muted);margin-bottom:.5rem}.breadcrumb a{color:var(--muted)}
+  .dc-section{margin-bottom:1.75rem}.dc-section h3{margin:0 0 .75rem;font-size:1rem}
+  :global(.person-row){display:flex;gap:.75rem;align-items:center;margin-bottom:.65rem;flex-wrap:wrap}
+  :global(.person-row input[type="text"]){flex:1;min-width:120px}
+  :global(.person-row input[type="number"]){width:110px}
+  :global(.btn-remove){background:none;border:1px solid var(--line);color:#f85149;border-radius:var(--radius-sm);width:34px;height:34px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;font-size:1.1rem}
+  .btn-secondary{background:var(--surface);border:1px solid var(--line);color:var(--ink);border-radius:var(--radius-sm);padding:.55rem 1rem;cursor:pointer;display:inline-flex;align-items:center;gap:.4rem;font-weight:500}
+  .shared-row{display:flex;align-items:center;gap:.75rem;flex-wrap:wrap}
+  .shared-row input{width:140px}
+  .field-hint{font-size:.82rem;color:var(--muted)}
+  .tip-row{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center}
+  .tip-btn{background:var(--surface-card);border:1px solid var(--line);color:var(--muted);border-radius:var(--radius-sm);padding:.45rem .85rem;cursor:pointer;font-weight:600;font-size:.88rem}
+  .tip-btn.active{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+  .tip-custom{display:flex;align-items:center;gap:.35rem;font-size:.88rem}
+  .tip-custom input{width:60px;padding:.4rem;background:var(--bg);border:1px solid var(--line);border-radius:var(--radius-sm);color:var(--ink);font:inherit}
+  .btn-primary{background:var(--accent);color:var(--accent-ink);border:none;border-radius:var(--radius-sm);padding:.7rem 1.4rem;font-weight:700;cursor:pointer}
+  .btn-full{width:100%;text-align:center;font-size:1rem}
+  .dc-results{margin-top:1.5rem}
+  :global(.res-card){background:var(--surface-card);border:1px solid var(--line);border-radius:var(--radius-sm);padding:1rem;margin-bottom:.65rem;display:flex;justify-content:space-between;align-items:center;animation:fadeSlide .3s ease both}
+  :global(.res-name){font-weight:700;font-size:1rem}
+  :global(.res-detail){font-size:.82rem;color:var(--muted)}
+  :global(.res-total){font-size:1.2rem;font-weight:800;color:var(--accent)}
+  :global(.res-summary){background:var(--surface);border:1px solid var(--accent);border-radius:var(--radius-sm);padding:1rem;text-align:center;font-size:1.1rem;font-weight:700;color:var(--ink)}
+  @keyframes fadeSlide{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+  .hidden{display:none!important}
+</style>
+<script>
+  const peopleList=document.getElementById('people-list')!;
+  const btnAdd=document.getElementById('btn-add-person')!;
+  const btnCalc=document.getElementById('btn-calculate')!;
+  const sharedInput=document.getElementById('shared-amount') as HTMLInputElement;
+  const tipCustom=document.getElementById('tip-custom') as HTMLInputElement;
+  const tipBtns=document.querySelectorAll<HTMLButtonElement>('.tip-btn');
+  const results=document.getElementById('dc-results')!;
+  let tipPct=10;let personId=0;
+
+  function addPerson(name='',amount=''){
+    personId++;const id=personId;
+    const row=document.createElement('div');row.className='person-row';row.dataset.id=String(id);
+    row.innerHTML=`<input type="text" placeholder="Nombre" value="${name}"/><input type="number" min="0" step="0.01" placeholder="Consumo $" value="${amount}"/><button type="button" class="btn-remove" title="Quitar">×</button>`;
+    row.querySelector('.btn-remove')!.addEventListener('click',()=>row.remove());
+    peopleList.appendChild(row);
+  }
+
+  btnAdd.addEventListener('click',()=>addPerson());
+  addPerson('Tú','');addPerson('Amigo 1','');
+
+  tipBtns.forEach(b=>b.addEventListener('click',()=>{
+    tipBtns.forEach(x=>x.classList.remove('active'));b.classList.add('active');
+    tipPct=parseInt(b.dataset.pct||'0');tipCustom.value='';
+  }));
+  tipCustom.addEventListener('input',()=>{
+    tipBtns.forEach(x=>x.classList.remove('active'));
+    tipPct=parseInt(tipCustom.value)||0;
+  });
+
+  btnCalc.addEventListener('click',()=>{
+    const rows=peopleList.querySelectorAll('.person-row');
+    const people:{name:string;amount:number}[]=[];
+    rows.forEach(r=>{
+      const inputs=r.querySelectorAll('input');
+      const name=inputs[0].value.trim()||'Persona';
+      const amount=parseFloat(inputs[1].value)||0;
+      people.push({name,amount});
+    });
+    if(!people.length)return;
+    const shared=parseFloat(sharedInput.value)||0;
+    const subtotal=people.reduce((s,p)=>s+p.amount,0)+shared;
+    const tipAmount=subtotal*(tipPct/100);
+    const total=subtotal+tipAmount;
+    const sharedPer=shared/people.length;
+    const tipPer=tipAmount/people.length;
+
+    results.innerHTML='';results.classList.remove('hidden');
+    people.forEach((p,i)=>{
+      const personalTotal=p.amount+sharedPer+tipPer;
+      const card=document.createElement('div');card.className='res-card';card.style.animationDelay=`${i*.06}s`;
+      card.innerHTML=`<div><div class="res-name">${p.name}</div><div class="res-detail">Consumo: $${p.amount.toFixed(2)} + Compartido: $${sharedPer.toFixed(2)} + Propina: $${tipPer.toFixed(2)}</div></div><div class="res-total">$${personalTotal.toFixed(2)}</div>`;
+      results.appendChild(card);
+    });
+    const summary=document.createElement('div');summary.className='res-summary';
+    summary.innerHTML=`Total general: $${total.toFixed(2)} (Subtotal $${subtotal.toFixed(2)} + Propina ${tipPct}% = $${tipAmount.toFixed(2)})`;
+    results.appendChild(summary);
+  });
+</script>

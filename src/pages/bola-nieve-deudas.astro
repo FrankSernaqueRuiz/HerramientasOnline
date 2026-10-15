@@ -1,0 +1,118 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base title="Planificador Bola de Nieve de Deudas" description="Organiza tus deudas con el método bola de nieve o avalancha y visualiza cuánto tardas en liquidarlas.">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="/">Herramientas</a> / <span>Dinero y compras</span></div>
+    <h1>Planificador Bola de Nieve de Deudas</h1>
+    <p class="lead">Ingresa tus deudas con su saldo, tasa de interés y pago mínimo. Elige entre el método bola de nieve (menor saldo primero) o avalancha (mayor interés primero).</p>
+  </div>
+  <section class="panel">
+    <div id="debts-list"></div>
+    <div class="row-btns">
+      <button type="button" id="btn-add-debt" class="btn-secondary">+ Agregar deuda</button>
+    </div>
+    <div class="method-row">
+      <label>Pago extra mensual ($):</label><input type="number" id="extra-pay" min="0" value="100"/>
+      <div class="method-btns">
+        <button type="button" class="method-btn active" data-method="snowball">❄️ Bola de nieve</button>
+        <button type="button" class="method-btn" data-method="avalanche">🔥 Avalancha</button>
+      </div>
+    </div>
+    <button type="button" id="btn-plan" class="btn-primary btn-full">Generar plan de pagos</button>
+    <div id="debt-results" class="debt-results hidden"></div>
+  </section>
+</Base>
+<style>
+  .breadcrumb{font-size:.85rem;color:var(--muted);margin-bottom:.5rem}.breadcrumb a{color:var(--muted)}
+  :global(.debt-row){display:flex;gap:.65rem;align-items:center;margin-bottom:.65rem;flex-wrap:wrap}
+  :global(.debt-row input){width:100px}:global(.debt-row input[type="text"]){flex:1;min-width:120px}
+  :global(.btn-rm){background:none;border:1px solid var(--line);color:#f85149;border-radius:var(--radius-sm);width:34px;height:34px;cursor:pointer;padding:0;font-size:1.1rem;display:flex;align-items:center;justify-content:center}
+  .row-btns{margin-bottom:1.25rem}
+  .btn-secondary{background:var(--surface);border:1px solid var(--line);color:var(--ink);border-radius:var(--radius-sm);padding:.55rem 1rem;cursor:pointer;font-weight:500}
+  .method-row{display:flex;gap:1rem;align-items:end;flex-wrap:wrap;margin-bottom:1.25rem}
+  .method-row label{font-weight:600;font-size:.88rem}
+  .method-row input{width:120px}
+  .method-btns{display:flex;gap:.5rem}
+  .method-btn{background:var(--surface-card);border:1px solid var(--line);color:var(--muted);border-radius:var(--radius-sm);padding:.5rem 1rem;cursor:pointer;font-weight:600}
+  .method-btn.active{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+  .btn-primary{background:var(--accent);color:var(--accent-ink);border:none;border-radius:var(--radius-sm);padding:.7rem 1.4rem;font-weight:700;cursor:pointer}
+  .btn-full{width:100%;font-size:1rem}
+  .debt-results{margin-top:1.5rem}
+  :global(.debt-plan-card){background:var(--surface-card);border:1px solid var(--line);border-radius:var(--radius-sm);padding:1rem;margin-bottom:.65rem;animation:fadeIn .3s ease both}
+  :global(.debt-plan-card .name){font-weight:700;font-size:1rem;margin-bottom:.25rem}
+  :global(.debt-plan-card .detail){font-size:.85rem;color:var(--muted)}
+  :global(.debt-summary){background:var(--surface);border:2px solid var(--accent);border-radius:var(--radius-sm);padding:1.25rem;text-align:center;font-size:1.1rem;font-weight:700}
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  .hidden{display:none!important}
+</style>
+<script>
+  const list=document.getElementById('debts-list')!;
+  const btnAdd=document.getElementById('btn-add-debt')!;
+  const btnPlan=document.getElementById('btn-plan')!;
+  const extraPay=document.getElementById('extra-pay') as HTMLInputElement;
+  const methodBtns=document.querySelectorAll<HTMLButtonElement>('.method-btn');
+  const results=document.getElementById('debt-results')!;
+  let method='snowball';
+
+  function addDebt(name='',balance='',rate='',minPay=''){
+    const row=document.createElement('div');row.className='debt-row';
+    row.innerHTML=`<input type="text" placeholder="Nombre" value="${name}"/><input type="number" min="0" step="0.01" placeholder="Saldo $" value="${balance}"/><input type="number" min="0" step="0.1" placeholder="Tasa % anual" value="${rate}"/><input type="number" min="0" step="0.01" placeholder="Pago mín $" value="${minPay}"/><button type="button" class="btn-rm">×</button>`;
+    row.querySelector('.btn-rm')!.addEventListener('click',()=>row.remove());
+    list.appendChild(row);
+  }
+
+  btnAdd.addEventListener('click',()=>addDebt());
+  addDebt('Tarjeta de Crédito','5000','24','150');
+  addDebt('Préstamo Personal','8000','18','200');
+  addDebt('Deuda tienda','1500','30','80');
+
+  methodBtns.forEach(b=>b.addEventListener('click',()=>{
+    methodBtns.forEach(x=>x.classList.remove('active'));b.classList.add('active');
+    method=b.dataset.method||'snowball';
+  }));
+
+  btnPlan.addEventListener('click',()=>{
+    const rows=list.querySelectorAll('.debt-row');
+    const debts:{name:string;balance:number;rate:number;minPay:number;monthsToPayoff?:number;totalPaid?:number}[]=[];
+    rows.forEach(r=>{
+      const inputs=r.querySelectorAll('input');
+      debts.push({name:inputs[0].value||'Deuda',balance:parseFloat(inputs[1].value)||0,rate:parseFloat(inputs[2].value)||0,minPay:parseFloat(inputs[3].value)||0});
+    });
+    if(!debts.length)return;
+
+    if(method==='snowball')debts.sort((a,b)=>a.balance-b.balance);
+    else debts.sort((a,b)=>b.rate-a.rate);
+
+    const extra=parseFloat(extraPay.value)||0;
+    let totalMonths=0;let totalPaid=0;
+
+    debts.forEach((d,priority)=>{
+      let balance=d.balance;let months=0;let paid=0;
+      const monthlyRate=d.rate/100/12;
+      while(balance>0&&months<600){
+        const interest=balance*monthlyRate;
+        let payment=d.minPay+interest;
+        if(priority===0)payment+=extra;
+        payment=Math.min(payment,balance+interest);
+        balance=balance+interest-payment;
+        if(balance<0.01)balance=0;
+        paid+=payment;months++;
+      }
+      d.monthsToPayoff=months;d.totalPaid=paid;
+      totalMonths=Math.max(totalMonths,months);totalPaid+=paid;
+    });
+
+    results.innerHTML='';results.classList.remove('hidden');
+    debts.forEach((d,i)=>{
+      const card=document.createElement('div');card.className='debt-plan-card';card.style.animationDelay=`${i*.08}s`;
+      const years=Math.floor((d.monthsToPayoff||0)/12);const mo=(d.monthsToPayoff||0)%12;
+      card.innerHTML=`<div class="name">${i+1}. ${d.name}</div><div class="detail">Saldo: $${d.balance.toLocaleString()} · Tasa: ${d.rate}% · Pago mínimo: $${d.minPay}<br>Se liquida en <strong>${years?years+' año(s) y ':''}${mo} mes(es)</strong> · Total pagado: $${(d.totalPaid||0).toFixed(2)}</div>`;
+      results.appendChild(card);
+    });
+    const summary=document.createElement('div');summary.className='debt-summary';
+    const totalInterest=totalPaid-debts.reduce((s,d)=>s+d.balance,0);
+    summary.innerHTML=`Libre de deudas en ~${totalMonths} meses · Total pagado: $${totalPaid.toFixed(2)} · Intereses: $${totalInterest.toFixed(2)}`;
+    results.appendChild(summary);
+  });
+</script>

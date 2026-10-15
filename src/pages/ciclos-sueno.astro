@@ -1,0 +1,160 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+---
+<Base title="Calculadora de Ciclos de Sueño – A qué hora dormir y despertar descansado" description="Calcula tus horarios óptimos de sueño según los ciclos circadianos de 90 minutos para levantarte con energía y sin sensación de cansancio.">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="/">Herramientas</a> / <span>Fechas y tiempo</span></div>
+    <h1>Calculadora de Ciclos de Sueño</h1>
+    <p class="lead">Despertar a mitad de un ciclo de sueño profundo produce fatiga extrema. Calcula tus horas ideales basadas en ciclos de 90 minutos.</p>
+  </div>
+
+  <section class="panel">
+    <div class="sleep-modes">
+      <button type="button" class="tab-btn active" id="tab-wake">Quiero despertar a las...</button>
+      <button type="button" class="tab-btn" id="tab-now">Si me acuesto ahora</button>
+    </div>
+
+    <!-- Mode 1: Wake up at... -->
+    <div id="mode-wake" class="mode-view">
+      <div class="input-inline">
+        <label for="wake-time">¿A qué hora necesitas levantarte?</label>
+        <input type="time" id="wake-time" value="07:00" class="time-picker" />
+        <button type="button" class="btn btn-primary" id="btn-calc-wake">Calcular cuándo acostarme</button>
+      </div>
+      <div id="results-wake" class="results-box"></div>
+    </div>
+
+    <!-- Mode 2: Sleep now -->
+    <div id="mode-now" class="mode-view" style="display:none;">
+      <div class="now-intro">
+        <p>Calculando a partir de la hora actual más 14 minutos para conciliar el sueño...</p>
+        <button type="button" class="btn btn-primary" id="btn-calc-now">Calcular horas para despertar</button>
+      </div>
+      <div id="results-now" class="results-box"></div>
+    </div>
+
+    <div class="sleep-info-card">
+      <h3>¿Cómo funciona la regla de los 90 minutos?</h3>
+      <p>Un ciclo completo de sueño natural dura aproximadamente <strong>90 minutos</strong> y consta de sueño ligero, sueño profundo y fase REM. Si tu alarma suena durante el sueño profundo, experimentarás <em>inercia del sueño</em> (aturdimiento). Dormir 5 o 6 ciclos completos suele ser lo óptimo para la mayoría de adultos.</p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .breadcrumb{font-size:.85rem;color:var(--muted);margin-bottom:.5rem}.breadcrumb a{color:var(--muted)}
+  .sleep-modes{display:flex;gap:.5rem;margin-bottom:1.5rem;border-bottom:1px solid var(--line);padding-bottom:.75rem}
+  .tab-btn{background:transparent;border:1px solid transparent;padding:.6rem 1.2rem;font-weight:600;font-size:.92rem;color:var(--muted);border-radius:var(--radius-sm);cursor:pointer;transition:all .15s}
+  .tab-btn.active{background:var(--accent);color:#fff}
+
+  .input-inline{display:flex;align-items:center;gap:1rem;flex-wrap:wrap;margin-bottom:1.5rem}
+  .input-inline label{font-weight:600;font-size:.95rem}
+  .time-picker{font-size:1.2rem;padding:.5rem .8rem;background:var(--bg);border:1px solid var(--line);border-radius:var(--radius-sm);color:var(--ink);font-weight:700}
+
+  .results-box{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin-bottom:2rem}
+  :global(.sleep-card){background:var(--surface-card);border:2px solid var(--line);border-radius:var(--radius-sm);padding:1.2rem;text-align:center;position:relative}
+  :global(.sleep-card.best){border-color:#22c55e;background:rgba(34,197,94,.06)}
+  :global(.sleep-card.good){border-color:#3b82f6;background:rgba(59,130,246,.06)}
+  :global(.sleep-card .badge){position:absolute;top:-10px;left:50%;transform:translateX(-50%);font-size:.7rem;padding:2px 8px;border-radius:10px;font-weight:700;text-transform:uppercase}
+  :global(.sleep-card.best .badge){background:#22c55e;color:#fff}
+  :global(.sleep-card.good .badge){background:#3b82f6;color:#fff}
+  :global(.sleep-card .time){font-size:2rem;font-weight:800;color:var(--ink);margin:.5rem 0 .2rem}
+  :global(.sleep-card .cycles){font-size:.85rem;color:var(--accent);font-weight:700}
+  :global(.sleep-card .duration){font-size:.8rem;color:var(--muted)}
+
+  .now-intro{margin-bottom:1.5rem}
+  .sleep-info-card{background:var(--surface-card);border:1px solid var(--line);border-radius:var(--radius-sm);padding:1.2rem;font-size:.88rem;color:var(--ink);line-height:1.5}
+  .sleep-info-card h3{margin-bottom:.5rem;font-size:1rem}
+</style>
+
+<script>
+  const tabWake = document.getElementById('tab-wake')!;
+  const tabNow = document.getElementById('tab-now')!;
+  const modeWake = document.getElementById('mode-wake')!;
+  const modeNow = document.getElementById('mode-now')!;
+
+  const wakeInput = document.getElementById('wake-time') as HTMLInputElement;
+  const btnCalcWake = document.getElementById('btn-calc-wake')!;
+  const resultsWake = document.getElementById('results-wake')!;
+
+  const btnCalcNow = document.getElementById('btn-calc-now')!;
+  const resultsNow = document.getElementById('results-now')!;
+
+  tabWake.addEventListener('click', () => {
+    tabWake.classList.add('active');
+    tabNow.classList.remove('active');
+    modeWake.style.display = 'block';
+    modeNow.style.display = 'none';
+  });
+
+  tabNow.addEventListener('click', () => {
+    tabNow.classList.add('active');
+    tabWake.classList.remove('active');
+    modeWake.style.display = 'none';
+    modeNow.style.display = 'block';
+    calcNow();
+  });
+
+  function formatTime(d: Date): string {
+    const hours = String(d.getHours()).padStart(2, '0');
+    const mins = String(d.getMinutes()).padStart(2, '0');
+    return `${hours}:${mins}`;
+  }
+
+  function calcWake() {
+    if (!wakeInput.value) return;
+    const [h, m] = wakeInput.value.split(':').map(Number);
+    const target = new Date();
+    target.setHours(h, m, 0, 0);
+
+    // Bedtimes: subtracting (cycles * 90m + 14m latency)
+    // Cycles: 6 (9h), 5 (7.5h), 4 (6h), 3 (4.5h)
+    const cyclesData = [
+      { cycles: 6, hours: 9, badge: 'Ideal (9h)', type: 'best' },
+      { cycles: 5, hours: 7.5, badge: 'Recomendado (7.5h)', type: 'best' },
+      { cycles: 4, hours: 6, badge: 'Aceptable (6h)', type: 'good' },
+      { cycles: 3, hours: 4.5, badge: 'Mínimo (4.5h)', type: 'regular' }
+    ];
+
+    resultsWake.innerHTML = cyclesData.map(c => {
+      const sleepTime = new Date(target.getTime() - (c.cycles * 90 + 14) * 60000);
+      return `
+        <div class="sleep-card ${c.type}">
+          ${c.badge ? `<span class="badge">${c.badge}</span>` : ''}
+          <div class="time">${formatTime(sleepTime)}</div>
+          <div class="cycles">${c.cycles} ciclos (${c.hours} horas)</div>
+          <div class="duration">Considera 14 min para dormirte</div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function calcNow() {
+    const current = new Date();
+    // Wake times: adding (14m latency + cycles * 90m)
+    const cyclesData = [
+      { cycles: 3, hours: 4.5, badge: 'Poco descanso (4.5h)', type: 'regular' },
+      { cycles: 4, hours: 6, badge: 'Aceptable (6h)', type: 'good' },
+      { cycles: 5, hours: 7.5, badge: 'Recomendado (7.5h)', type: 'best' },
+      { cycles: 6, hours: 9, badge: 'Óptimo (9h)', type: 'best' }
+    ];
+
+    resultsNow.innerHTML = cyclesData.map(c => {
+      const wakeTime = new Date(current.getTime() + (14 + c.cycles * 90) * 60000);
+      return `
+        <div class="sleep-card ${c.type}">
+          ${c.badge ? `<span class="badge">${c.badge}</span>` : ''}
+          <div class="time">${formatTime(wakeTime)}</div>
+          <div class="cycles">${c.cycles} ciclos (${c.hours} horas)</div>
+          <div class="duration">Despertador a esta hora</div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  btnCalcWake.addEventListener('click', calcWake);
+  btnCalcNow.addEventListener('click', calcNow);
+  wakeInput.addEventListener('change', calcWake);
+
+  calcWake();
+</script>

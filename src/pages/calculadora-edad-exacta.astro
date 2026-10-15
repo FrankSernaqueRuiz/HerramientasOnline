@@ -1,0 +1,73 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base title="Calculadora de Edad Exacta en Años, Meses y Días" description="Calcula tu edad exacta en años, meses, días y horas, más cuántos días faltan para tu próximo cumpleaños.">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="/">Herramientas</a> / <span>Fechas y tiempo</span></div>
+    <h1>Calculadora de Edad Exacta</h1>
+    <p class="lead">Ingresa tu fecha de nacimiento para conocer tu edad en años, meses, días, horas y la cuenta regresiva a tu próximo cumpleaños.</p>
+  </div>
+  <section class="panel">
+    <div class="age-grid">
+      <div class="field"><label for="birth-date">Fecha de nacimiento:</label><input type="date" id="birth-date"/></div>
+      <div class="results-cards" id="age-results">
+        <p class="placeholder">Selecciona tu fecha de nacimiento</p>
+      </div>
+    </div>
+  </section>
+</Base>
+<style>
+  .breadcrumb{font-size:.85rem;color:var(--muted);margin-bottom:.5rem}.breadcrumb a{color:var(--muted)}
+  .age-grid{display:grid;grid-template-columns:280px 1fr;gap:2rem;align-items:start}@media(max-width:768px){.age-grid{grid-template-columns:1fr}}
+  .field label{display:block;font-weight:600;font-size:.9rem;margin-bottom:.4rem}
+  .field input[type="date"]{width:100%;padding:.65rem;background:var(--bg);border:1px solid var(--line);border-radius:var(--radius-sm);color:var(--ink);font:inherit}
+  .results-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.85rem}
+  .placeholder{color:var(--muted);grid-column:1/-1;text-align:center;padding:2rem}
+  :global(.age-card){background:var(--surface-card);border:1px solid var(--line);border-radius:var(--radius-sm);padding:1rem;text-align:center}
+  :global(.age-card .num){font-size:1.8rem;font-weight:800;color:var(--accent);display:block}
+  :global(.age-card .lbl){font-size:.78rem;color:var(--muted);text-transform:uppercase;font-weight:600}
+  :global(.age-card.highlight){border-color:#e2b714;background:rgba(226,183,20,.08)}
+  :global(.age-card.highlight .num){color:#e2b714}
+</style>
+<script>
+  const input=document.getElementById('birth-date') as HTMLInputElement;
+  const results=document.getElementById('age-results')!;
+  // Set default to a reasonable date
+  const today=new Date();
+  input.max=today.toISOString().split('T')[0];
+
+  function calc(){
+    if(!input.value)return;
+    const birth=new Date(input.value+'T00:00:00');
+    const now=new Date();
+    if(birth>now){results.innerHTML='<p class="placeholder">La fecha debe ser en el pasado</p>';return}
+
+    let years=now.getFullYear()-birth.getFullYear();
+    let months=now.getMonth()-birth.getMonth();
+    let days=now.getDate()-birth.getDate();
+    if(days<0){months--;const prev=new Date(now.getFullYear(),now.getMonth(),0);days+=prev.getDate()}
+    if(months<0){years--;months+=12}
+
+    const diffMs=now.getTime()-birth.getTime();
+    const totalDays=Math.floor(diffMs/86400000);
+    const totalHours=Math.floor(diffMs/3600000);
+    const totalWeeks=Math.floor(totalDays/7);
+
+    // Next birthday
+    let nextBday=new Date(now.getFullYear(),birth.getMonth(),birth.getDate());
+    if(nextBday<=now)nextBday=new Date(now.getFullYear()+1,birth.getMonth(),birth.getDate());
+    const daysToNext=Math.ceil((nextBday.getTime()-now.getTime())/86400000);
+
+    const cards=[
+      {num:`${years}`,lbl:'Años'},
+      {num:`${months}`,lbl:'Meses'},
+      {num:`${days}`,lbl:'Días'},
+      {num:totalDays.toLocaleString(),lbl:'Total de días vividos'},
+      {num:totalWeeks.toLocaleString(),lbl:'Semanas vividas'},
+      {num:totalHours.toLocaleString(),lbl:'Horas vividas'},
+      {num:`🎂 ${daysToNext}`,lbl:'Días para tu cumple',highlight:true},
+    ];
+    results.innerHTML=cards.map(c=>`<div class="age-card ${c.highlight?'highlight':''}"><span class="num">${c.num}</span><span class="lbl">${c.lbl}</span></div>`).join('');
+  }
+  input.addEventListener('input',calc);
+</script>

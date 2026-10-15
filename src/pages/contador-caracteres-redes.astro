@@ -1,0 +1,315 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+---
+
+<Base
+  title="Contador de Caracteres por Red Social (X, Instagram, TikTok, LinkedIn)"
+  description="Calcula en tiempo real cuánto te falta o te sobra para publicaciones y bios en X/Twitter, Instagram, TikTok, Facebook, LinkedIn y YouTube."
+>
+  <div class="page-header">
+    <div class="breadcrumb">
+      <a href="/">Herramientas</a> / <span>Redes sociales</span>
+    </div>
+    <h1>Contador de Caracteres por Red Social</h1>
+    <p class="lead">Escribe o pega tu texto y visualiza al instante los límites permitidos, advertencias de corte y caracteres restantes por plataforma.</p>
+  </div>
+
+  <section class="panel">
+    <div class="counter-header">
+      <div class="stats-overview">
+        <div class="stat-bubble">
+          <span class="stat-num" id="stat-chars">0</span>
+          <span class="stat-lbl">Caracteres</span>
+        </div>
+        <div class="stat-bubble">
+          <span class="stat-num" id="stat-words">0</span>
+          <span class="stat-lbl">Palabras</span>
+        </div>
+        <div class="stat-bubble">
+          <span class="stat-num" id="stat-lines">0</span>
+          <span class="stat-lbl">Líneas</span>
+        </div>
+        <div class="stat-bubble">
+          <span class="stat-num" id="stat-hashtags">0</span>
+          <span class="stat-lbl">Hashtags (#)</span>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button id="btn-copy-text" class="btn-sm" type="button">
+          <Icon name="copy" size={15} /> Copiar texto
+        </button>
+        <button id="btn-clear-text" class="btn-sm" type="button">
+          <Icon name="trash" size={15} /> Borrar
+        </button>
+      </div>
+    </div>
+
+    <div class="field-wrap">
+      <textarea 
+        id="social-text-input" 
+        rows="6" 
+        placeholder="Escribe o pega aquí el contenido de tu publicación para evaluar todas las redes..."
+      ></textarea>
+    </div>
+
+    <div class="platforms-grid" id="platforms-container">
+      <!-- Tarjetas de redes sociales con barras de progreso -->
+    </div>
+  </section>
+
+  <section class="seo-section">
+    <h2>Límites recomendados de caracteres</h2>
+    <p>Aunque plataformas como Instagram admiten hasta 2,200 caracteres en la descripción de un post, solo las primeras 125 letras son visibles antes del botón "...más". Monitorear la longitud de tus textos optimiza la tasa de retención y el engagement en redes.</p>
+  </section>
+</Base>
+
+<style>
+  .breadcrumb {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-bottom: 0.5rem;
+  }
+  .breadcrumb a {
+    color: var(--muted);
+  }
+  .counter-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+  }
+  .stats-overview {
+    display: flex;
+    gap: 0.85rem;
+    flex-wrap: wrap;
+  }
+  .stat-bubble {
+    background: var(--surface-card);
+    border: 1px solid var(--line);
+    padding: 0.4rem 0.85rem;
+    border-radius: var(--radius-sm);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 75px;
+  }
+  .stat-num {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--accent);
+  }
+  .stat-lbl {
+    font-size: 0.72rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+  .header-actions {
+    display: flex;
+    gap: 0.5rem;
+  }
+  .btn-sm {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    color: var(--ink);
+    border-radius: var(--radius-sm);
+    padding: 0.45rem 0.75rem;
+    font-size: 0.82rem;
+    font-weight: 500;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+  .btn-sm:hover {
+    background: var(--surface-hover);
+  }
+  .field-wrap textarea {
+    font-size: 1rem;
+    line-height: 1.5;
+    margin-bottom: 1.5rem;
+  }
+  .platforms-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1rem;
+  }
+  :global(.platform-card) {
+    background: var(--surface-card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    padding: 1.1rem;
+    transition: transform 0.15s, border-color 0.15s;
+  }
+  :global(.platform-card.is-over) {
+    border-color: #f85149;
+    background: rgba(248, 81, 73, 0.05);
+  }
+  :global(.platform-card-header) {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+  }
+  :global(.platform-title) {
+    font-weight: 700;
+    font-size: 0.95rem;
+  }
+  :global(.platform-badge) {
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 0.15rem 0.5rem;
+    border-radius: 9999px;
+  }
+  :global(.platform-badge.ok) {
+    background: rgba(63, 185, 80, 0.15);
+    color: #3fb950;
+  }
+  :global(.platform-badge.over) {
+    background: rgba(248, 81, 73, 0.15);
+    color: #f85149;
+  }
+  :global(.progress-bar-wrap) {
+    height: 6px;
+    background: var(--bg);
+    border-radius: 9999px;
+    overflow: hidden;
+    margin-bottom: 0.65rem;
+  }
+  :global(.progress-bar-fill) {
+    height: 100%;
+    background: var(--accent);
+    transition: width 0.15s ease, background 0.15s ease;
+  }
+  :global(.progress-bar-fill.warning) {
+    background: #d29922;
+  }
+  :global(.progress-bar-fill.danger) {
+    background: #f85149;
+  }
+  :global(.platform-details) {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+  :global(.platform-details strong) {
+    color: var(--ink);
+  }
+</style>
+
+<script>
+  interface NetworkLimit {
+    id: string;
+    name: string;
+    target: string;
+    limit: number;
+    recommended?: number;
+  }
+
+  const platforms: NetworkLimit[] = [
+    { id: 'x-tweet', name: 'X / Twitter', target: 'Post estándar', limit: 280 },
+    { id: 'ig-caption', name: 'Instagram', target: 'Descripción post', limit: 2200, recommended: 125 },
+    { id: 'ig-bio', name: 'Instagram', target: 'Biografía perfil', limit: 150 },
+    { id: 'tiktok-desc', name: 'TikTok', target: 'Descripción video', limit: 4000, recommended: 150 },
+    { id: 'tiktok-bio', name: 'TikTok', target: 'Biografía perfil', limit: 80 },
+    { id: 'linkedin-post', name: 'LinkedIn', target: 'Publicación', limit: 3000, recommended: 600 },
+    { id: 'fb-post', name: 'Facebook', target: 'Estado / Post', limit: 63206, recommended: 250 },
+    { id: 'yt-title', name: 'YouTube', target: 'Título de video', limit: 100, recommended: 70 },
+    { id: 'yt-desc', name: 'YouTube', target: 'Descripción video', limit: 5000 },
+    { id: 'threads-post', name: 'Threads', target: 'Post estándar', limit: 500 }
+  ];
+
+  const textInput = document.getElementById('social-text-input') as HTMLTextAreaElement;
+  const container = document.getElementById('platforms-container') as HTMLDivElement;
+  const statChars = document.getElementById('stat-chars') as HTMLSpanElement;
+  const statWords = document.getElementById('stat-words') as HTMLSpanElement;
+  const statLines = document.getElementById('stat-lines') as HTMLSpanElement;
+  const statHashtags = document.getElementById('stat-hashtags') as HTMLSpanElement;
+  const btnCopy = document.getElementById('btn-copy-text') as HTMLButtonElement;
+  const btnClear = document.getElementById('btn-clear-text') as HTMLButtonElement;
+
+  function countStats(text: string) {
+    const chars = text.length;
+    const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+    const lines = text ? text.split(/\r\n|\r|\n/).length : 0;
+    const hashtags = (text.match(/#[a-zA-Z0-9_]+/g) || []).length;
+
+    statChars.textContent = chars.toLocaleString();
+    statWords.textContent = words.toLocaleString();
+    statLines.textContent = lines.toLocaleString();
+    statHashtags.textContent = hashtags.toString();
+  }
+
+  function renderPlatforms() {
+    const text = textInput.value;
+    const chars = text.length;
+    countStats(text);
+
+    container.innerHTML = '';
+
+    platforms.forEach((p) => {
+      const remaining = p.limit - chars;
+      const isOver = remaining < 0;
+      const pct = Math.min(100, Math.round((chars / p.limit) * 100));
+
+      let fillClass = '';
+      if (pct >= 100 || isOver) {
+        fillClass = 'danger';
+      } else if (pct > 80) {
+        fillClass = 'warning';
+      }
+
+      const card = document.createElement('div');
+      card.className = `platform-card ${isOver ? 'is-over' : ''}`;
+
+      card.innerHTML = `
+        <div class="platform-card-header">
+          <div>
+            <div class="platform-title">${p.name}</div>
+            <div style="font-size: 0.75rem; color: var(--muted);">${p.target}</div>
+          </div>
+          <span class="platform-badge ${isOver ? 'over' : 'ok'}">
+            ${isOver ? `Excede por ${Math.abs(remaining)}` : `${remaining} restantes`}
+          </span>
+        </div>
+
+        <div class="progress-bar-wrap">
+          <div class="progress-bar-fill ${fillClass}" style="width: ${pct}%"></div>
+        </div>
+
+        <div class="platform-details">
+          <span>Uso: <strong>${chars}</strong> / ${p.limit}</span>
+          <span>${pct}%</span>
+        </div>
+      `;
+
+      container.appendChild(card);
+    });
+  }
+
+  textInput.addEventListener('input', renderPlatforms);
+
+  btnCopy.addEventListener('click', async () => {
+    if (!textInput.value) return;
+    try {
+      await navigator.clipboard.writeText(textInput.value);
+      btnCopy.textContent = '✓ Copiado';
+      setTimeout(() => {
+        btnCopy.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg> Copiar texto`;
+      }, 2000);
+    } catch {
+      alert('No se pudo copiar');
+    }
+  });
+
+  btnClear.addEventListener('click', () => {
+    textInput.value = '';
+    renderPlatforms();
+  });
+
+  renderPlatforms();
+</script>

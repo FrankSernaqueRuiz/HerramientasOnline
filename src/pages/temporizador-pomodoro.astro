@@ -1,0 +1,206 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+---
+<Base title="Temporizador Pomodoro Online – Foco y Productividad" description="Temporizador Pomodoro interactivo con descansos cortos y largos, avisos sonoros, contador de ciclos y notificaciones de escritorio.">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="/">Herramientas</a> / <span>Fechas y tiempo</span></div>
+    <h1>Temporizador Pomodoro</h1>
+    <p class="lead">Mantén la concentración absoluta trabajando en bloques de 25 minutos con descansos programados para evitar el agotamiento mental.</p>
+  </div>
+
+  <section class="panel pomodoro-panel">
+    <div class="pomo-nav">
+      <button type="button" class="pomo-tab active" data-mode="pomodoro" data-time="25">Pomodoro (25m)</button>
+      <button type="button" class="pomo-tab" data-mode="short" data-time="5">Descanso corto (5m)</button>
+      <button type="button" class="pomo-tab" data-mode="long" data-time="15">Descanso largo (15m)</button>
+    </div>
+
+    <div class="timer-display-box">
+      <div class="timer-ring">
+        <span class="timer-text" id="timer-display">25:00</span>
+        <span class="timer-status" id="timer-status-text">Listo para enfocar</span>
+      </div>
+    </div>
+
+    <div class="timer-controls">
+      <button type="button" class="btn btn-primary btn-lg" id="btn-toggle">Iniciar</button>
+      <button type="button" class="btn btn-secondary btn-lg" id="btn-reset">Reiniciar</button>
+      <button type="button" class="btn btn-secondary btn-lg" id="btn-skip">Saltar</button>
+    </div>
+
+    <div class="pomodoro-stats">
+      <div class="stat-pills">
+        <span class="pill">Ciclo actual: <strong id="cycle-count">1</strong> / 4</span>
+        <span class="pill">Pomodoros hoy: <strong id="total-pomo-count">0</strong> 🍅</span>
+      </div>
+      <label class="sound-toggle">
+        <input type="checkbox" id="sound-chk" checked />
+        <span>Sonido de campana al finalizar</span>
+      </label>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .breadcrumb{font-size:.85rem;color:var(--muted);margin-bottom:.5rem}.breadcrumb a{color:var(--muted)}
+  .pomodoro-panel{max-width:620px;margin:0 auto;text-align:center;padding:2.5rem 1.5rem}
+  
+  .pomo-nav{display:flex;justify-content:center;gap:.5rem;margin-bottom:2rem;flex-wrap:wrap}
+  .pomo-tab{background:var(--bg);border:1px solid var(--line);padding:.55rem 1.1rem;border-radius:2rem;color:var(--muted);font-weight:600;font-size:.9rem;cursor:pointer;transition:all .15s}
+  .pomo-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+  .timer-display-box{margin:2rem 0}
+  .timer-ring{width:260px;height:260px;border-radius:50%;border:8px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto;background:var(--surface-card);box-shadow:0 12px 30px rgba(0,0,0,.08)}
+  .timer-text{font-size:4rem;font-weight:900;letter-spacing:-2px;color:var(--ink);font-variant-numeric:tabular-nums}
+  .timer-status{font-size:.85rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-top:.25rem}
+
+  .timer-controls{display:flex;justify-content:center;gap:1rem;margin-bottom:2rem}
+  .btn-lg{padding:.8rem 1.8rem;font-size:1.05rem;border-radius:2rem;font-weight:700}
+
+  .pomodoro-stats{display:flex;flex-direction:column;align-items:center;gap:1rem;border-top:1px solid var(--line);padding-top:1.5rem}
+  .stat-pills{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center}
+  .pill{background:var(--bg);border:1px solid var(--line);padding:.4rem 1rem;border-radius:1rem;font-size:.85rem;color:var(--ink)}
+  .sound-toggle{display:flex;align-items:center;gap:.5rem;font-size:.85rem;color:var(--muted);cursor:pointer}
+</style>
+
+<script>
+  let mode: 'pomodoro' | 'short' | 'long' = 'pomodoro';
+  let totalSeconds = 25 * 60;
+  let remainingSeconds = totalSeconds;
+  let timerId: number | null = null;
+  let isRunning = false;
+  let cycle = 1;
+  let totalPomodoros = 0;
+
+  const display = document.getElementById('timer-display')!;
+  const statusText = document.getElementById('timer-status-text')!;
+  const btnToggle = document.getElementById('btn-toggle')!;
+  const btnReset = document.getElementById('btn-reset')!;
+  const btnSkip = document.getElementById('btn-skip')!;
+  const tabs = document.querySelectorAll('.pomo-tab');
+  const cycleCountEl = document.getElementById('cycle-count')!;
+  const totalCountEl = document.getElementById('total-pomo-count')!;
+  const soundChk = document.getElementById('sound-chk') as HTMLInputElement;
+
+  function updateDisplay() {
+    const m = Math.floor(remainingSeconds / 60);
+    const s = remainingSeconds % 60;
+    const timeStr = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+    display.textContent = timeStr;
+    document.title = `(${timeStr}) ${mode === 'pomodoro' ? 'Concentración' : 'Descanso'} | Herramientas`;
+  }
+
+  function playChime() {
+    if (!soundChk.checked) return;
+    try {
+      const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); // D5
+      osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.3); // A5
+      gain.gain.setValueAtTime(0.5, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 1.2);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 1.2);
+    } catch (e) {
+      // AudioContext unavailable
+    }
+  }
+
+  function onComplete() {
+    pause();
+    playChime();
+
+    if (mode === 'pomodoro') {
+      totalPomodoros++;
+      totalCountEl.textContent = String(totalPomodoros);
+      if (cycle < 4) {
+        cycle++;
+        cycleCountEl.textContent = String(cycle);
+        setMode('short', 5);
+      } else {
+        cycle = 1;
+        cycleCountEl.textContent = String(cycle);
+        setMode('long', 15);
+      }
+    } else {
+      setMode('pomodoro', 25);
+    }
+  }
+
+  function tick() {
+    if (remainingSeconds > 0) {
+      remainingSeconds--;
+      updateDisplay();
+    } else {
+      onComplete();
+    }
+  }
+
+  function start() {
+    if (isRunning) return;
+    isRunning = true;
+    btnToggle.textContent = 'Pausar';
+    btnToggle.classList.remove('btn-primary');
+    btnToggle.classList.add('btn-secondary');
+    statusText.textContent = mode === 'pomodoro' ? 'Enfocando...' : 'Descansando...';
+    timerId = window.setInterval(tick, 1000);
+  }
+
+  function pause() {
+    if (!isRunning) return;
+    isRunning = false;
+    btnToggle.textContent = 'Reanudar';
+    btnToggle.classList.remove('btn-secondary');
+    btnToggle.classList.add('btn-primary');
+    statusText.textContent = 'En pausa';
+    if (timerId !== null) {
+      clearInterval(timerId);
+      timerId = null;
+    }
+  }
+
+  function reset() {
+    pause();
+    btnToggle.textContent = 'Iniciar';
+    btnToggle.classList.remove('btn-secondary');
+    btnToggle.classList.add('btn-primary');
+    remainingSeconds = totalSeconds;
+    statusText.textContent = 'Listo para empezar';
+    updateDisplay();
+  }
+
+  function setMode(newMode: 'pomodoro' | 'short' | 'long', mins: number) {
+    mode = newMode;
+    totalSeconds = mins * 60;
+    remainingSeconds = totalSeconds;
+    tabs.forEach(tab => {
+      const tMode = (tab as HTMLElement).dataset.mode;
+      if (tMode === newMode) tab.classList.add('active');
+      else tab.classList.remove('active');
+    });
+    reset();
+  }
+
+  btnToggle.addEventListener('click', () => {
+    if (isRunning) pause();
+    else start();
+  });
+
+  btnReset.addEventListener('click', reset);
+  btnSkip.addEventListener('click', onComplete);
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const m = (tab as HTMLElement).dataset.mode as any;
+      const t = parseInt((tab as HTMLElement).dataset.time || '25', 10);
+      setMode(m, t);
+    });
+  });
+
+  updateDisplay();
+</script>

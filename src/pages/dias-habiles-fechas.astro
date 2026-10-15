@@ -1,0 +1,64 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base title="Calculadora de Días Hábiles entre Dos Fechas" description="Cuenta los días laborables (lunes a viernes) entre dos fechas, excluyendo fines de semana y feriados opcionales.">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="/">Herramientas</a> / <span>Fechas y tiempo</span></div>
+    <h1>Días Hábiles entre Fechas</h1>
+    <p class="lead">Selecciona un rango de fechas para contar cuántos días laborables hay, descontando sábados y domingos.</p>
+  </div>
+  <section class="panel">
+    <div class="dh-grid">
+      <div class="field"><label for="dh-start">Fecha de inicio:</label><input type="date" id="dh-start"/></div>
+      <div class="field"><label for="dh-end">Fecha de fin:</label><input type="date" id="dh-end"/></div>
+    </div>
+    <div class="check-opt"><input type="checkbox" id="dh-sat"/><label for="dh-sat">Incluir sábados como laborables</label></div>
+    <div id="dh-results" class="dh-results"></div>
+  </section>
+</Base>
+<style>
+  .breadcrumb{font-size:.85rem;color:var(--muted);margin-bottom:.5rem}.breadcrumb a{color:var(--muted)}
+  .dh-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1rem}@media(max-width:768px){.dh-grid{grid-template-columns:1fr}}
+  .field label{display:block;font-weight:600;font-size:.9rem;margin-bottom:.4rem}
+  .field input[type="date"]{width:100%;padding:.65rem;background:var(--bg);border:1px solid var(--line);border-radius:var(--radius-sm);color:var(--ink);font:inherit}
+  .check-opt{display:flex;align-items:center;gap:.5rem;font-size:.88rem;margin-bottom:1.25rem;cursor:pointer}
+  .dh-results{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.85rem}
+  :global(.dh-card){background:var(--surface-card);border:1px solid var(--line);border-radius:var(--radius-sm);padding:1rem;text-align:center}
+  :global(.dh-card .num){font-size:1.8rem;font-weight:800;color:var(--accent);display:block}
+  :global(.dh-card .lbl){font-size:.78rem;color:var(--muted);text-transform:uppercase;font-weight:600}
+  :global(.dh-card.main){border-color:var(--accent);background:rgba(47,129,247,.08)}
+</style>
+<script>
+  const startEl=document.getElementById('dh-start') as HTMLInputElement;
+  const endEl=document.getElementById('dh-end') as HTMLInputElement;
+  const satEl=document.getElementById('dh-sat') as HTMLInputElement;
+  const results=document.getElementById('dh-results')!;
+  const today=new Date();
+  startEl.value=today.toISOString().split('T')[0];
+  const future=new Date(today);future.setMonth(future.getMonth()+1);
+  endEl.value=future.toISOString().split('T')[0];
+
+  function calc(){
+    if(!startEl.value||!endEl.value)return;
+    const s=new Date(startEl.value+'T00:00:00');const e=new Date(endEl.value+'T00:00:00');
+    if(s>e){results.innerHTML='';return}
+    let totalDays=0,businessDays=0,weekendDays=0;
+    const cur=new Date(s);
+    while(cur<=e){
+      totalDays++;
+      const dow=cur.getDay();
+      if(dow===0||(dow===6&&!satEl.checked))weekendDays++;
+      else businessDays++;
+      cur.setDate(cur.getDate()+1);
+    }
+    const weeks=Math.floor(totalDays/7);
+    results.innerHTML=[
+      {num:businessDays,lbl:'Días hábiles',main:true},
+      {num:totalDays,lbl:'Días totales'},
+      {num:weekendDays,lbl:'Fines de semana'},
+      {num:weeks,lbl:'Semanas completas'},
+    ].map(c=>`<div class="dh-card ${c.main?'main':''}"><span class="num">${c.num}</span><span class="lbl">${c.lbl}</span></div>`).join('');
+  }
+  [startEl,endEl,satEl].forEach(el=>el.addEventListener('input',calc));
+  calc();
+</script>

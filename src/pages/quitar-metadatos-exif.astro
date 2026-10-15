@@ -1,0 +1,153 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+---
+<Base title="Limpiador de Metadatos EXIF – Eliminar Ubicación GPS de Fotos" description="Elimina metadatos ocultos, geolocalización GPS, modelo de cámara y fecha de captura de tus fotos antes de subirlas a redes sociales.">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="/">Herramientas</a> / <span>Imágenes y multimedia</span></div>
+    <h1>Limpiador de Metadatos EXIF</h1>
+    <p class="lead">Las fotos que tomas con tu teléfono guardan tu ubicación exacta, modelo de celular y fecha. Elimina estos datos para proteger tu privacidad.</p>
+  </div>
+
+  <section class="panel">
+    <div class="drop-zone" id="drop-zone">
+      <input type="file" id="file-input" accept="image/jpeg,image/png,image/webp" style="display:none;" />
+      <div class="drop-content">
+        <span class="drop-icon">🛡️</span>
+        <p class="drop-text">Arrastra una foto aquí o <button type="button" class="btn btn-secondary btn-sm" id="btn-browse">Examinar</button></p>
+        <span class="drop-hint">La limpieza se ejecuta 100% en tu navegador mediante renderizado seguro en Canvas.</span>
+      </div>
+    </div>
+
+    <div class="cleaner-workspace" id="workspace" style="display:none;">
+      <div class="clean-grid">
+        <!-- Visual Comparison / Confirmation -->
+        <div class="preview-box">
+          <div class="img-wrap">
+            <img id="preview-img" alt="Vista previa" />
+          </div>
+          <div class="status-badge" id="clean-badge">✓ Metadatos EXIF eliminados con éxito</div>
+        </div>
+
+        <!-- Info / Data Removed List -->
+        <div class="report-box">
+          <h3>Datos protegidos y removidos:</h3>
+          <ul class="removed-list">
+            <li>
+              <span class="bullet">📍</span>
+              <div>
+                <strong>Coordenadas GPS y Altitud</strong>
+                <p>Ubicación física donde se tomó la foto (latitud, longitud).</p>
+              </div>
+            </li>
+            <li>
+              <span class="bullet">📱</span>
+              <div>
+                <strong>Modelo de dispositivo y Cámara</strong>
+                <p>Marca, modelo de teléfono/cámara y versión de firmware.</p>
+              </div>
+            </li>
+            <li>
+              <span class="bullet">📅</span>
+              <div>
+                <strong>Fecha, hora y zona horaria de captura</strong>
+                <p>Marcas temporales del obturador y modificaciones.</p>
+              </div>
+            </li>
+            <li>
+              <span class="bullet">⚙️</span>
+              <div>
+                <strong>Parámetros técnicos de disparo</strong>
+                <p>ISO, apertura focal, velocidad de obturación y software de edición.</p>
+              </div>
+            </li>
+          </ul>
+
+          <div class="action-row">
+            <button type="button" class="btn btn-primary btn-block" id="btn-download-clean">💾 Descargar foto limpia (Sin EXIF)</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .breadcrumb{font-size:.85rem;color:var(--muted);margin-bottom:.5rem}.breadcrumb a{color:var(--muted)}
+  .drop-zone{border:2px dashed var(--line);border-radius:var(--radius);padding:3rem 1.5rem;text-align:center;background:var(--surface-card);transition:all .2s;cursor:pointer}
+  .drop-zone.dragover{border-color:var(--accent);background:rgba(37,99,235,.05)}
+  .drop-icon{font-size:2.8rem;display:block;margin-bottom:.75rem}
+  .drop-text{font-size:1.05rem;color:var(--ink);margin-bottom:.5rem}
+  .drop-hint{font-size:.82rem;color:var(--muted)}
+
+  .cleaner-workspace{margin-top:2rem}
+  .clean-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:start}
+  @media(max-width:768px){.clean-grid{grid-template-columns:1fr}}
+
+  .preview-box{background:var(--surface-card);border:1px solid var(--line);border-radius:var(--radius-sm);padding:1.25rem;text-align:center}
+  .img-wrap{max-height:360px;overflow:hidden;display:flex;align-items:center;justify-content:center;background:var(--bg);border-radius:4px;padding:.5rem;margin-bottom:1rem}
+  .img-wrap img{max-width:100%;max-height:320px;object-fit:contain}
+  .status-badge{background:rgba(34,197,94,.12);color:#16a34a;border:1px solid rgba(34,197,94,.3);padding:.6rem 1rem;border-radius:var(--radius-sm);font-weight:700;font-size:.88rem}
+
+  .report-box h3{font-size:1rem;margin-bottom:1rem}
+  .removed-list{list-style:none;padding:0;margin:0 0 1.5rem 0}
+  .removed-list li{display:flex;gap:1rem;margin-bottom:1rem;align-items:start}
+  .bullet{font-size:1.4rem}
+  .removed-list strong{display:block;font-size:.9rem;color:var(--ink)}
+  .removed-list p{font-size:.8rem;color:var(--muted);margin:.15rem 0 0}
+
+  .btn-block{width:100%;padding:.75rem;font-size:1rem;font-weight:700}
+</style>
+
+<script>
+  let cleanDataUrl: string | null = null;
+  let originalFileName = 'foto_limpia.jpg';
+
+  const dropZone = document.getElementById('drop-zone')!;
+  const fileInput = document.getElementById('file-input') as HTMLInputElement;
+  const btnBrowse = document.getElementById('btn-browse')!;
+  const workspace = document.getElementById('workspace')!;
+  const previewImg = document.getElementById('preview-img') as HTMLImageElement;
+  const btnDownload = document.getElementById('btn-download-clean')!;
+
+  btnBrowse.addEventListener('click', (e) => {
+    e.stopPropagation();
+    fileInput.click();
+  });
+  dropZone.addEventListener('click', () => fileInput.click());
+
+  fileInput.addEventListener('change', () => {
+    if (fileInput.files?.length) processFile(fileInput.files[0]);
+  });
+
+  function processFile(file: File) {
+    originalFileName = file.name.replace(/\.[^/.]+$/, "") + "_sin_exif.jpg";
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        // Redraw completely on clean canvas -> strips 100% of EXIF markers
+        const canvas = document.createElement('canvas');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext('2d')!;
+        ctx.drawImage(img, 0, 0);
+
+        cleanDataUrl = canvas.toDataURL('image/jpeg', 0.92);
+        previewImg.src = cleanDataUrl;
+        workspace.style.display = 'block';
+      };
+      img.src = e.target?.result as string;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  btnDownload.addEventListener('click', () => {
+    if (!cleanDataUrl) return;
+    const link = document.createElement('a');
+    link.download = originalFileName;
+    link.href = cleanDataUrl;
+    link.click();
+  });
+</script>

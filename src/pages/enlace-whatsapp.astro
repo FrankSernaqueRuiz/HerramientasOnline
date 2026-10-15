@@ -1,0 +1,351 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+---
+
+<Base
+  title="Generador de Enlaces de WhatsApp con Mensaje y QR Directo"
+  description="Crea enlaces wa.me para abrir chats de WhatsApp sin guardar el contacto. Incluye mensaje predefinido, botón de copiar y código QR instantáneo."
+>
+  <div class="page-header">
+    <div class="breadcrumb">
+      <a href="/">Herramientas</a> / <span>Redes sociales</span>
+    </div>
+    <h1>Generador de Enlace de WhatsApp</h1>
+    <p class="lead">Escribe el número y un mensaje opcional para generar tu enlace directo a WhatsApp (wa.me) con código QR y enlace listo para compartir.</p>
+  </div>
+
+  <section class="panel">
+    <div class="whatsapp-grid">
+      <div class="form-side">
+        <div class="field-group">
+          <label for="country-code">Código de país:</label>
+          <div class="input-with-icon">
+            <select id="country-code">
+              <option value="51" selected>Perú (+51)</option>
+              <option value="52">México (+52)</option>
+              <option value="54">Argentina (+54)</option>
+              <option value="56">Chile (+56)</option>
+              <option value="57">Colombia (+57)</option>
+              <option value="34">España (+34)</option>
+              <option value="1">Estados Unidos / Canadá (+1)</option>
+              <option value="593">Ecuador (+593)</option>
+              <option value="591">Bolivia (+591)</option>
+              <option value="58">Venezuela (+58)</option>
+              <option value="502">Guatemala (+502)</option>
+              <option value="506">Costa Rica (+506)</option>
+              <option value="507">Panamá (+507)</option>
+              <option value="598">Uruguay (+598)</option>
+              <option value="595">Paraguay (+595)</option>
+              <option value="other">Otro (escribir con código)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label for="phone-number">Número de teléfono móvil:</label>
+          <input 
+            type="text" 
+            id="phone-number" 
+            placeholder="Ej: 987654321" 
+            autocomplete="tel" 
+          />
+          <small class="helper-text">Solo dígitos, sin guiones ni espacios.</small>
+        </div>
+
+        <div class="field-group">
+          <label for="wa-message">Mensaje inicial predefinido (opcional):</label>
+          <textarea 
+            id="wa-message" 
+            rows="4" 
+            placeholder="Hola, me gustaría recibir más información sobre el servicio..."
+          ></textarea>
+        </div>
+
+        <div class="actions">
+          <button id="btn-example" class="btn-secondary" type="button">Cargar ejemplo</button>
+          <button id="btn-clear" class="btn-secondary" type="button">Limpiar</button>
+        </div>
+      </div>
+
+      <div class="result-side">
+        <h3>Resultado</h3>
+        <div class="link-result-card">
+          <label>Enlace directo generado:</label>
+          <div class="link-display" id="wa-link-text">https://wa.me/</div>
+          <div class="link-buttons">
+            <button id="btn-copy" class="btn-primary" type="button">
+              <Icon name="copy" size={16} />
+              <span>Copiar enlace</span>
+            </button>
+            <a id="btn-open" class="btn-action" href="#" target="_blank" rel="noopener noreferrer">
+              <Icon name="external-link" size={16} />
+              <span>Probar chat</span>
+            </a>
+          </div>
+          <span id="copy-status" class="status-msg"></span>
+        </div>
+
+        <div class="qr-box">
+          <h4>Escanear con la cámara</h4>
+          <div class="qr-canvas-holder">
+            <img id="wa-qr-img" alt="Código QR de WhatsApp" src="" />
+          </div>
+          <a id="btn-qr-download" class="btn-secondary qr-dl" href="#" download="whatsapp-qr.png" target="_blank">
+            <Icon name="download" size={16} />
+            <span>Descargar imagen QR</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="seo-section">
+    <h2>¿Por qué usar enlaces directos de WhatsApp?</h2>
+    <p>Los enlaces con protocolo <code>wa.me</code> permiten que clientes, prospectos o amigos comiencen una conversación contigo al instante sin necesidad de guardar primero tu número en su agenda telefónica. Además, predefinir el mensaje ahorra tiempo y permite medir desde qué anuncio, biografía o catálogo proviene el contacto.</p>
+  </section>
+</Base>
+
+<style>
+  .breadcrumb {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-bottom: 0.5rem;
+  }
+  .breadcrumb a {
+    color: var(--muted);
+  }
+  .whatsapp-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 2rem;
+  }
+  @media (max-width: 768px) {
+    .whatsapp-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  .field-group {
+    margin-bottom: 1.25rem;
+  }
+  .field-group label {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+  }
+  .helper-text {
+    display: block;
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin-top: 0.35rem;
+  }
+  .result-side {
+    background: var(--surface-card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    padding: 1.4rem;
+  }
+  .result-side h3 {
+    margin: 0 0 1rem;
+    font-size: 1.1rem;
+  }
+  .link-result-card label {
+    font-size: 0.82rem;
+    color: var(--muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 0.4rem;
+  }
+  .link-display {
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    padding: 0.75rem;
+    font-family: monospace;
+    font-size: 0.88rem;
+    word-break: break-all;
+    min-height: 48px;
+    margin-bottom: 0.85rem;
+    color: var(--accent);
+  }
+  .link-buttons {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: var(--accent-ink);
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 0.6rem 1rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    cursor: pointer;
+  }
+  .btn-action {
+    background: #25D366;
+    color: #ffffff;
+    text-decoration: none;
+    border-radius: var(--radius-sm);
+    padding: 0.6rem 1rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .btn-action:hover {
+    background: #20bd5a;
+    text-decoration: none;
+  }
+  .btn-secondary {
+    background: var(--surface);
+    color: var(--ink);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    padding: 0.55rem 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    text-decoration: none;
+  }
+  .btn-secondary:hover {
+    background: var(--surface-hover);
+    text-decoration: none;
+  }
+  .status-msg {
+    display: block;
+    font-size: 0.82rem;
+    color: #3fb950;
+    min-height: 1.2rem;
+    margin-top: 0.4rem;
+    font-weight: 500;
+  }
+  .qr-box {
+    margin-top: 1.5rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--line);
+    text-align: center;
+  }
+  .qr-box h4 {
+    margin: 0 0 0.85rem;
+    font-size: 0.95rem;
+  }
+  .qr-canvas-holder {
+    background: #ffffff;
+    display: inline-block;
+    padding: 12px;
+    border-radius: var(--radius-sm);
+    margin-bottom: 0.85rem;
+  }
+  #wa-qr-img {
+    display: block;
+    width: 170px;
+    height: 170px;
+  }
+  .qr-dl {
+    font-size: 0.82rem;
+  }
+</style>
+
+<script>
+  const countryCode = document.getElementById('country-code') as HTMLSelectElement;
+  const phoneNumber = document.getElementById('phone-number') as HTMLInputElement;
+  const waMessage = document.getElementById('wa-message') as HTMLTextAreaElement;
+  const linkText = document.getElementById('wa-link-text') as HTMLDivElement;
+  const btnCopy = document.getElementById('btn-copy') as HTMLButtonElement;
+  const btnOpen = document.getElementById('btn-open') as HTMLAnchorElement;
+  const btnClear = document.getElementById('btn-clear') as HTMLButtonElement;
+  const btnExample = document.getElementById('btn-example') as HTMLButtonElement;
+  const qrImg = document.getElementById('wa-qr-img') as HTMLImageElement;
+  const btnQrDownload = document.getElementById('btn-qr-download') as HTMLAnchorElement;
+  const copyStatus = document.getElementById('copy-status') as HTMLSpanElement;
+
+  function generateLink(): string {
+    const rawNumber = phoneNumber.value.replace(/[^0-9]/g, '');
+    if (!rawNumber) {
+      return '';
+    }
+    const prefix = countryCode.value === 'other' ? '' : countryCode.value;
+    const fullNumber = prefix + rawNumber;
+    const msg = waMessage.value.trim();
+
+    if (msg) {
+      return `https://wa.me/${fullNumber}?text=${encodeURIComponent(msg)}`;
+    }
+    return `https://wa.me/${fullNumber}`;
+  }
+
+  function updateOutput() {
+    const link = generateLink();
+    if (!link) {
+      linkText.textContent = 'Ingresa un número para generar tu enlace...';
+      btnOpen.removeAttribute('href');
+      btnOpen.style.pointerEvents = 'none';
+      btnOpen.style.opacity = '0.5';
+      qrImg.src = '';
+      qrImg.style.visibility = 'hidden';
+      btnQrDownload.style.pointerEvents = 'none';
+      btnQrDownload.style.opacity = '0.5';
+      return;
+    }
+
+    linkText.textContent = link;
+    btnOpen.href = link;
+    btnOpen.style.pointerEvents = 'auto';
+    btnOpen.style.opacity = '1';
+
+    // Generar código QR
+    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&margin=2&data=${encodeURIComponent(link)}`;
+    qrImg.src = qrUrl;
+    qrImg.style.visibility = 'visible';
+    btnQrDownload.href = qrUrl;
+    btnQrDownload.style.pointerEvents = 'auto';
+    btnQrDownload.style.opacity = '1';
+  }
+
+  countryCode.addEventListener('change', updateOutput);
+  phoneNumber.addEventListener('input', updateOutput);
+  waMessage.addEventListener('input', updateOutput);
+
+  btnCopy.addEventListener('click', async () => {
+    const link = generateLink();
+    if (!link) {
+      copyStatus.textContent = 'Escribe un número primero';
+      copyStatus.style.color = '#f85149';
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(link);
+      copyStatus.textContent = '✓ ¡Enlace copiado al portapapeles!';
+      copyStatus.style.color = '#3fb950';
+      setTimeout(() => {
+        copyStatus.textContent = '';
+      }, 3000);
+    } catch {
+      copyStatus.textContent = 'Error al copiar automáticamente';
+      copyStatus.style.color = '#f85149';
+    }
+  });
+
+  btnClear.addEventListener('click', () => {
+    phoneNumber.value = '';
+    waMessage.value = '';
+    updateOutput();
+  });
+
+  btnExample.addEventListener('click', () => {
+    countryCode.value = '51';
+    phoneNumber.value = '987654321';
+    waMessage.value = '¡Hola! Me gustaría cotizar el servicio que vi en su web.';
+    updateOutput();
+  });
+
+  updateOutput();
+</script>

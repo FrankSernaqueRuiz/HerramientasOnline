@@ -1,0 +1,79 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base title="Comparador de Precio por Unidad Online" description="Compara productos por precio unitario (por gramo, litro o unidad) y descubre cuál es más barato.">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="/">Herramientas</a> / <span>Dinero y compras</span></div>
+    <h1>Comparador de Precio por Unidad</h1>
+    <p class="lead">Ingresa precio y cantidad de dos o más productos para saber cuál sale más barato por gramo, ml o unidad.</p>
+  </div>
+  <section class="panel">
+    <div class="unit-select"><label for="unit-type">Unidad de comparación:</label>
+      <select id="unit-type"><option value="g">Gramos (g)</option><option value="ml">Mililitros (ml)</option><option value="u">Unidades</option><option value="kg">Kilogramos (kg)</option><option value="l">Litros (l)</option></select>
+    </div>
+    <div id="products-list"></div>
+    <div class="actions-row">
+      <button type="button" id="btn-add-prod" class="btn-secondary">+ Agregar producto</button>
+      <button type="button" id="btn-compare" class="btn-primary">Comparar precios</button>
+    </div>
+    <div id="comp-result" class="comp-result hidden"></div>
+  </section>
+</Base>
+<style>
+  .breadcrumb{font-size:.85rem;color:var(--muted);margin-bottom:.5rem}.breadcrumb a{color:var(--muted)}
+  .unit-select{margin-bottom:1.25rem}.unit-select label{display:block;font-weight:600;font-size:.9rem;margin-bottom:.4rem}
+  .unit-select select{max-width:260px}
+  :global(.prod-row){display:flex;gap:.75rem;align-items:center;margin-bottom:.65rem;flex-wrap:wrap}
+  :global(.prod-row input[type="text"]){flex:1;min-width:120px}
+  :global(.prod-row input[type="number"]){width:110px}
+  :global(.btn-rm){background:none;border:1px solid var(--line);color:#f85149;border-radius:var(--radius-sm);width:34px;height:34px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;font-size:1.1rem}
+  .actions-row{display:flex;gap:.75rem;margin-top:1rem;flex-wrap:wrap}
+  .btn-secondary{background:var(--surface);border:1px solid var(--line);color:var(--ink);border-radius:var(--radius-sm);padding:.55rem 1rem;cursor:pointer;font-weight:500}
+  .btn-primary{background:var(--accent);color:var(--accent-ink);border:none;border-radius:var(--radius-sm);padding:.65rem 1.2rem;font-weight:600;cursor:pointer}
+  .comp-result{margin-top:1.5rem}
+  :global(.comp-card){background:var(--surface-card);border:1px solid var(--line);border-radius:var(--radius-sm);padding:1rem;margin-bottom:.65rem;display:flex;justify-content:space-between;align-items:center;animation:fadeIn .3s ease both}
+  :global(.comp-card.winner){border-color:#3fb950;background:rgba(63,185,80,.08)}
+  :global(.comp-label){font-weight:700}.comp-detail{font-size:.85rem;color:var(--muted)}
+  :global(.comp-price){font-size:1.1rem;font-weight:800}
+  :global(.comp-badge){background:#3fb950;color:#fff;font-size:.72rem;font-weight:700;padding:.15rem .5rem;border-radius:9999px;margin-left:.5rem}
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  .hidden{display:none!important}
+</style>
+<script>
+  const list=document.getElementById('products-list')!;
+  const btnAdd=document.getElementById('btn-add-prod')!;
+  const btnComp=document.getElementById('btn-compare')!;
+  const unitType=document.getElementById('unit-type') as HTMLSelectElement;
+  const result=document.getElementById('comp-result')!;
+
+  function addProd(name='',price='',qty=''){
+    const row=document.createElement('div');row.className='prod-row';
+    row.innerHTML=`<input type="text" placeholder="Nombre del producto" value="${name}"/><input type="number" min="0" step="0.01" placeholder="Precio $" value="${price}"/><input type="number" min="0" step="0.01" placeholder="Cantidad" value="${qty}"/><button type="button" class="btn-rm" title="Quitar">×</button>`;
+    row.querySelector('.btn-rm')!.addEventListener('click',()=>row.remove());
+    list.appendChild(row);
+  }
+
+  btnAdd.addEventListener('click',()=>addProd());
+  addProd('Producto A','','');addProd('Producto B','','');
+
+  btnComp.addEventListener('click',()=>{
+    const rows=list.querySelectorAll('.prod-row');
+    const unit=unitType.value;
+    const items:{name:string;price:number;qty:number;perUnit:number}[]=[];
+    rows.forEach(r=>{
+      const inputs=r.querySelectorAll('input');
+      const name=inputs[0].value.trim()||'Producto';
+      const price=parseFloat(inputs[1].value)||0;
+      const qty=parseFloat(inputs[2].value)||0;
+      if(price>0&&qty>0)items.push({name,price,qty,perUnit:price/qty});
+    });
+    if(items.length<2){result.innerHTML='<p style="color:var(--muted)">Ingresa al menos 2 productos con precio y cantidad</p>';result.classList.remove('hidden');return}
+    items.sort((a,b)=>a.perUnit-b.perUnit);
+    result.innerHTML='';result.classList.remove('hidden');
+    items.forEach((item,i)=>{
+      const card=document.createElement('div');card.className=`comp-card ${i===0?'winner':''}`;card.style.animationDelay=`${i*.08}s`;
+      card.innerHTML=`<div><span class="comp-label">${item.name}</span><div class="comp-detail">$${item.price.toFixed(2)} por ${item.qty} ${unit}</div></div><div><span class="comp-price">$${item.perUnit.toFixed(4)}/${unit}</span>${i===0?'<span class="comp-badge">Mejor precio</span>':''}</div>`;
+      result.appendChild(card);
+    });
+  });
+</script>

@@ -1,0 +1,177 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+---
+<Base title="Calculadora de Fecha Probable de Parto (FPP) y Semanas de Embarazo" description="Calcula tu fecha estimada de parto (FPP), semanas y días de gestación, trimestre actual y calendario de hitos clave con la Regla de Naegele.">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="/">Herramientas</a> / <span>Fechas y tiempo</span></div>
+    <h1>Calculadora de Fecha Probable de Parto (FPP)</h1>
+    <p class="lead">Estima tu fecha de parto, semanas actuales de gestación y los hitos trimestre a trimestre a partir del primer día de tu última menstruación.</p>
+  </div>
+
+  <section class="panel">
+    <div class="fpp-grid">
+      <div class="fpp-inputs">
+        <div class="field">
+          <label for="fum-date">Primer día de tu última menstruación (FUM):</label>
+          <input type="date" id="fum-date" class="form-input" />
+        </div>
+        <div class="field">
+          <label for="cycle-length">Duración habitual de tu ciclo:</label>
+          <select id="cycle-length" class="form-input">
+            <option value="21">21 días (ciclo muy corto)</option>
+            <option value="24">24 días</option>
+            <option value="26">26 días</option>
+            <option value="28" selected>28 días (estándar)</option>
+            <option value="30">30 días</option>
+            <option value="32">32 días</option>
+            <option value="35">35 días (ciclo largo)</option>
+          </select>
+        </div>
+        <button type="button" class="btn btn-primary" id="btn-calc-fpp">Calcular fecha y semanas</button>
+
+        <div class="disclaimer">
+          <p><strong>Nota importante:</strong> Esta herramienta proporciona una estimación basada en la Regla clínica de Naegele (280 días). Solo tu médico u obstetra mediante ecografía puede confirmar con precisión las semanas de gestación.</p>
+        </div>
+      </div>
+
+      <div class="fpp-results" id="fpp-results-container">
+        <p class="placeholder">Ingresa la fecha de tu última regla para ver la estimación detallada.</p>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .breadcrumb{font-size:.85rem;color:var(--muted);margin-bottom:.5rem}.breadcrumb a{color:var(--muted)}
+  .fpp-grid{display:grid;grid-template-columns:320px 1fr;gap:2rem;align-items:start}
+  @media(max-width:768px){.fpp-grid{grid-template-columns:1fr}}
+  .field{margin-bottom:1.2rem}
+  .field label{display:block;font-weight:600;font-size:.9rem;margin-bottom:.4rem}
+  .form-input{width:100%;padding:.65rem;background:var(--bg);border:1px solid var(--line);border-radius:var(--radius-sm);color:var(--ink);font:inherit}
+  .disclaimer{margin-top:1.5rem;padding:.85rem;border-radius:var(--radius-sm);background:rgba(234,179,8,.08);border:1px solid rgba(234,179,8,.3);font-size:.8rem;color:var(--ink);line-height:1.4}
+
+  .placeholder{color:var(--muted);text-align:center;padding:3rem 1rem}
+
+  :global(.fpp-main-card){background:linear-gradient(135deg, rgba(236,72,153,.1), rgba(168,85,247,.1));border:1px solid rgba(236,72,153,.3);border-radius:var(--radius);padding:1.5rem;text-align:center;margin-bottom:1.5rem}
+  :global(.fpp-main-card .label){font-size:.85rem;font-weight:600;text-transform:uppercase;color:var(--muted);letter-spacing:1px}
+  :global(.fpp-main-card .date){font-size:2rem;font-weight:900;color:#ec4899;margin:.5rem 0}
+  :global(.fpp-main-card .days-left){font-size:.95rem;color:var(--ink);font-weight:500}
+
+  :global(.stats-grid){display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:.85rem;margin-bottom:1.5rem}
+  :global(.stat-box){background:var(--surface-card);border:1px solid var(--line);border-radius:var(--radius-sm);padding:1rem;text-align:center}
+  :global(.stat-box .val){font-size:1.4rem;font-weight:800;color:var(--accent);display:block}
+  :global(.stat-box .sub){font-size:.78rem;color:var(--muted);text-transform:uppercase;font-weight:600}
+
+  :global(.milestones-list){background:var(--surface-card);border:1px solid var(--line);border-radius:var(--radius-sm);padding:1.2rem}
+  :global(.milestones-list h3){font-size:1rem;margin-bottom:1rem}
+  :global(.milestone-item){display:flex;justify-content:space-between;align-items:center;padding:.6rem 0;border-bottom:1px solid var(--line);font-size:.88rem}
+  :global(.milestone-item:last-child){border-bottom:none}
+  :global(.milestone-item.done){opacity:.6}
+  :global(.milestone-tag){font-size:.75rem;padding:2px 8px;border-radius:12px;background:var(--bg);border:1px solid var(--line)}
+</style>
+
+<script>
+  const fumInput = document.getElementById('fum-date') as HTMLInputElement;
+  const cycleInput = document.getElementById('cycle-length') as HTMLSelectElement;
+  const btnCalc = document.getElementById('btn-calc-fpp')!;
+  const container = document.getElementById('fpp-results-container')!;
+
+  // Default max date to today, min to 42 weeks ago
+  const now = new Date();
+  fumInput.max = now.toISOString().split('T')[0];
+  const minDate = new Date();
+  minDate.setDate(now.getDate() - 294);
+  fumInput.min = minDate.toISOString().split('T')[0];
+
+  function calculate() {
+    if (!fumInput.value) {
+      container.innerHTML = '<p class="placeholder">Por favor selecciona la fecha de tu última menstruación.</p>';
+      return;
+    }
+
+    const fum = new Date(fumInput.value + 'T00:00:00');
+    const cycle = parseInt(cycleInput.value, 10);
+    const cycleDiff = cycle - 28;
+
+    // Regla de Naegele corregida por ciclo: FUM + 280 días + cycleDiff
+    const totalDaysGest = 280 + cycleDiff;
+    const fpp = new Date(fum.getTime() + totalDaysGest * 86400000);
+
+    const elapsedMs = now.getTime() - fum.getTime();
+    const elapsedDays = Math.max(0, Math.floor(elapsedMs / 86400000));
+    const currentWeeks = Math.floor(elapsedDays / 7);
+    const currentExtraDays = elapsedDays % 7;
+
+    const daysLeft = Math.ceil((fpp.getTime() - now.getTime()) / 86400000);
+
+    let trimester = 'Primer Trimestre (Semanas 1 - 13)';
+    if (currentWeeks >= 28) {
+      trimester = 'Tercer Trimestre (Semanas 28 - 40+)';
+    } else if (currentWeeks >= 14) {
+      trimester = 'Segundo Trimestre (Semanas 14 - 27)';
+    }
+
+    const fppFormatted = fpp.toLocaleDateString('es-ES', {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    });
+
+    // Milestones
+    const addDays = (d: number) => {
+      const dt = new Date(fum.getTime() + d * 86400000);
+      return dt.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' });
+    };
+
+    const milestones = [
+      { name: 'Primer latido cardíaco detectable', day: 42, week: 'Semana 6', done: elapsedDays >= 42 },
+      { name: 'Fin del primer trimestre / Ecografía TN', day: 84, week: 'Semana 12', done: elapsedDays >= 84 },
+      { name: 'Ecografía morfológica (sexo visible)', day: 140, week: 'Semana 20', done: elapsedDays >= 140 },
+      { name: 'Viabilidad fetal (inicio tercer trimestre)', day: 168, week: 'Semana 24', done: elapsedDays >= 168 },
+      { name: 'Bebé a término completo', day: 259, week: 'Semana 37', done: elapsedDays >= 259 },
+      { name: 'Fecha Probable de Parto (40 semanas)', day: 280 + cycleDiff, week: 'Semana 40', done: elapsedDays >= (280 + cycleDiff) }
+    ];
+
+    container.innerHTML = `
+      <div class="fpp-main-card">
+        <span class="label">Fecha Probable de Parto</span>
+        <div class="date">${fppFormatted}</div>
+        <div class="days-left">${daysLeft > 0 ? `Faltan aproximadamente <strong>${daysLeft} días</strong> para conocer a tu bebé` : '¡Ya has alcanzado la fecha probable de parto!'}</div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-box">
+          <span class="val">${currentWeeks}s + ${currentExtraDays}d</span>
+          <span class="sub">Tiempo de gestación</span>
+        </div>
+        <div class="stat-box">
+          <span class="val">${Math.min(100, Math.round((elapsedDays / 280) * 100))}%</span>
+          <span class="sub">Progreso del embarazo</span>
+        </div>
+        <div class="stat-box">
+          <span class="val">${currentWeeks < 14 ? '1º' : currentWeeks < 28 ? '2º' : '3º'}</span>
+          <span class="sub">${trimester.split(' ')[0]} ${trimester.split(' ')[1]}</span>
+        </div>
+      </div>
+
+      <div class="milestones-list">
+        <h3>Calendario estimado de hitos</h3>
+        ${milestones.map(m => `
+          <div class="milestone-item ${m.done ? 'done' : ''}">
+            <span>${m.done ? '✓' : '○'} <strong>${m.name}</strong></span>
+            <div>
+              <span class="milestone-tag">${m.week}</span>
+              <span style="margin-left: 8px; font-weight:600;">${addDays(m.day)}</span>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  }
+
+  btnCalc.addEventListener('click', calculate);
+  fumInput.addEventListener('change', calculate);
+  cycleInput.addEventListener('change', calculate);
+</script>

@@ -1,0 +1,847 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+---
+
+<Base
+  title="Generador de Bios y Hashtags para Instagram y TikTok"
+  description="Genera biografías llamativas y paquetes de hashtags relevantes para tu perfil o publicaciones según tu temática y estilo."
+>
+  <div class="page-header">
+    <div class="breadcrumb">
+      <a href="/">Herramientas</a> / <span>Redes sociales</span>
+    </div>
+    <h1>Generador de Bios y Hashtags</h1>
+    <p class="lead">Configura tu temática, objetivo y tono para obtener ideas creativas de biografía corta y conjuntos de hashtags optimizados para copiar.</p>
+  </div>
+
+  <section class="panel">
+    <div class="config-grid">
+      <div class="field-item">
+        <label for="bio-topic">Nicho o temática:</label>
+        <select id="bio-topic">
+          <option value="fitness">Fitness y Vida Saludable 💪</option>
+          <option value="emprendimiento">Negocios y Emprendimiento 💼</option>
+          <option value="gastronomia">Gastronomía y Café ☕</option>
+          <option value="moda">Moda, Estilo y Belleza 👗</option>
+          <option value="tecnologia">Tecnología, Programación e IA 💻</option>
+          <option value="viajes">Viajes, Fotografía y Aventuras ✈️</option>
+          <option value="arte">Arte, Diseño e Ilustración 🎨</option>
+          <option value="personal">Marca Personal / Creador de Contenido ✨</option>
+        </select>
+      </div>
+
+      <div class="field-item">
+        <label for="bio-tone">Tono de comunicación:</label>
+        <select id="bio-tone">
+          <option value="profesional">Profesional y Confiable</option>
+          <option value="cercano">Cercano, Amigable e Inspirador</option>
+          <option value="minimalista">Minimalista y Elegante</option>
+          <option value="divertido">Divertido y Dinámico</option>
+        </select>
+      </div>
+
+      <div class="field-item">
+        <label for="bio-cta">Llamado a la acción (CTA):</label>
+        <input type="text" id="bio-cta" placeholder="Ej: Agenda tu sesión abajo 👇 | Tienda online 🛍️" value="Descubre más en el enlace 👇" />
+      </div>
+    </div>
+
+    <div class="actions">
+      <button id="btn-generate" class="btn-primary" type="button">
+        <span class="btn-icon-spin"><Icon name="refresh" size={16} /></span>
+        <span id="btn-generate-text">Generar nuevas ideas</span>
+      </button>
+      <span id="generate-feedback" class="generate-feedback" aria-live="polite"></span>
+    </div>
+
+    <hr class="divider" />
+
+    <div class="results-layout">
+      <div class="result-column">
+        <div class="column-header">
+          <h3>💡 Ideas de Biografías (máx. 150 caracteres)</h3>
+          <span class="ideas-count" id="ideas-counter">3 ideas sugeridas</span>
+        </div>
+        <div id="bios-list" class="cards-stack">
+          <!-- Bios inyectadas por JS -->
+        </div>
+      </div>
+
+      <div class="result-column">
+        <div class="hashtags-header">
+          <h3># Hashtags sugeridos</h3>
+          <button id="btn-copy-all-tags" class="btn-outline-sm" type="button">
+            <Icon name="copy" size={14} /> Copiar todos
+          </button>
+        </div>
+        <div id="hashtags-box" class="hashtags-container">
+          <!-- Tags inyectados por JS -->
+        </div>
+        <div class="copy-notice" id="tags-copied-notice"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="seo-section">
+    <h2>Estructura de una biografía de alto impacto</h2>
+    <p>Una biografía exitosa debe comunicar claramente en 3 líneas: a quién ayudas, qué solucionas y qué acción deseas que realice el visitante (CTA hacia tu web, catálogo o WhatsApp).</p>
+  </section>
+</Base>
+
+<style>
+  .breadcrumb {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-bottom: 0.5rem;
+  }
+  .breadcrumb a {
+    color: var(--muted);
+  }
+  .config-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.25rem;
+    margin-bottom: 1.25rem;
+  }
+  .field-item label {
+    display: block;
+    font-weight: 600;
+    font-size: 0.88rem;
+    margin-bottom: 0.4rem;
+  }
+  .divider {
+    border: none;
+    border-top: 1px solid var(--line);
+    margin: 1.75rem 0;
+  }
+  .results-layout {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 2rem;
+  }
+  @media (max-width: 768px) {
+    .results-layout {
+      grid-template-columns: 1fr;
+    }
+  }
+  .column-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.85rem;
+  }
+  .column-header h3 {
+    margin: 0;
+    font-size: 1.05rem;
+  }
+  .ideas-count {
+    font-size: 0.78rem;
+    color: var(--muted);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    padding: 2px 8px;
+    border-radius: 9999px;
+  }
+  .cards-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+  }
+  :global(.bio-card) {
+    background: var(--surface-card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    padding: 1rem;
+    position: relative;
+    transition: border-color 0.15s, transform 0.15s;
+    animation: bioCardPop 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  @keyframes bioCardPop {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  :global(.bio-card:hover) {
+    border-color: var(--accent);
+  }
+  :global(.bio-text) {
+    font-size: 0.95rem;
+    line-height: 1.45;
+    white-space: pre-line;
+    margin-bottom: 0.75rem;
+    color: var(--ink);
+  }
+  :global(.bio-footer) {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid var(--line);
+    padding-top: 0.5rem;
+    font-size: 0.78rem;
+    color: var(--muted);
+  }
+  :global(.bio-count-ok) {
+    color: var(--muted);
+  }
+  :global(.bio-count-warn) {
+    color: #f59e0b;
+    font-weight: 600;
+  }
+  :global(.bio-count-danger) {
+    color: #f85149;
+    font-weight: 700;
+  }
+  :global(.btn-copy-card) {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    color: var(--ink);
+    border-radius: var(--radius-sm);
+    padding: 0.35rem 0.65rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    transition: all 0.15s ease;
+  }
+  :global(.btn-copy-card:hover) {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+  }
+  :global(.btn-copy-card.is-copied) {
+    background: #238636;
+    color: #ffffff;
+    border-color: #2ea043;
+  }
+  .hashtags-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.85rem;
+  }
+  .hashtags-header h3 {
+    margin: 0;
+    font-size: 1.05rem;
+  }
+  .btn-outline-sm {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    color: var(--ink);
+    border-radius: var(--radius-sm);
+    padding: 0.4rem 0.75rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    transition: all 0.15s ease;
+  }
+  .btn-outline-sm:hover {
+    background: var(--surface-hover);
+    border-color: var(--accent);
+  }
+  .hashtags-container {
+    background: var(--surface-card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    padding: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    min-height: 120px;
+    align-content: flex-start;
+  }
+  :global(.hashtag-pill) {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    color: var(--accent);
+    padding: 0.28rem 0.65rem;
+    border-radius: 9999px;
+    font-size: 0.82rem;
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.15s ease;
+    animation: bioCardPop 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  :global(.hashtag-pill:hover) {
+    background: var(--accent);
+    color: #ffffff;
+    border-color: var(--accent);
+    transform: translateY(-1px);
+  }
+  :global(.hashtag-pill:active) {
+    transform: scale(0.96);
+  }
+  .copy-notice {
+    font-size: 0.82rem;
+    color: #3fb950;
+    margin-top: 0.5rem;
+    min-height: 1.2rem;
+    font-weight: 500;
+    transition: opacity 0.2s;
+  }
+  .actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: var(--accent-ink);
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 0.65rem 1.25rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    transition: all 0.18s ease;
+  }
+  .btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    filter: brightness(1.08);
+  }
+  .btn-primary:active {
+    transform: translateY(0);
+  }
+  .btn-icon-spin {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.4s ease;
+  }
+  .btn-primary.is-spinning .btn-icon-spin {
+    transform: rotate(360deg);
+  }
+  .generate-feedback {
+    font-size: 0.84rem;
+    font-weight: 600;
+    color: #3fb950;
+    opacity: 0;
+    transform: translateX(-4px);
+    transition: all 0.25s ease;
+  }
+  .generate-feedback.is-visible {
+    opacity: 1;
+    transform: translateX(0);
+  }
+</style>
+
+<script>
+  interface TopicData {
+    bios: {
+      profesional: string[];
+      cercano: string[];
+      minimalista: string[];
+      divertido: string[];
+    };
+    hashtags: string[];
+  }
+
+  const database: Record<string, TopicData> = {
+    fitness: {
+      bios: {
+        profesional: [
+          "Entrenador Certificado & Especialista en Nutrición 🥗\n▸ Resultados respaldados por ciencia y constancia.\n{cta}",
+          "Transformación física integral y hábitos sostenibles.\n▸ Planes online personalizados de fuerza y salud.\n{cta}",
+          "Fisiología del ejercicio & Alto rendimiento ⚡\n▸ Optimiza tu masa muscular y salud metabólica.\n{cta}",
+          "Coaching deportivo de alto nivel 🏋️‍♂️\n▸ Te enseño a entrenar de verdad sin perder tiempo.\n{cta}",
+          "Salud preventiva, longevidad y fuerza 💪\n▸ Más de 500 vidas transformadas.\n{cta}"
+        ],
+        cercano: [
+          "Tu dosis diaria de motivación y hábitos sanos 💪\nEntrena conmigo sin complicaciones ni dietas locas.\n{cta}",
+          "Superándome cada día un 1% ✨\nRutinas reales para gente ocupada. ¡Sí se puede!\n{cta}",
+          "Amante del gym, la buena comida y la constancia 🥑\nTe acompaño en cada paso de tu cambio.\n{cta}",
+          "Entrenamiento real para personas reales 🏃‍♀️\nMenos excusas, más energía y amor propio.\n{cta}",
+          "De cero a tu mejor versión física 💥\nTips diarios, recetas ricas y pura energía positiva.\n{cta}"
+        ],
+        minimalista: [
+          "Fuerza • Constancia • Bienestar\nEntrenamiento consciente.\n{cta}",
+          "Salud en equilibrio.\nMovimiento diario y vida activa.\n{cta}",
+          "Cuerpo fuerte. Mente clara.\nHábitos simples, cambios eternos.\n{cta}",
+          "Menos ruido, más disciplina.\nFitness sostenible.\n{cta}",
+          "Tu salud, tu prioridad.\nEntrena con propósito.\n{cta}"
+        ],
+        divertido: [
+          "Quemando calorías para poder comer pizza los fines de semana 🍕🏋️\nEntrenos intensos con buena música.\n{cta}",
+          "Menos excusas y más sentadillas 💥\nSi no sudo ni me quejo, no cuenta.\n{cta}",
+          "En una relación seria con las mancuernas y el café ☕💪\n¿Entrenamos hoy o qué?\n{cta}",
+          "El gym es mi terapia barata (a veces me duele todo, pero vale la pena) 😅\n{cta}",
+          "Dije 'solo 20 minutos' y terminé levantando mi propio peso 🏋️‍♀️🔥\n{cta}"
+        ]
+      },
+      hashtags: ['#FitnessLatino', '#EntrenamientoDiario', '#VidaSaludable', '#HabitosSanos', '#NutricionFitness', '#MotivacionGym', '#WorkoutRoutine', '#FuerzaYSalud', '#GymLife', '#FitnessMotivation', '#EntrenarEnCasa', '#SaludYBienestar', '#RutinasGym', '#ComerSano']
+    },
+    emprendimiento: {
+      bios: {
+        profesional: [
+          "Estrategia de Negocios & Escala Digital 📈\n▸ Ayudo a fundadores y marcas a optimizar su facturación.\n{cta}",
+          "Consultoría corporativa y finanzas estratégicas 💼\n▸ Procesos ágiles, rentabilidad y crecimiento medible.\n{cta}",
+          "Ventas B2B & Adquisición de clientes de alto valor 🎯\n▸ Sistemas probados para negocios escalables.\n{cta}",
+          "Mentoría para directores y emprendedores en crecimiento 🚀\n▸ Liderazgo, métricas y ejecución impecable.\n{cta}",
+          "Inversión, innovación y modelos de negocio digitales 💡\n▸ Transformando visión en impacto financiero.\n{cta}"
+        ],
+        cercano: [
+          "Construyendo negocios rentables desde cero 🚀\nTe comparto mis aciertos, fracasos y lecciones reales.\n{cta}",
+          "Emprender sin filtro ni fórmulas mágicas ✨\nIdeas prácticas, disciplina y ejecución diaria.\n{cta}",
+          "De la idea al primer cliente 💡\nTe enseño lo que a mí me costó años aprender.\n{cta}",
+          "Creando libertad financiera y proyectos con alma 🤝\nCrecemos juntos un paso a la vez.\n{cta}",
+          "Crea, valida y escala tu propio negocio 🛠️\nHerramientas, consejos y motivación para emprender.\n{cta}"
+        ],
+        minimalista: [
+          "Estrategia • Negocios • Escala\nMenos ruido, más resultados.\n{cta}",
+          "Emprender con propósito.\nProyectos con impacto medible.\n{cta}",
+          "Sistemas simples. Negocios rentables.\nConstruyendo en grande.\n{cta}",
+          "Visión • Foco • Ejecución.\nCreando valor real.\n{cta}",
+          "Diseño de negocios modernos.\n{cta}"
+        ],
+        divertido: [
+          "Cambiando tazas de café por facturación rentable ☕💸\nEl club de los que tienen 47 ideas por hora.\n{cta}",
+          "Fracasando rápido para aprender el doble de rápido 🎯\nEmprender es mi deporte extremo favorito.\n{cta}",
+          "Mi jefe soy yo, y a veces me caigo mal por ponerme tantas tareas 😅💼\n{cta}",
+          "Sobreviviendo a punta de Excel, cafeína y fe ciega en el proyecto 🚀\n{cta}",
+          "No es suerte, son horas extras y mucha terquedad 💡\n{cta}"
+        ]
+      },
+      hashtags: ['#Emprendedores', '#NegociosDigitales', '#EstrategiaComercial', '#FinanzasPersonales', '#CrecimientoPersonal', '#Liderazgo', '#MentalidadMillonaria', '#VentasB2B', '#StartupLatam', '#MarketingDigital', '#MarcasExitosas', '#EmprenderOnline']
+    },
+    gastronomia: {
+      bios: {
+        profesional: [
+          "Cocina de autor & Pasión por el producto local 🍳\n▸ Experiencias sensoriales y gastronomía de temporada.\n{cta}",
+          "Café de especialidad & Pastelería artesanal ☕\n▸ Granos seleccionados de origen y fermentaciones únicas.\n{cta}",
+          "Consultoría gastronómica y diseño de menús rentables 🍽️\n▸ Calidad, técnica e identidad culinaria.\n{cta}",
+          "Chef ejecutivo & Sommelier certificado 🍷\n▸ Armonías perfectas y respeto por la materia prima.\n{cta}",
+          "Gastronomía contemporánea con raíces tradicionales 🌿\n▸ Alta cocina explicada con maestría.\n{cta}"
+        ],
+        cercano: [
+          "Recetas fáciles que saben a gloria casera 🍲\nCocina conmigo sin ensuciar toda la cocina.\n{cta}",
+          "Amor en cada bocado y aroma a buen café ☕\nCompartiendo los secretos de mi mesa a la tuya.\n{cta}",
+          "Platos deliciosos en menos de 20 minutos ⏱️\nComer rico todos los días sí es posible.\n{cta}",
+          "Cocinando con el corazón y lo que hay en el refri 🥑\nTrucos culinarios que te salvan la semana.\n{cta}",
+          "Postres irresistibles y antojos para compartir 🍰\nEl ingrediente secreto siempre es el cariño.\n{cta}"
+        ],
+        minimalista: [
+          "Sabor • Origen • Tradición\nCocina honesta.\n{cta}",
+          "Café bien tostado.\nComida bien hecha.\n{cta}",
+          "Ingredientes nobles.\nTécnicas limpias.\n{cta}",
+          "Materia prima • Fuego • Sentido\nGastronomía pura.\n{cta}",
+          "El arte de comer bien.\n{cta}"
+        ],
+        divertido: [
+          "El secreto de mi felicidad siempre está en el plato 🤤\nNo confíes en quien no ame los taquitos y postres.\n{cta}",
+          "Donde comen dos, comen tres si me invitan 🌮\nProbando todo sin remordimientos de conciencia.\n{cta}",
+          "Cocinero por pasión, comelón por vocación 🍕\nMi religión es el queso derretido.\n{cta}",
+          "Quemé el agua una vez, hoy hago magia culinaria ✨😅\n{cta}",
+          "Vida solo hay una y la comida es demasiado rica para hacer dietas tristes 🍔\n{cta}"
+        ]
+      },
+      hashtags: ['#Gastronomia', '#RecetasFaciles', '#FoodieLatino', '#CafeDeEspecialidad', '#ComidaCasera', '#InstaFood', '#ChefEnCasa', '#PlatosDeliciosos', '#FoodLover', '#RecetasCaseras', '#PostresFaciles', '#CocinaConAmor']
+    },
+    moda: {
+      bios: {
+        profesional: [
+          "Asesoría de Imagen & Dirección de Estilo 👠\n▸ Potencia tu presencia personal y marca profesional.\n{cta}",
+          "Estilismo editorial, tendencias y colorimetría 🎨\n▸ Proyecta seguridad y autenticidad a través de tus prendas.\n{cta}",
+          "Consultoría en vestuario estratégico y fondo de armario 👗\n▸ Menos compras compulsivas, más impacto elegante.\n{cta}",
+          "Diseño de moda contemporánea y sastrería moderna ✨\n▸ Cortes impecables y confección de autor.\n{cta}",
+          "Skincare clínico & Belleza holística 🌸\n▸ Rutinas basadas en ciencia dérmica y bienestar.\n{cta}"
+        ],
+        cercano: [
+          "Outfits reales para el día a día sin gastar de más ✨\nTe ayudo a amar lo que tienes en tu clóset.\n{cta}",
+          "Tips de moda, belleza y amor propio 💄\nVístete para ti y siente tu mejor energía siempre.\n{cta}",
+          "Inspiración diaria de estilo y combinaciones fáciles 👗\nLa moda no es complicada cuando encuentras tu esencia.\n{cta}",
+          "Recreando looks en tendencia con prendas básicas 👠\nSecretos de belleza y compras inteligentes.\n{cta}",
+          "Tu amiga experta en outfits y maquillaje rápido 💅\nArréglate conmigo cada mañana.\n{cta}"
+        ],
+        minimalista: [
+          "Estilo • Silueta • Esencia\nModa atemporal.\n{cta}",
+          "Fondo de armario cápsula.\nElegancia en lo simple.\n{cta}",
+          "Belleza limpia.\nEstilo consciente.\n{cta}",
+          "Menos prendas, mejor vestir.\nLíneas puras y armonía.\n{cta}",
+          "Autenticidad vestida con sutileza.\n{cta}"
+        ],
+        divertido: [
+          "Diciendo 'no tengo nada que ponerme' frente a un clóset lleno 🙃👠\nAcompáñame en mi drama diario.\n{cta}",
+          "Mi terapia favorita es armar outfits que nunca usaré en casa 💃✨\n{cta}",
+          "Vestida para triunfar, aunque solo vaya por café y pan ☕💅\n{cta}",
+          "La vida es muy corta para vestir ropa aburrida 🌈\n{cta}",
+          "Culpable de comprar ropa por el 'por si acaso me invitan a un yate' 🛥️👗\n{cta}"
+        ]
+      },
+      hashtags: ['#ModaLatina', '#OutfitDelDia', '#EstiloPersonal', '#AsesoriaDeImagen', '#TendenciasModa', '#BellezaNatural', '#LookDelDia', '#ArmarioCapsula', '#FashionInspo', '#ModaSostenible', '#TipsDeBelleza', '#GlowUp']
+    },
+    tecnologia: {
+      bios: {
+        profesional: [
+          "Arquitectura de Software & Soluciones Cloud 💻\n▸ Diseñando sistemas escalables, seguros y de alta disponibilidad.\n{cta}",
+          "Ingeniería de Inteligencia Artificial & Data Analytics 🤖\n▸ Automatización inteligente y modelos predictivos para negocios.\n{cta}",
+          "Tech Lead & Consultor en Transformación Digital ⚙️\n▸ De la estrategia a la infraestructura moderna.\n{cta}",
+          "Ciberseguridad & Gobernanza de Datos Empresariales 🛡️\n▸ Protegiendo activos críticos con estándares globales.\n{cta}",
+          "Desarrollo Full Stack & DevOps 🚀\n▸ Código limpio, pipelines CI/CD y rendimiento extremo.\n{cta}"
+        ],
+        cercano: [
+          "Aprendiendo y enseñando código todos los días 🚀\nConsejos sencillos para programadores y entusiastas tech.\n{cta}",
+          "Del café al código funcional ☕👨‍💻\nTutoriales claros, herramientas IA y tips de productividad.\n{cta}",
+          "Tu guía accesible en el mundo de la programación 💡\nSin palabras complicadas, directo a lo que funciona.\n{cta}",
+          "Construyendo proyectos con JavaScript, Python e IA 🛠️\nAprende a programar conmigo paso a paso.\n{cta}",
+          "Rompiendo mitos de la industria tech ✨\nConsejos de carrera, portafolio y recursos gratuitos.\n{cta}"
+        ],
+        minimalista: [
+          "Clean Code • Sistemas • Innovación\nConstruyendo el futuro digital.\n{cta}",
+          "Tecnología con propósito.\nArquitecturas eficientes.\n{cta}",
+          "Ideas convertidas en software.\nMenos complejidad, más potencia.\n{cta}",
+          "Código claro. Soluciones sólidas.\n{cta}",
+          "Simplicidad en la nube.\n{cta}"
+        ],
+        divertido: [
+          "En mi máquina sí funcionaba, lo juro 🤷‍♂️💻\n99 bugs resueltos, 127 bugs nuevos creados.\n{cta}",
+          "Traduzco cafeína en líneas de código y prompts de IA ☕⚡\nSi algo falla, dale F5.\n{cta}",
+          "No es un bug, es una funcionalidad sorpresa no documentada 🐛✨\n{cta}",
+          "Mi superpoder es pasar 4 horas buscando un punto y coma faltante 😅🖥️\n{cta}",
+          "Git commit -m 'ahora sí funciona en serio versión final 3' 🚀\n{cta}"
+        ]
+      },
+      hashtags: ['#ProgramacionWeb', '#DesarrolloWeb', '#TechNews', '#InteligenciaArtificial', '#DevLife', '#AstroJS', '#Javascript', '#PythonCode', '#SoftwareEngineer', '#AprenderAProgramar', '#FrontendDev', '#TechCommunity']
+    },
+    viajes: {
+      bios: {
+        profesional: [
+          "Fotoperiodismo de Viajes & Narrativas Culturales 📸\n▸ Documentando expediciones en los 5 continentes.\n{cta}",
+          "Diseño de Itinerarios Premium & Turismo de Inmersión 🗺️\n▸ Experiencias curadas fuera de las rutas convencionales.\n{cta}",
+          "Producción audiovisual y fotografía de naturaleza 🦅\n▸ Capturando la biodiversidad y el pulso del planeta.\n{cta}",
+          "Guía de expediciones remotas y turismo responsable 🌿\n▸ Viajar dejando una huella positiva en las comunidades.\n{cta}",
+          "Consultoría de viajes de autor y viajes corporativos ✈️\n▸ Logística impecable para travesías inolvidables.\n{cta}"
+        ],
+        cercano: [
+          "Coleccionando momentos y sellos en el pasaporte 🌍\nItinerarios detallados y presupuestos reales para viajar más.\n{cta}",
+          "Viviendo con una mochila y ganas de comerme el mundo ✈️\nTe enseño cómo viajar seguro, barato y auténtico.\n{cta}",
+          "Rincones mágicos que no salen en las guías turísticas 🧭\nViaja conmigo a través de cada foto e historia.\n{cta}",
+          "Tips de viaje, vuelos baratos y hospedajes con encanto 🎒\n¡Haz las maletas, la aventura te espera!\n{cta}",
+          "Historias de viaje contadas por una persona curiosa ✨\nDescubre el mundo con ojos de asombro.\n{cta}"
+        ],
+        minimalista: [
+          "Caminar • Explorar • Vivir\nRumbo a lo desconocido.\n{cta}",
+          "Mundo abierto.\nHistorias de viaje.\n{cta}",
+          "Viajar ligero.\nVivir profundo.\n{cta}",
+          "Horizontes nuevos.\nMenos equipaje, más camino.\n{cta}",
+          "El mapa es solo una sugerencia.\n{cta}"
+        ],
+        divertido: [
+          "Mi estado natural es buscando vuelos baratos a las 2 AM 🛫😅\nCualquier excusa es buena para escapar.\n{cta}",
+          "Tengo más ganas de viajar que saldo en la cuenta, pero las risas no faltan 💸🏖️\n{cta}",
+          "Perdiéndome por las calles para encontrar comida rica 🌮🗺️\nSi no me encuentro, estoy en el aeropuerto.\n{cta}",
+          "Haciendo la maleta 10 minutos antes de salir de casa 🧳⚡\n{cta}",
+          "Mi idioma favorito es 'Boarding Pass' ✈️🌴\n{cta}"
+        ]
+      },
+      hashtags: ['#ViajesPorElMundo', '#ViajerosLatinos', '#DestinosTuristicos', '#Wanderlust', '#Mochileros', '#TurismoAventura', '#FotosDeViajes', '#TravelVlog', '#ViajarBarato', '#RinconesDelMundo', '#AmoViajar', '#PaisajesIncreibles']
+    },
+    arte: {
+      bios: {
+        profesional: [
+          "Dirección de Arte & Diseño de Identidad Visual 🎨\n▸ Creando marcas memorables con concepto e impacto emocional.\n{cta}",
+          "Ilustración editorial y diseño tipográfico de autor ✒️\n▸ Proyectos visuales para marcas globales y editoriales.\n{cta}",
+          "Artes plásticas contemporáneas & Muralismo urbano 🖌️\n▸ Obra original, exposiciones y comisiones especiales.\n{cta}",
+          "Diseño UI/UX & Sistemas de Diseño Digital 📐\n▸ Uniendo estética sublime con usabilidad intuitiva.\n{cta}",
+          "Curaduría visual y producción gráfica independiente ✨\n▸ Transformando ideas en universos gráficos únicos.\n{cta}"
+        ],
+        cercano: [
+          "Pintando emociones y compartiendo mi proceso creativo 🎨\nDe mi libreta de bocetos directo a tu pantalla.\n{cta}",
+          "Ilustrando historias cotidianas con un toque mágico ✨\nAcompáñame a crear y experimentar con colores.\n{cta}",
+          "Arte accesible y tutoriales para despertar tu creatividad 🖌️\nTodos podemos crear cosas hermosas si nos atrevemos.\n{cta}",
+          "Diseño, acuarelas y café mañanero ☕🖼️\nPequeñas obras hechas con mucho amor y detalle.\n{cta}",
+          "Bocetos, errores y aciertos en el taller 🖍️\nCrear es mi forma de respirar y conectar contigo.\n{cta}"
+        ],
+        minimalista: [
+          "Línea • Color • Concepto\nArte visual contemporáneo.\n{cta}",
+          "Diseño consciente.\nForma y función en armonía.\n{cta}",
+          "El vacío también comunica.\nEstética pura.\n{cta}",
+          "Bocetos con alma.\nMenos ornamento, más significado.\n{cta}",
+          "Creación visual esencial.\n{cta}"
+        ],
+        divertido: [
+          "Manchándome las manos de pintura y fingiendo que fue a propósito 🎨😅\nCreatividad al 100% y orden al 0%.\n{cta}",
+          "Haciendo arte para no enloquecer en este mundo loco 🖌️✨\nCompro libretas que nunca termino.\n{cta}",
+          "El botón 'Ctrl + Z' debería existir en la vida real 🙃💻\n{cta}",
+          "Dije 'un boceto rápido de 5 minutos' y ya amaneció 🌙🖍️\n{cta}",
+          "Mi paleta de colores: negro, blanco y manchas de acrílico en el pantalón 👖🎨\n{cta}"
+        ]
+      },
+      hashtags: ['#ArteLatino', '#IlustracionDigital', '#DisenoGrafico', '#ArtistasEnInstagram', '#ProcesoCreativo', '#Acuarela', '#DibujoDiario', '#SketchbookInspo', '#ArteContemporaneo', '#DisenoVisual', '#Creatividad', '#Muralismo']
+    },
+    personal: {
+      bios: {
+        profesional: [
+          "Estratega de Comunicación & Marca Personal 🎙️\n▸ Ayudo a líderes a posicionar su voz y conectar con autoridad.\n{cta}",
+          "Conferencista, autor y creador de contenidos de alto impacto 📚\n▸ Ideas claras para transformar carreras y organizaciones.\n{cta}",
+          "Consultoría en narrativa digital y presencia ejecutiva 🎯\n▸ Conecta con tu audiencia ideal de forma consistente.\n{cta}",
+          "Speaker internacional & Mentor de proyectos innovadores 🌍\n▸ Liderazgo, autenticidad y resultados tangibles.\n{cta}",
+          "Gestión de influencia y contenidos estratégicos 💡\n▸ Potenciando comunidades y marcas personales sólidas.\n{cta}"
+        ],
+        cercano: [
+          "Un día a la vez, creando lo que amo ✨\nBienvenido a mi rincón de reflexiones, aprendizajes y vida real.\n{cta}",
+          "Curioso por naturaleza, creativo por elección 💫\nCharlas francas, lecciones diarias y buena compañía.\n{cta}",
+          "Compartiendo lo que aprendo mientras construyo mi camino 🚀\nAquí se viene a inspirarse y apoyarse mutuamente.\n{cta}",
+          "Viviendo despacio en un mundo acelerado 🌿\nReflexiones sinceras, hábitos y proyectos personales.\n{cta}",
+          "Tu recordatorio diario de confiar en tu propio proceso 🌻\nContenido hecho con amor y autenticidad.\n{cta}"
+        ],
+        minimalista: [
+          "Pensamiento • Creación • Vida\n{cta}",
+          "Construyendo en silencio.\nPalabras con valor.\n{cta}",
+          "Evolución constante.\nMenos apariencias, más verdad.\n{cta}",
+          "Vivir con intención.\nCrear con sentido.\n{cta}",
+          "Espacio de reflexión y claridad.\n{cta}"
+        ],
+        divertido: [
+          "Aquí para compartir lo que pienso antes de que se me olvide 🙃\nSi buscas orden, te equivocaste de perfil.\n{cta}",
+          "Opinando de todo con absoluta confianza y cero fundamentos científicos ✌️😂\n{cta}",
+          "80% café, 15% buenas intenciones y 5% procrastinación productiva ☕✨\n{cta}",
+          "Intentando ser adulto funcional sin manual de instrucciones 🤷‍♂️\n{cta}",
+          "No sé qué hago aquí, pero lo estoy pasando genial 🎉\n{cta}"
+        ]
+      },
+      hashtags: ['#CreadoresDeContenido', '#MarcaPersonal', '#Autenticidad', '#Productividad', '#VidaCreativa', '#InspiracionDiaria', '#CrecimientoPersonal', '#MentalidadPositiva', '#ComunidadCreativa', '#Storytelling', '#ReflexionDelDia', '#VlogLatino']
+    }
+  };
+
+  const topicSelect = document.getElementById('bio-topic') as HTMLSelectElement;
+  const toneSelect = document.getElementById('bio-tone') as HTMLSelectElement;
+  const ctaInput = document.getElementById('bio-cta') as HTMLInputElement;
+  const btnGenerate = document.getElementById('btn-generate') as HTMLButtonElement;
+  const btnGenerateText = document.getElementById('btn-generate-text') as HTMLSpanElement;
+  const generateFeedback = document.getElementById('generate-feedback') as HTMLSpanElement;
+  const biosList = document.getElementById('bios-list') as HTMLDivElement;
+  const hashtagsBox = document.getElementById('hashtags-box') as HTMLDivElement;
+  const btnCopyAllTags = document.getElementById('btn-copy-all-tags') as HTMLButtonElement;
+  const tagsNotice = document.getElementById('tags-copied-notice') as HTMLDivElement;
+  const ideasCounter = document.getElementById('ideas-counter') as HTMLSpanElement;
+
+  // Track shown indices to avoid identical consecutive generations
+  let lastShownIndices: number[] = [];
+  let lastTopic = '';
+  let lastTone = '';
+
+  // Universal clipboard helper with fallback
+  async function copyText(text: string): Promise<boolean> {
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(text);
+        return true;
+      }
+    } catch {
+      // ignore and fallback
+    }
+
+    try {
+      const textArea = document.createElement('textarea');
+      textArea.value = text;
+      textArea.style.position = 'fixed';
+      textArea.style.left = '-9999px';
+      textArea.style.top = '-9999px';
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      const success = document.execCommand('copy');
+      document.body.removeChild(textArea);
+      return success;
+    } catch {
+      return false;
+    }
+  }
+
+  function pickVariedIndices(totalAvailable: number, countToPick: number): number[] {
+    const allIndices = Array.from({ length: totalAvailable }, (_, i) => i);
+    if (totalAvailable <= countToPick) {
+      return allIndices.sort(() => Math.random() - 0.5);
+    }
+
+    // Filter out items shown in the immediate previous generation
+    const available = allIndices.filter((i) => !lastShownIndices.includes(i));
+
+    if (available.length >= countToPick) {
+      const shuffled = [...available].sort(() => Math.random() - 0.5);
+      return shuffled.slice(0, countToPick);
+    }
+
+    // If not enough unseen items, take all unseen and fill remainder from previous
+    const shuffledAvailable = [...available].sort(() => Math.random() - 0.5);
+    const needed = countToPick - shuffledAvailable.length;
+    const shuffledLast = [...lastShownIndices].sort(() => Math.random() - 0.5);
+    return [...shuffledAvailable, ...shuffledLast.slice(0, needed)];
+  }
+
+  function renderBioResults(isNewGeneration = false) {
+    const topic = topicSelect.value;
+    const tone = toneSelect.value as 'profesional' | 'cercano' | 'minimalista' | 'divertido';
+    const cta = ctaInput.value.trim() || 'Link abajo 👇';
+
+    const data = database[topic] || database.personal;
+    const allTemplates = data.bios[tone] || data.bios.cercano;
+
+    // Reset history if user changed topic or tone
+    if (topic !== lastTopic || tone !== lastTone) {
+      lastShownIndices = [];
+      lastTopic = topic;
+      lastTone = tone;
+    }
+
+    // Determine how many items to show (up to 3 distinct bios)
+    const countToPick = Math.min(3, allTemplates.length);
+    const chosenIndices = pickVariedIndices(allTemplates.length, countToPick);
+    lastShownIndices = chosenIndices;
+
+    const selectedTemplates = chosenIndices.map((idx) => allTemplates[idx]);
+
+    biosList.innerHTML = '';
+    if (ideasCounter) {
+      ideasCounter.textContent = `${selectedTemplates.length} ideas sugeridas`;
+    }
+
+    selectedTemplates.forEach((tmpl) => {
+      const fullBio = tmpl.replace('{cta}', cta);
+      const charCount = fullBio.length;
+
+      const card = document.createElement('div');
+      card.className = 'bio-card';
+
+      const bioText = document.createElement('div');
+      bioText.className = 'bio-text';
+      bioText.textContent = fullBio;
+
+      const footer = document.createElement('div');
+      footer.className = 'bio-footer';
+
+      const countSpan = document.createElement('span');
+      countSpan.textContent = `${charCount} / 150 caracteres`;
+
+      if (charCount > 150) {
+        countSpan.className = 'bio-count-danger';
+        countSpan.textContent += ' (⚠️ Excede Instagram)';
+      } else if (charCount > 140) {
+        countSpan.className = 'bio-count-warn';
+      } else {
+        countSpan.className = 'bio-count-ok';
+      }
+
+      const copyBtn = document.createElement('button');
+      copyBtn.type = 'button';
+      copyBtn.className = 'btn-copy-card';
+      copyBtn.textContent = 'Copiar bio';
+
+      copyBtn.addEventListener('click', async () => {
+        const ok = await copyText(fullBio);
+        if (ok) {
+          copyBtn.classList.add('is-copied');
+          copyBtn.textContent = '✓ ¡Copiado!';
+          setTimeout(() => {
+            copyBtn.classList.remove('is-copied');
+            copyBtn.textContent = 'Copiar bio';
+          }, 2000);
+        }
+      });
+
+      footer.appendChild(countSpan);
+      footer.appendChild(copyBtn);
+
+      card.appendChild(bioText);
+      card.appendChild(footer);
+      biosList.appendChild(card);
+    });
+
+    // Render Hashtags (shuffled or highlighted)
+    hashtagsBox.innerHTML = '';
+    const allTags = [...data.hashtags];
+    if (isNewGeneration) {
+      allTags.sort(() => Math.random() - 0.5);
+    }
+
+    allTags.forEach((tag) => {
+      const pill = document.createElement('span');
+      pill.className = 'hashtag-pill';
+      pill.textContent = tag;
+      pill.title = 'Clic para copiar este hashtag';
+
+      pill.addEventListener('click', async () => {
+        const ok = await copyText(tag);
+        if (ok) {
+          tagsNotice.textContent = `✓ Copiado: ${tag}`;
+          setTimeout(() => {
+            tagsNotice.textContent = '';
+          }, 2000);
+        }
+      });
+
+      hashtagsBox.appendChild(pill);
+    });
+
+    // If triggered by Generate Button, show visual feedback
+    if (isNewGeneration) {
+      btnGenerate.classList.add('is-spinning');
+      if (generateFeedback) {
+        generateFeedback.textContent = '✨ ¡Nuevas ideas listas!';
+        generateFeedback.classList.add('is-visible');
+        setTimeout(() => {
+          generateFeedback.classList.remove('is-visible');
+        }, 2200);
+      }
+      setTimeout(() => {
+        btnGenerate.classList.remove('is-spinning');
+      }, 450);
+    }
+  }
+
+  // Event Listeners
+  btnGenerate.addEventListener('click', () => {
+    renderBioResults(true);
+  });
+
+  topicSelect.addEventListener('change', () => {
+    renderBioResults(false);
+  });
+
+  toneSelect.addEventListener('change', () => {
+    renderBioResults(false);
+  });
+
+  ctaInput.addEventListener('input', () => {
+    // Re-render current selection with updated CTA in place
+    renderBioResults(false);
+  });
+
+  btnCopyAllTags.addEventListener('click', async () => {
+    const topic = topicSelect.value;
+    const data = database[topic] || database.personal;
+    // Get all current pills in the container to respect current order
+    const currentPills = Array.from(hashtagsBox.querySelectorAll('.hashtag-pill'));
+    const all = currentPills.length > 0 
+      ? currentPills.map(p => p.textContent).join(' ') 
+      : data.hashtags.join(' ');
+
+    const ok = await copyText(all);
+    if (ok) {
+      tagsNotice.textContent = '✓ ¡Todos los hashtags copiados al portapapeles!';
+      btnCopyAllTags.textContent = '✓ Copiados';
+      setTimeout(() => {
+        tagsNotice.textContent = '';
+        btnCopyAllTags.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg> Copiar todos`;
+      }, 2500);
+    }
+  });
+
+  // Initial render on page load
+  renderBioResults(false);
+</script>

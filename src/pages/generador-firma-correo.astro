@@ -1,0 +1,243 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+---
+<Base title="Generador de Firmas para Correo Electrónico (HTML) Online" description="Diseña una firma de correo profesional para Gmail, Outlook y Apple Mail. Personaliza tus datos, foto, logo y copia en HTML o texto enriquecido.">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="/">Herramientas</a> / <span>Estudio y trabajo</span></div>
+    <h1>Generador de Firmas para Email</h1>
+    <p class="lead">Crea una firma moderna y atractiva para tus correos electrónicos. Cópiala y pégala con un solo clic directamente en la configuración de Gmail u Outlook.</p>
+  </div>
+
+  <section class="panel">
+    <div class="sig-layout">
+      <!-- Input Controls -->
+      <div class="sig-controls">
+        <h3>1. Datos personales y contacto</h3>
+        
+        <div class="field">
+          <label for="sig-name">Nombre y Apellidos:</label>
+          <input type="text" id="sig-name" value="Alejandro Morales" class="form-input" />
+        </div>
+
+        <div class="grid-2">
+          <div class="field">
+            <label for="sig-role">Cargo / Profesión:</label>
+            <input type="text" id="sig-role" value="Director de Marketing Digital" class="form-input" />
+          </div>
+          <div class="field">
+            <label for="sig-company">Empresa / Proyecto:</label>
+            <input type="text" id="sig-company" value="Nova Media Lab" class="form-input" />
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="field">
+            <label for="sig-phone">Teléfono / WhatsApp:</label>
+            <input type="text" id="sig-phone" value="+34 612 345 678" class="form-input" />
+          </div>
+          <div class="field">
+            <label for="sig-email">Correo electrónico:</label>
+            <input type="email" id="sig-email" value="alejandro@ejemplo.com" class="form-input" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="sig-website">Sitio Web:</label>
+          <input type="text" id="sig-website" value="www.misitio.com" class="form-input" />
+        </div>
+
+        <div class="field">
+          <label for="sig-photo">URL de tu Foto o Logo (cuadrada o redonda):</label>
+          <input type="url" id="sig-photo" value="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80" class="form-input" />
+        </div>
+
+        <div class="grid-2">
+          <div class="field">
+            <label for="sig-color">Color de acento:</label>
+            <input type="color" id="sig-color" value="#2563eb" class="color-input" />
+          </div>
+          <div class="field">
+            <label for="sig-style">Estilo de diseño:</label>
+            <select id="sig-style" class="form-input">
+              <option value="modern" selected>Moderno con barra lateral</option>
+              <option value="classic">Clásico corporativo</option>
+              <option value="compact">Compacto horizontal</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Preview & Output -->
+      <div class="sig-preview-col">
+        <h3>2. Vista previa en vivo</h3>
+        <div class="preview-box" id="preview-container">
+          <!-- Rendered HTML signature -->
+        </div>
+
+        <div class="sig-actions">
+          <button type="button" class="btn btn-primary" id="btn-copy-visual">📋 Copiar para Gmail / Outlook</button>
+          <button type="button" class="btn btn-secondary" id="btn-copy-html">&lt;/&gt; Copiar código HTML</button>
+        </div>
+
+        <div class="how-to-paste">
+          <h4>💡 ¿Cómo pegarla en Gmail u Outlook?</h4>
+          <ol>
+            <li>Haz clic en <strong>"Copiar para Gmail / Outlook"</strong> arriba.</li>
+            <li>Abre la configuración de firma de tu cliente de correo.</li>
+            <li>Presiona <kbd>Ctrl + V</kbd> (o <kbd>Cmd + V</kbd> en Mac) en el editor de firma. ¡Listo!</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .breadcrumb{font-size:.85rem;color:var(--muted);margin-bottom:.5rem}.breadcrumb a{color:var(--muted)}
+  .sig-layout{display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:start}
+  @media(max-width:850px){.sig-layout{grid-template-columns:1fr}}
+
+  .sig-controls h3, .sig-preview-col h3{font-size:1.05rem;margin-bottom:1.2rem}
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}
+  .field{margin-bottom:1rem}
+  .field label{display:block;font-weight:600;font-size:.84rem;margin-bottom:.35rem}
+  .form-input{width:100%;padding:.55rem .75rem;background:var(--bg);border:1px solid var(--line);border-radius:var(--radius-sm);color:var(--ink);font:inherit}
+  .color-input{width:100%;height:38px;padding:2px;background:var(--bg);border:1px solid var(--line);border-radius:var(--radius-sm);cursor:pointer}
+
+  .preview-box{background:#ffffff;border:1px solid var(--line);border-radius:var(--radius-sm);padding:1.5rem;box-shadow:0 4px 15px rgba(0,0,0,.05);margin-bottom:1.5rem;overflow-x:auto}
+  
+  .sig-actions{display:flex;gap:.8rem;flex-wrap:wrap;margin-bottom:1.5rem}
+  .how-to-paste{background:var(--surface-card);border:1px solid var(--line);border-radius:var(--radius-sm);padding:1.2rem;font-size:.85rem;line-height:1.5}
+  .how-to-paste h4{margin-bottom:.5rem;font-size:.9rem}
+  .how-to-paste ol{padding-left:1.2rem;margin:0}
+  .how-to-paste li{margin-bottom:.3rem}
+  kbd{background:var(--bg);border:1px solid var(--line);padding:2px 6px;border-radius:4px;font-family:monospace;font-size:.8rem}
+</style>
+
+<script>
+  const nameInp = document.getElementById('sig-name') as HTMLInputElement;
+  const roleInp = document.getElementById('sig-role') as HTMLInputElement;
+  const compInp = document.getElementById('sig-company') as HTMLInputElement;
+  const phoneInp = document.getElementById('sig-phone') as HTMLInputElement;
+  const emailInp = document.getElementById('sig-email') as HTMLInputElement;
+  const webInp = document.getElementById('sig-website') as HTMLInputElement;
+  const photoInp = document.getElementById('sig-photo') as HTMLInputElement;
+  const colorInp = document.getElementById('sig-color') as HTMLInputElement;
+  const styleInp = document.getElementById('sig-style') as HTMLSelectElement;
+
+  const preview = document.getElementById('preview-container')!;
+  const btnCopyVisual = document.getElementById('btn-copy-visual')!;
+  const btnCopyHtml = document.getElementById('btn-copy-html')!;
+
+  function generateSignatureHtml(): string {
+    const name = nameInp.value.trim() || 'Tu Nombre';
+    const role = roleInp.value.trim();
+    const comp = compInp.value.trim();
+    const phone = phoneInp.value.trim();
+    const email = emailInp.value.trim();
+    const web = webInp.value.trim();
+    const photo = photoInp.value.trim();
+    const color = colorInp.value;
+    const style = styleInp.value;
+
+    const photoHtml = photo ? `
+      <td style="vertical-align:top; padding-right: 14px;">
+        <img src="${photo}" alt="${name}" width="65" height="65" style="border-radius:50%; display:block; object-fit:cover; border: 2px solid ${color};" />
+      </td>
+    ` : '';
+
+    if (style === 'classic') {
+      return `
+        <table cellpadding="0" cellspacing="0" border="0" style="font-family: Arial, Helvetica, sans-serif; font-size: 13px; color: #333333; line-height: 1.4;">
+          <tr>
+            ${photoHtml}
+            <td style="vertical-align: top;">
+              <div style="font-size: 16px; font-weight: bold; color: ${color};">${name}</div>
+              <div style="color: #666666; font-size: 12px; margin-bottom: 6px;">${role}${comp ? ` | <strong>${comp}</strong>` : ''}</div>
+              <div style="border-top: 1px solid #e2e8f0; padding-top: 6px; font-size: 12px; color: #475569;">
+                ${phone ? `<div>📞 <a href="tel:${phone}" style="color:#475569; text-decoration:none;">${phone}</a></div>` : ''}
+                ${email ? `<div>✉️ <a href="mailto:${email}" style="color:${color}; text-decoration:none;">${email}</a></div>` : ''}
+                ${web ? `<div>🌐 <a href="https://${web.replace(/^https?:\/\//, '')}" target="_blank" style="color:${color}; text-decoration:none;">${web}</a></div>` : ''}
+              </div>
+            </td>
+          </tr>
+        </table>
+      `;
+    }
+
+    if (style === 'compact') {
+      return `
+        <table cellpadding="0" cellspacing="0" border="0" style="font-family: Arial, Helvetica, sans-serif; font-size: 12px; color: #333333;">
+          <tr>
+            ${photoHtml}
+            <td style="vertical-align: middle;">
+              <span style="font-size: 14px; font-weight: bold; color: #0f172a;">${name}</span>
+              <span style="color: #64748b;"> • ${role} ${comp ? `(${comp})` : ''}</span>
+              <div style="color: #64748b; margin-top: 4px;">
+                ${phone ? `${phone} &nbsp;|&nbsp; ` : ''}
+                ${email ? `<a href="mailto:${email}" style="color:${color}; text-decoration:none;">${email}</a> &nbsp;|&nbsp; ` : ''}
+                ${web ? `<a href="https://${web.replace(/^https?:\/\//, '')}" style="color:${color}; text-decoration:none;">${web}</a>` : ''}
+              </div>
+            </td>
+          </tr>
+        </table>
+      `;
+    }
+
+    // Default: 'modern' with accent border
+    return `
+      <table cellpadding="0" cellspacing="0" border="0" style="font-family: Arial, Helvetica, sans-serif; font-size: 13px; color: #1e293b; line-height: 1.4;">
+        <tr>
+          ${photoHtml}
+          <td style="border-left: 3px solid ${color}; padding-left: 14px; vertical-align: top;">
+            <div style="font-size: 16px; font-weight: 800; color: #0f172a; letter-spacing: -0.3px;">${name}</div>
+            <div style="font-size: 12px; color: #64748b; font-weight: 500; margin-bottom: 6px;">${role}${comp ? ` • <span style="color:${color}; font-weight:600;">${comp}</span>` : ''}</div>
+            <div style="font-size: 11px; color: #64748b; line-height: 1.6;">
+              ${phone ? `<div><span style="color:${color}; font-weight:bold;">T:</span> <a href="tel:${phone}" style="color:#475569; text-decoration:none;">${phone}</a></div>` : ''}
+              ${email ? `<div><span style="color:${color}; font-weight:bold;">M:</span> <a href="mailto:${email}" style="color:#475569; text-decoration:none;">${email}</a></div>` : ''}
+              ${web ? `<div><span style="color:${color}; font-weight:bold;">W:</span> <a href="https://${web.replace(/^https?:\/\//, '')}" target="_blank" style="color:${color}; text-decoration:none;">${web}</a></div>` : ''}
+            </div>
+          </td>
+        </tr>
+      </table>
+    `;
+  }
+
+  function update() {
+    preview.innerHTML = generateSignatureHtml();
+  }
+
+  [nameInp, roleInp, compInp, phoneInp, emailInp, webInp, photoInp, colorInp, styleInp].forEach(el => {
+    el.addEventListener('input', update);
+  });
+
+  btnCopyVisual.addEventListener('click', async () => {
+    try {
+      const type = 'text/html';
+      const blob = new Blob([preview.innerHTML], { type });
+      const data = [new ClipboardItem({ [type]: blob })];
+      await navigator.clipboard.write(data);
+      btnCopyVisual.textContent = '¡Copiado al portapapeles!';
+      setTimeout(() => { btnCopyVisual.textContent = '📋 Copiar para Gmail / Outlook'; }, 2500);
+    } catch (err) {
+      // Fallback
+      const range = document.createRange();
+      range.selectNode(preview);
+      window.getSelection()?.removeAllRanges();
+      window.getSelection()?.addRange(range);
+      document.execCommand('copy');
+      window.getSelection()?.removeAllRanges();
+      btnCopyVisual.textContent = '¡Copiado!';
+      setTimeout(() => { btnCopyVisual.textContent = '📋 Copiar para Gmail / Outlook'; }, 2500);
+    }
+  });
+
+  btnCopyHtml.addEventListener('click', () => {
+    navigator.clipboard.writeText(generateSignatureHtml().trim());
+    btnCopyHtml.textContent = '¡HTML Copiado!';
+    setTimeout(() => { btnCopyHtml.textContent = '</> Copiar código HTML'; }, 2500);
+  });
+
+  update();
+</script>

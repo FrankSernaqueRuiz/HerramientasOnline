@@ -1,0 +1,222 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+---
+<Base title="Calculadora de Pintura y Cerámica / Azulejos Online" description="Calcula los litros de pintura o cajas de cerámica y porcelanato necesarias para tu obra o reforma, incluyendo manos y porcentaje de desperdicio.">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="/">Herramientas</a> / <span>Hogar y vida diaria</span></div>
+    <h1>Calculadora de Pintura y Cerámica</h1>
+    <p class="lead">Evita que te sobre material o quedarte corto a mitad del trabajo calculando la cantidad exacta de pintura o cajas de piso.</p>
+  </div>
+
+  <section class="panel">
+    <div class="mode-tabs">
+      <button type="button" class="tab-btn active" id="tab-paint">🎨 Pintura de Paredes / Techo</button>
+      <button type="button" class="tab-btn" id="tab-tile">🧱 Cerámica, Piso y Azulejos</button>
+    </div>
+
+    <!-- Mode 1: Pintura -->
+    <div id="view-paint" class="calculator-view">
+      <div class="form-grid">
+        <div class="field">
+          <label for="wall-width">Ancho de la pared (metros):</label>
+          <input type="number" id="wall-width" value="4" step="0.1" min="0.5" class="form-input" />
+        </div>
+        <div class="field">
+          <label for="wall-height">Alto de la pared (metros):</label>
+          <input type="number" id="wall-height" value="2.6" step="0.1" min="0.5" class="form-input" />
+        </div>
+        <div class="field">
+          <label for="wall-count">Número de paredes similares:</label>
+          <input type="number" id="wall-count" value="4" min="1" class="form-input" />
+        </div>
+        <div class="field">
+          <label for="paint-coats">Número de manos:</label>
+          <select id="paint-coats" class="form-input">
+            <option value="1">1 mano (retoque o mismo color)</option>
+            <option value="2" selected>2 manos (recomendado)</option>
+            <option value="3">3 manos (cambio de color drástico)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="doors-count">Puertas a descontar (1.6 m² c/u):</label>
+          <input type="number" id="doors-count" value="1" min="0" class="form-input" />
+        </div>
+        <div class="field">
+          <label for="windows-count">Ventanas a descontar (1.5 m² c/u):</label>
+          <input type="number" id="windows-count" value="1" min="0" class="form-input" />
+        </div>
+        <div class="field">
+          <label for="paint-coverage">Rendimiento pintura (m² por litro):</label>
+          <input type="number" id="paint-coverage" value="10" step="0.5" class="form-input" />
+        </div>
+      </div>
+
+      <div class="result-cards-grid" id="paint-results">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+
+    <!-- Mode 2: Cerámica -->
+    <div id="view-tile" class="calculator-view" style="display:none;">
+      <div class="form-grid">
+        <div class="field">
+          <label for="room-length">Largo del área (metros):</label>
+          <input type="number" id="room-length" value="5" step="0.1" min="0.5" class="form-input" />
+        </div>
+        <div class="field">
+          <label for="room-width">Ancho del área (metros):</label>
+          <input type="number" id="room-width" value="3.5" step="0.1" min="0.5" class="form-input" />
+        </div>
+        <div class="field">
+          <label for="tile-waste">Desperdicio por cortes / zócalos:</label>
+          <select id="tile-waste" class="form-input">
+            <option value="10" selected>10% (Colocación recta estándar)</option>
+            <option value="15">15% (Colocación en diagonal / espina de pez)</option>
+            <option value="5">5% (Espacios rectangulares simples)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="box-coverage">Metros cuadrados por caja (m²/caja):</label>
+          <input type="number" id="box-coverage" value="1.8" step="0.05" min="0.2" class="form-input" />
+        </div>
+      </div>
+
+      <div class="result-cards-grid" id="tile-results">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .breadcrumb{font-size:.85rem;color:var(--muted);margin-bottom:.5rem}.breadcrumb a{color:var(--muted)}
+  .mode-tabs{display:flex;gap:.5rem;margin-bottom:1.5rem;border-bottom:1px solid var(--line);padding-bottom:.75rem}
+  .tab-btn{background:transparent;border:1px solid transparent;padding:.6rem 1.2rem;border-radius:var(--radius-sm);font-weight:600;font-size:.9rem;color:var(--muted);cursor:pointer;transition:all .15s}
+  .tab-btn.active{background:var(--accent);color:#fff}
+
+  .form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-bottom:2rem}
+  .field label{display:block;font-weight:600;font-size:.84rem;margin-bottom:.35rem}
+  .form-input{width:100%;padding:.55rem .75rem;background:var(--bg);border:1px solid var(--line);border-radius:var(--radius-sm);color:var(--ink);font:inherit}
+
+  .result-cards-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem}
+  :global(.calc-card){background:var(--surface-card);border:1px solid var(--line);border-radius:var(--radius-sm);padding:1.25rem;text-align:center}
+  :global(.calc-card.highlight){border-color:var(--accent);background:rgba(37,99,235,.06)}
+  :global(.calc-card .lbl){font-size:.78rem;text-transform:uppercase;color:var(--muted);font-weight:700}
+  :global(.calc-card .val){font-size:2rem;font-weight:900;color:var(--accent);margin:.4rem 0 .2rem}
+  :global(.calc-card .desc){font-size:.8rem;color:var(--ink)}
+</style>
+
+<script>
+  const tabPaint = document.getElementById('tab-paint')!;
+  const tabTile = document.getElementById('tab-tile')!;
+  const viewPaint = document.getElementById('view-paint')!;
+  const viewTile = document.getElementById('view-tile')!;
+
+  // Paint Inputs
+  const wallWidth = document.getElementById('wall-width') as HTMLInputElement;
+  const wallHeight = document.getElementById('wall-height') as HTMLInputElement;
+  const wallCount = document.getElementById('wall-count') as HTMLInputElement;
+  const paintCoats = document.getElementById('paint-coats') as HTMLSelectElement;
+  const doorsCount = document.getElementById('doors-count') as HTMLInputElement;
+  const windowsCount = document.getElementById('windows-count') as HTMLInputElement;
+  const paintCoverage = document.getElementById('paint-coverage') as HTMLInputElement;
+  const paintResults = document.getElementById('paint-results')!;
+
+  // Tile Inputs
+  const roomLength = document.getElementById('room-length') as HTMLInputElement;
+  const roomWidth = document.getElementById('room-width') as HTMLInputElement;
+  const tileWaste = document.getElementById('tile-waste') as HTMLSelectElement;
+  const boxCoverage = document.getElementById('box-coverage') as HTMLInputElement;
+  const tileResults = document.getElementById('tile-results')!;
+
+  tabPaint.addEventListener('click', () => {
+    tabPaint.classList.add('active');
+    tabTile.classList.remove('active');
+    viewPaint.style.display = 'block';
+    viewTile.style.display = 'none';
+  });
+
+  tabTile.addEventListener('click', () => {
+    tabTile.classList.add('active');
+    tabPaint.classList.remove('active');
+    viewPaint.style.display = 'none';
+    viewTile.style.display = 'block';
+  });
+
+  function calcPaint() {
+    const w = parseFloat(wallWidth.value) || 0;
+    const h = parseFloat(wallHeight.value) || 0;
+    const count = parseInt(wallCount.value, 10) || 1;
+    const coats = parseInt(paintCoats.value, 10) || 2;
+    const doors = parseInt(doorsCount.value, 10) || 0;
+    const windows = parseInt(windowsCount.value, 10) || 0;
+    const cov = parseFloat(paintCoverage.value) || 10;
+
+    const grossArea = (w * h) * count;
+    const deduction = (doors * 1.6) + (windows * 1.5);
+    const netArea = Math.max(0, grossArea - deduction);
+    const totalSurfaceToPaint = netArea * coats;
+    const litersNeeded = (totalSurfaceToPaint / cov);
+    const gallonsNeeded = (litersNeeded / 3.785);
+
+    paintResults.innerHTML = `
+      <div class="calc-card">
+        <span class="lbl">Superficie neta</span>
+        <div class="val">${netArea.toFixed(1)} m²</div>
+        <span class="desc">Descontando puertas y ventanas</span>
+      </div>
+      <div class="calc-card highlight">
+        <span class="lbl">Litros necesarios</span>
+        <div class="val">${litersNeeded.toFixed(1)} L</div>
+        <span class="desc">Para ${coats} ${coats === 1 ? 'mano' : 'manos'} de pintura</span>
+      </div>
+      <div class="calc-card">
+        <span class="lbl">En galones (3.78L)</span>
+        <div class="val">${Math.ceil(gallonsNeeded)} gal</div>
+        <span class="desc">Aprox. ${gallonsNeeded.toFixed(2)} galones</span>
+      </div>
+    `;
+  }
+
+  function calcTile() {
+    const l = parseFloat(roomLength.value) || 0;
+    const w = parseFloat(roomWidth.value) || 0;
+    const wastePct = parseFloat(tileWaste.value) || 10;
+    const boxM2 = parseFloat(boxCoverage.value) || 1.8;
+
+    const netArea = l * w;
+    const totalAreaWithWaste = netArea * (1 + wastePct / 100);
+    const boxes = Math.ceil(totalAreaWithWaste / boxM2);
+    const totalPurchasedM2 = boxes * boxM2;
+
+    tileResults.innerHTML = `
+      <div class="calc-card">
+        <span class="lbl">Área neta del piso</span>
+        <div class="val">${netArea.toFixed(2)} m²</div>
+        <span class="desc">${l}m x ${w}m</span>
+      </div>
+      <div class="calc-card">
+        <span class="lbl">Área con +${wastePct}% desperdicio</span>
+        <div class="val">${totalAreaWithWaste.toFixed(2)} m²</div>
+        <span class="desc">Margen para cortes y zócalos</span>
+      </div>
+      <div class="calc-card highlight">
+        <span class="lbl">Cajas a comprar</span>
+        <div class="val">${boxes} cajas</div>
+        <span class="desc">${totalPurchasedM2.toFixed(2)} m² en total</span>
+      </div>
+    `;
+  }
+
+  [wallWidth, wallHeight, wallCount, paintCoats, doorsCount, windowsCount, paintCoverage].forEach(el => {
+    el.addEventListener('input', calcPaint);
+  });
+
+  [roomLength, roomWidth, tileWaste, boxCoverage].forEach(el => {
+    el.addEventListener('input', calcTile);
+  });
+
+  calcPaint();
+  calcTile();
+</script>

@@ -1,0 +1,77 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+---
+<Base title="¿Quién Paga Hoy? – Elige al Azar Quién Invita" description="Agrega los nombres del grupo y deja que la app elija al azar a quién le toca pagar la cuenta.">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="/">Herramientas</a> / <span>Sorteos y diversión</span></div>
+    <h1>¿Quién Paga Hoy?</h1>
+    <p class="lead">Agrega los nombres de tu grupo de amigos y descubre con una animación dramática a quién le toca invitar hoy.</p>
+  </div>
+  <section class="panel qp-center">
+    <label for="qp-names">Nombres del grupo (uno por línea):</label>
+    <textarea id="qp-names" rows="6" placeholder="Ana&#10;Carlos&#10;María&#10;Pedro&#10;Lucía"></textarea>
+    <button type="button" id="btn-decide" class="btn-primary btn-big">💸 ¡Descubrir quién paga!</button>
+    <div id="qp-anim" class="qp-animation hidden">
+      <div id="qp-roulette" class="qp-roulette"></div>
+    </div>
+    <div id="qp-result" class="qp-result hidden">
+      <div class="qp-emoji">🎉</div>
+      <div class="qp-winner-text">¡Hoy paga <strong id="qp-winner-name"></strong>!</div>
+      <button type="button" id="btn-again" class="btn-secondary">Volver a elegir</button>
+    </div>
+  </section>
+</Base>
+<style>
+  .breadcrumb{font-size:.85rem;color:var(--muted);margin-bottom:.5rem}.breadcrumb a{color:var(--muted)}
+  .qp-center{max-width:500px;margin:0 auto;text-align:center}
+  label{display:block;font-weight:600;font-size:.9rem;margin-bottom:.4rem;text-align:left}
+  .btn-primary{background:var(--accent);color:var(--accent-ink);border:none;border-radius:var(--radius-sm);padding:.7rem 1.4rem;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:.5rem;margin-top:1rem}
+  .btn-big{font-size:1rem;width:100%;justify-content:center}
+  .btn-secondary{background:var(--surface);border:1px solid var(--line);color:var(--ink);border-radius:var(--radius-sm);padding:.6rem 1.2rem;cursor:pointer;margin-top:1rem}
+  .hidden{display:none!important}
+  .qp-animation{margin-top:2rem;display:flex;justify-content:center}
+  .qp-roulette{font-size:2rem;font-weight:800;color:var(--accent);min-height:60px;display:flex;align-items:center;justify-content:center}
+  .qp-result{margin-top:2rem;animation:fadeSlide .5s ease}
+  .qp-emoji{font-size:3.5rem;margin-bottom:.5rem}
+  .qp-winner-text{font-size:1.6rem;font-weight:700;color:var(--ink)}
+  @keyframes fadeSlide{from{opacity:0;transform:scale(.8)}to{opacity:1;transform:scale(1)}}
+</style>
+<script>
+  const ta=document.getElementById('qp-names') as HTMLTextAreaElement;
+  const btn=document.getElementById('btn-decide')!;
+  const anim=document.getElementById('qp-anim')!;
+  const roulette=document.getElementById('qp-roulette')!;
+  const result=document.getElementById('qp-result')!;
+  const winnerName=document.getElementById('qp-winner-name')!;
+  const btnAgain=document.getElementById('btn-again')!;
+
+  btn.addEventListener('click',()=>{
+    const names=ta.value.split('\n').map(s=>s.trim()).filter(Boolean);
+    if(names.length<2)return;
+    result.classList.add('hidden');
+    anim.classList.remove('hidden');
+    btn.setAttribute('disabled','');
+    let i=0;const total=20+Math.floor(Math.random()*15);let delay=50;
+    const winIdx=crypto.getRandomValues(new Uint32Array(1))[0]%names.length;
+    function tick(){
+      roulette.textContent=names[i%names.length];
+      i++;
+      if(i<total){delay+=i*3;setTimeout(tick,delay)}
+      else{
+        roulette.textContent=names[winIdx];
+        setTimeout(()=>{
+          anim.classList.add('hidden');
+          winnerName.textContent=names[winIdx];
+          result.classList.remove('hidden');
+          btn.removeAttribute('disabled');
+        },500);
+      }
+    }
+    tick();
+  });
+
+  btnAgain.addEventListener('click',()=>{
+    result.classList.add('hidden');
+  });
+</script>

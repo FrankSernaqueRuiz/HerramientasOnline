@@ -1,0 +1,249 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+---
+<Base title="Generador de Citas y Referencias APA 7ª Edición Online" description="Genera citas bibliográficas y referencias en formato APA 7 para libros, artículos científicos, páginas web y videos de YouTube.">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="/">Herramientas</a> / <span>Estudio y trabajo</span></div>
+    <h1>Generador de Citas APA 7ª Edición</h1>
+    <p class="lead">Completa los datos de tu fuente y obtén la referencia bibliográfica formal con sangría francesa y la cita parentética en el texto.</p>
+  </div>
+
+  <section class="panel">
+    <div class="source-types">
+      <button type="button" class="tab-btn active" data-type="web">Página Web / Artículo Online</button>
+      <button type="button" class="tab-btn" data-type="book">Libro impreso o digital</button>
+      <button type="button" class="tab-btn" data-type="journal">Artículo de Revista Científica</button>
+      <button type="button" class="tab-btn" data-type="youtube">Video de YouTube</button>
+    </div>
+
+    <form id="apa-form" class="apa-form">
+      <div class="form-grid">
+        <div class="field col-full">
+          <label for="apa-author">Autor(es) <span class="hint">(Ej: García Márquez, G. o Organización Mundial de la Salud)</span>:</label>
+          <input type="text" id="apa-author" placeholder="Apellido, Inicial. (ej. Pérez, J. o National Geographic)" class="form-input" />
+        </div>
+
+        <div class="field">
+          <label for="apa-year">Año de publicación:</label>
+          <input type="text" id="apa-year" placeholder="2024 (o s.f. si no tiene fecha)" class="form-input" />
+        </div>
+
+        <div class="field" id="field-date-full">
+          <label for="apa-date">Día y mes <span class="hint">(Opcional para web/prensa)</span>:</label>
+          <input type="text" id="apa-date" placeholder="15 de marzo" class="form-input" />
+        </div>
+
+        <div class="field col-full">
+          <label for="apa-title">Título de la obra / artículo:</label>
+          <input type="text" id="apa-title" placeholder="Título exacto del artículo, página o libro" class="form-input" />
+        </div>
+
+        <div class="field" id="field-source">
+          <label for="apa-source" id="lbl-source">Nombre del sitio web / Revista / Editorial:</label>
+          <input type="text" id="apa-source" placeholder="Ej. El País o Harvard Business Review" class="form-input" />
+        </div>
+
+        <div class="field" id="field-extra1">
+          <label for="apa-vol" id="lbl-vol">Volumen y Número <span class="hint">(Ej: 14(2))</span>:</label>
+          <input type="text" id="apa-vol" placeholder="14(2)" class="form-input" />
+        </div>
+
+        <div class="field" id="field-extra2">
+          <label for="apa-pages" id="lbl-pages">Páginas <span class="hint">(Ej: 45-60)</span>:</label>
+          <input type="text" id="apa-pages" placeholder="45-60" class="form-input" />
+        </div>
+
+        <div class="field col-full">
+          <label for="apa-url">Enlace URL o DOI:</label>
+          <input type="url" id="apa-url" placeholder="https://doi.org/... o https://ejemplo.com/articulo" class="form-input" />
+        </div>
+      </div>
+    </form>
+
+    <div class="apa-results">
+      <div class="result-card">
+        <div class="result-header">
+          <strong>Referencia Bibliográfica (Lista final):</strong>
+          <button type="button" class="btn btn-secondary btn-sm" id="btn-copy-ref">Copiar referencia</button>
+        </div>
+        <div class="apa-citation hanging-indent" id="output-ref">
+          Ingresa los datos arriba para generar tu cita en formato APA 7.
+        </div>
+      </div>
+
+      <div class="result-card">
+        <div class="result-header">
+          <strong>Cita en el texto:</strong>
+          <button type="button" class="btn btn-secondary btn-sm" id="btn-copy-inline">Copiar cita en texto</button>
+        </div>
+        <div class="inline-citations">
+          <div><span class="inline-tag">Parentética:</span> <span id="output-paren">(Pérez, 2024)</span></div>
+          <div style="margin-top:6px;"><span class="inline-tag">Narrativa:</span> <span id="output-narr">Pérez (2024)</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .breadcrumb{font-size:.85rem;color:var(--muted);margin-bottom:.5rem}.breadcrumb a{color:var(--muted)}
+  .source-types{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.5rem;border-bottom:1px solid var(--line);padding-bottom:.8rem}
+  .tab-btn{background:transparent;border:1px solid transparent;padding:.5rem 1rem;border-radius:var(--radius-sm);font-weight:600;font-size:.88rem;color:var(--muted);cursor:pointer;transition:all .15s}
+  .tab-btn.active{background:var(--accent);color:#fff}
+
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:2rem}
+  @media(max-width:768px){.form-grid{grid-template-columns:1fr}}
+  .col-full{grid-column:1/-1}
+  .field label{display:block;font-weight:600;font-size:.88rem;margin-bottom:.35rem}
+  .hint{font-weight:normal;color:var(--muted);font-size:.8rem}
+  .form-input{width:100%;padding:.6rem .75rem;background:var(--bg);border:1px solid var(--line);border-radius:var(--radius-sm);color:var(--ink);font:inherit}
+
+  .apa-results{display:flex;flex-direction:column;gap:1.2rem}
+  .result-card{background:var(--surface-card);border:1px solid var(--line);border-radius:var(--radius-sm);padding:1.2rem}
+  .result-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:.8rem}
+  
+  .apa-citation{font-family:serif;font-size:1.05rem;line-height:1.6;color:var(--ink);background:var(--bg);padding:1rem;border-radius:var(--radius-sm);border:1px solid var(--line)}
+  .hanging-indent{padding-left:2.5rem;text-indent:-2.5rem}
+
+  .inline-citations{background:var(--bg);padding:1rem;border-radius:var(--radius-sm);border:1px solid var(--line);font-size:.95rem}
+  .inline-tag{font-weight:700;color:var(--muted);font-size:.82rem;margin-right:.4rem}
+</style>
+
+<script>
+  let currentType = 'web';
+
+  const tabs = document.querySelectorAll('.tab-btn');
+  const form = document.getElementById('apa-form') as HTMLFormElement;
+  const authorInp = document.getElementById('apa-author') as HTMLInputElement;
+  const yearInp = document.getElementById('apa-year') as HTMLInputElement;
+  const dateInp = document.getElementById('apa-date') as HTMLInputElement;
+  const titleInp = document.getElementById('apa-title') as HTMLInputElement;
+  const sourceInp = document.getElementById('apa-source') as HTMLInputElement;
+  const volInp = document.getElementById('apa-vol') as HTMLInputElement;
+  const pagesInp = document.getElementById('apa-pages') as HTMLInputElement;
+  const urlInp = document.getElementById('apa-url') as HTMLInputElement;
+
+  const lblSource = document.getElementById('lbl-source')!;
+  const fieldVol = document.getElementById('field-extra1')!;
+  const fieldPages = document.getElementById('field-extra2')!;
+  const fieldDateFull = document.getElementById('field-date-full')!;
+
+  const outRef = document.getElementById('output-ref')!;
+  const outParen = document.getElementById('output-paren')!;
+  const outNarr = document.getElementById('output-narr')!;
+  const btnCopyRef = document.getElementById('btn-copy-ref')!;
+  const btnCopyInline = document.getElementById('btn-copy-inline')!;
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      currentType = (tab as HTMLElement).dataset.type || 'web';
+      adaptFields();
+      generate();
+    });
+  });
+
+  function adaptFields() {
+    if (currentType === 'web') {
+      lblSource.textContent = 'Nombre del sitio web:';
+      fieldVol.style.display = 'none';
+      fieldPages.style.display = 'none';
+      fieldDateFull.style.display = 'block';
+    } else if (currentType === 'book') {
+      lblSource.textContent = 'Editorial:';
+      fieldVol.style.display = 'none';
+      fieldPages.style.display = 'none';
+      fieldDateFull.style.display = 'none';
+    } else if (currentType === 'journal') {
+      lblSource.textContent = 'Nombre de la revista científica:';
+      fieldVol.style.display = 'block';
+      fieldPages.style.display = 'block';
+      fieldDateFull.style.display = 'none';
+    } else if (currentType === 'youtube') {
+      lblSource.textContent = 'Plataforma (ej. YouTube):';
+      fieldVol.style.display = 'none';
+      fieldPages.style.display = 'none';
+      fieldDateFull.style.display = 'block';
+    }
+  }
+
+  function getSurname(authorStr: string): string {
+    if (!authorStr.trim()) return 'Autor';
+    if (authorStr.includes(',')) {
+      return authorStr.split(',')[0].trim();
+    }
+    const parts = authorStr.trim().split(' ');
+    return parts[parts.length - 1];
+  }
+
+  function generate() {
+    const author = authorInp.value.trim() || 'Autor, A.';
+    const year = yearInp.value.trim() || 's.f.';
+    const dateFull = dateInp.value.trim();
+    const title = titleInp.value.trim() || 'Título del trabajo';
+    const source = sourceInp.value.trim();
+    const vol = volInp.value.trim();
+    const pages = pagesInp.value.trim();
+    const url = urlInp.value.trim();
+
+    let fullDate = year;
+    if (dateFull && (currentType === 'web' || currentType === 'youtube')) {
+      fullDate = `${year}, ${dateFull}`;
+    }
+
+    let refHtml = '';
+
+    if (currentType === 'book') {
+      // Autor, A. A. (Año). <i>Título del libro en cursiva</i>. Editorial. URL
+      refHtml = `${author} (${year}). <i>${title}</i>.`;
+      if (source) refHtml += ` ${source}.`;
+      if (url) refHtml += ` ${url}`;
+    } else if (currentType === 'journal') {
+      // Autor, A. (Año). Título del artículo. <i>Nombre de Revista</i>, <i>vol</i>(num), pag-pag. DOI
+      refHtml = `${author} (${year}). ${title}.`;
+      if (source) refHtml += ` <i>${source}</i>`;
+      if (vol) refHtml += `, <i>${vol}</i>`;
+      if (pages) refHtml += `, ${pages}.`;
+      else refHtml += '.';
+      if (url) refHtml += ` ${url}`;
+    } else if (currentType === 'youtube') {
+      // Autor, A. [Nombre de canal]. (Año, día mes). <i>Título del video</i> [Video]. YouTube. URL
+      refHtml = `${author} (${fullDate}). <i>${title}</i> [Video]. ${source || 'YouTube'}.`;
+      if (url) refHtml += ` ${url}`;
+    } else {
+      // Página Web
+      // Autor, A. (Año, día mes). <i>Título del artículo</i>. Nombre del Sitio. URL
+      refHtml = `${author} (${fullDate}). <i>${title}</i>.`;
+      if (source) refHtml += ` ${source}.`;
+      if (url) refHtml += ` ${url}`;
+    }
+
+    outRef.innerHTML = refHtml;
+
+    // Inline citations
+    const surname = getSurname(author);
+    outParen.textContent = `(${surname}, ${year})`;
+    outNarr.textContent = `${surname} (${year})`;
+  }
+
+  form.addEventListener('input', generate);
+
+  btnCopyRef.addEventListener('click', () => {
+    const text = outRef.innerText;
+    navigator.clipboard.writeText(text);
+    btnCopyRef.textContent = '¡Copiado!';
+    setTimeout(() => { btnCopyRef.textContent = 'Copiar referencia'; }, 2000);
+  });
+
+  btnCopyInline.addEventListener('click', () => {
+    const text = `${outParen.textContent} / ${outNarr.textContent}`;
+    navigator.clipboard.writeText(text);
+    btnCopyInline.textContent = '¡Copiado!';
+    setTimeout(() => { btnCopyInline.textContent = 'Copiar cita en texto'; }, 2000);
+  });
+
+  adaptFields();
+  generate();
+</script>
