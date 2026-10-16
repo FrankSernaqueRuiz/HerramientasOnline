@@ -190,59 +190,70 @@ const SHORT_NAMES: Record<string, string> = {
           <span class="brand-name">Utilia<span class="brand-accent">Online</span></span>
         </a>
 
-        <!-- Desktop Navigation: Categorías directas (sin duplicar 43 links en cada render) -->
-        <nav class="nav-desktop" aria-label="Categorías de herramientas">
+        <!-- Desktop Navigation with Dropdowns -->
+        <nav class="nav-desktop" aria-label="Navegación principal">
           {CATEGORIES.map((cat) => {
+            const catTools = ALL_TOOLS.filter((t) => t.category === cat.id);
             const shortName = SHORT_NAMES[cat.id] || cat.name;
-            const isCatActive = pagePath === `/categoria/${cat.id}` || currentCategory?.id === cat.id;
             return (
-              <a 
-                href={`/categoria/${cat.id}`} 
-                class={`nav-cat-btn ${isCatActive ? 'is-active' : ''}`}
-                title={`Ver herramientas de ${cat.name}`}
-              >
-                <span>{shortName}</span>
-              </a>
+              <div class="nav-dropdown-group">
+                <a href={`/categoria/${cat.id}`} class="nav-category-trigger">
+                  <span>{shortName}</span>
+                  <Icon name="chevron-down" size={13} class="dropdown-chevron" />
+                </a>
+
+                <div class="nav-dropdown-menu">
+                  <div class="dropdown-header">
+                    <span class="dropdown-title">{cat.name}</span>
+                    <a href={`/categoria/${cat.id}`} class="dropdown-view-all">Ver sección &rarr;</a>
+                  </div>
+                  <div class="dropdown-items">
+                    {catTools.map((tool) => (
+                      <a href={tool.href} class="dropdown-tool-link">
+                        <div class="dropdown-tool-icon">
+                          <Icon name={tool.icon} size={15} />
+                        </div>
+                        <span class="dropdown-tool-name">{tool.name}</span>
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              </div>
             );
           })}
         </nav>
 
         <!-- Mobile Menu Toggle Button -->
-        <button type="button" class="mobile-toggle" id="btn-mobile-toggle" aria-label="Abrir menú de categorías">
+        <button type="button" class="mobile-toggle" id="btn-mobile-toggle" aria-label="Abrir menú">
           <span class="burger-line"></span>
           <span class="burger-line"></span>
           <span class="burger-line"></span>
         </button>
       </div>
 
-      <!-- Mobile Navigation Drawer: Categorías organizadas -->
+      <!-- Mobile Dropdown Accordion Menu -->
       <div class="mobile-menu" id="mobile-menu">
         <div class="mobile-menu-inner">
-          <div class="mobile-cat-headline">Explorar herramientas por categoría:</div>
-          <div class="mobile-cat-list">
-            {CATEGORIES.map((cat) => {
-              const catCount = ALL_TOOLS.filter((t) => t.category === cat.id).length;
-              const isCatActive = pagePath === `/categoria/${cat.id}` || currentCategory?.id === cat.id;
-              return (
-                <a href={`/categoria/${cat.id}`} class={`mobile-cat-row ${isCatActive ? 'is-active' : ''}`}>
-                  <div class="mobile-cat-row-icon">
-                    <Icon name={cat.icon} size={18} />
-                  </div>
-                  <div class="mobile-cat-row-info">
-                    <strong>{cat.name}</strong>
-                    <small>{catCount} herramientas</small>
-                  </div>
-                  <span class="mobile-cat-row-arrow">&rarr;</span>
+          {CATEGORIES.map((cat) => {
+            const catTools = ALL_TOOLS.filter((t) => t.category === cat.id);
+            return (
+              <div class="mobile-cat-group">
+                <a href={`/categoria/${cat.id}`} class="mobile-cat-title">
+                  <Icon name={cat.icon} size={17} />
+                  <span>{cat.name}</span>
+                  <span class="mobile-badge-count">{catTools.length}</span>
                 </a>
-              );
-            })}
-          </div>
-          <div class="mobile-secondary-links">
-            <a href="/">Inicio</a>
-            <a href="/acerca">Acerca de</a>
-            <a href="/privacidad">Privacidad</a>
-            <a href="/contacto">Contacto</a>
-          </div>
+                <div class="mobile-tools-sub">
+                  {catTools.map((tool) => (
+                    <a href={tool.href} class="mobile-tool-item">
+                      <Icon name={tool.icon} size={13} />
+                      <span>{tool.name}</span>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
     </header>
@@ -317,7 +328,6 @@ const SHORT_NAMES: Record<string, string> = {
     display: flex;
     align-items: center;
     gap: 0.35rem;
-    flex-wrap: wrap;
   }
   @media (max-width: 960px) {
     .nav-desktop {
@@ -325,8 +335,16 @@ const SHORT_NAMES: Record<string, string> = {
     }
   }
 
-  .nav-cat-btn {
-    padding: 0.4rem 0.75rem;
+  .nav-dropdown-group {
+    position: relative;
+    padding-block: 0.25rem;
+  }
+
+  .nav-category-trigger {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.4rem 0.65rem;
     border-radius: var(--radius-sm);
     font-size: 0.88rem;
     font-weight: 600;
@@ -335,15 +353,109 @@ const SHORT_NAMES: Record<string, string> = {
     transition: all 0.15s ease;
   }
 
-  .nav-cat-btn:hover {
+  .nav-category-trigger:hover,
+  .nav-dropdown-group:hover .nav-category-trigger {
     color: var(--ink);
     background: var(--surface-hover);
     text-decoration: none;
   }
 
-  .nav-cat-btn.is-active {
-    color: #fff;
-    background: var(--accent);
+  .dropdown-chevron {
+    color: var(--muted);
+    transition: transform 0.2s ease;
+  }
+  .nav-dropdown-group:hover .dropdown-chevron {
+    transform: rotate(180deg);
+    color: var(--accent);
+  }
+
+  /* Dropdown Floating Menu */
+  .nav-dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(8px);
+    width: 280px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+    padding: 0.6rem;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s;
+    z-index: 100;
+    backdrop-filter: blur(12px);
+  }
+
+  .nav-dropdown-group:hover .nav-dropdown-menu,
+  .nav-dropdown-group:focus-within .nav-dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  .dropdown-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.35rem 0.6rem 0.5rem;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 0.4rem;
+  }
+
+  .dropdown-title {
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+  }
+
+  .dropdown-view-all {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .dropdown-view-all:hover {
+    text-decoration: underline;
+  }
+
+  .dropdown-items {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    max-height: 380px;
+    overflow-y: auto;
+  }
+
+  .dropdown-tool-link {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.45rem 0.6rem;
+    border-radius: 4px;
+    text-decoration: none;
+    color: var(--ink);
+    font-size: 0.84rem;
+    font-weight: 500;
+    transition: background 0.12s ease;
+  }
+
+  .dropdown-tool-link:hover {
+    background: var(--surface-hover);
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  .dropdown-tool-icon {
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    flex-shrink: 0;
   }
 
   /* Mobile Toggle */
@@ -385,7 +497,7 @@ const SHORT_NAMES: Record<string, string> = {
       display: block;
     }
     .mobile-menu.is-open {
-      max-height: 85vh;
+      max-height: 80vh;
       overflow-y: auto;
     }
   }
@@ -394,90 +506,55 @@ const SHORT_NAMES: Record<string, string> = {
     padding: 1rem 1.25rem 1.5rem;
     display: flex;
     flex-direction: column;
-    gap: 0.85rem;
+    gap: 1rem;
   }
 
-  .mobile-cat-headline {
-    font-size: 0.78rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--muted);
-    margin-bottom: 0.25rem;
+  .mobile-cat-group {
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 0.8rem;
+  }
+  .mobile-cat-group:last-child {
+    border-bottom: none;
   }
 
-  .mobile-cat-list {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 0.4rem;
-  }
-
-  .mobile-cat-row {
+  .mobile-cat-title {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    padding: 0.6rem 0.75rem;
+    gap: 0.6rem;
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--ink);
+    text-decoration: none;
+    margin-bottom: 0.5rem;
+  }
+
+  .mobile-badge-count {
+    margin-left: auto;
+    font-size: 0.72rem;
+    padding: 2px 7px;
+    border-radius: 10px;
     background: var(--surface-card);
     border: 1px solid var(--line);
-    border-radius: var(--radius-sm);
-    text-decoration: none;
-    color: var(--ink);
-    transition: all 0.15s ease;
+    color: var(--muted);
   }
 
-  .mobile-cat-row:hover,
-  .mobile-cat-row.is-active {
-    border-color: var(--accent);
-    background: var(--surface-hover);
-    text-decoration: none;
+  .mobile-tools-sub {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.25rem;
+    padding-left: 1.8rem;
   }
 
-  .mobile-cat-row-icon {
-    color: var(--accent);
+  .mobile-tool-item {
     display: flex;
     align-items: center;
-    justify-content: center;
-    width: 28px;
-    height: 28px;
-    border-radius: 4px;
-    background: rgba(47, 129, 247, 0.1);
-    flex-shrink: 0;
-  }
-
-  .mobile-cat-row-info {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-  }
-
-  .mobile-cat-row-info strong {
-    font-size: 0.92rem;
-    font-weight: 600;
-  }
-
-  .mobile-cat-row-info small {
-    font-size: 0.75rem;
+    gap: 0.5rem;
+    font-size: 0.84rem;
     color: var(--muted);
+    text-decoration: none;
+    padding: 0.25rem 0;
   }
-
-  .mobile-cat-row-arrow {
-    color: var(--muted);
-    font-size: 1rem;
-  }
-
-  .mobile-secondary-links {
-    display: flex;
-    gap: 1rem;
-    padding-top: 0.75rem;
-    border-top: 1px solid var(--line);
-    margin-top: 0.5rem;
-    font-size: 0.86rem;
-  }
-
-  .mobile-secondary-links a {
-    color: var(--muted);
-  }
-  .mobile-secondary-links a:hover {
-    color: var(--ink);
+  .mobile-tool-item:hover {
+    color: var(--accent);
   }
 </style>
