@@ -57,7 +57,7 @@ export const CATEGORIES: Category[] = [
   {
     id: 'imagenes-multimedia',
     name: 'Imágenes y multimedia',
-    desc: 'Procesamiento 100% privado en tu navegador: redimensión, recorte, metadatos y paletas.',
+    desc: 'Procesamiento directo en tu navegador: redimensión, recorte, metadatos y paletas.',
     icon: 'image'
   },
   {
@@ -235,7 +235,7 @@ export const ALL_TOOLS: ToolItem[] = [
   {
     id: 'calculadora-edad-exacta',
     name: 'Calculadora de edad exacta',
-    desc: 'Averigua tu edad en años, meses, días, horas y cuenta atrás para tu cumpleaños.',
+    desc: 'Averigua tu edad en años, meses, días, horas y cuenta regresiva para tu próximo cumpleaños.',
     href: '/calculadora-edad-exacta',
     icon: 'calendar',
     category: 'fechas-tiempo',
@@ -253,7 +253,7 @@ export const ALL_TOOLS: ToolItem[] = [
   {
     id: 'cuenta-regresiva',
     name: 'Cuenta regresiva con enlace compartible',
-    desc: 'Crea una cuenta atrás interactiva para cualquier evento y compártela por enlace.',
+    desc: 'Crea una cuenta regresiva interactiva para cualquier evento y compártela por enlace.',
     href: '/cuenta-regresiva',
     icon: 'clock',
     featured: true,
@@ -263,7 +263,7 @@ export const ALL_TOOLS: ToolItem[] = [
   {
     id: 'planificador-zonas-horarias',
     name: 'Planificador de zonas horarias',
-    desc: 'Visualiza y coordina la mejor hora de reunión entre múltiples países y husos horarios.',
+    desc: 'Visualiza y coordina la mejor hora de reunión entre múltiples países y zonas horarias.',
     href: '/planificador-zonas-horarias',
     icon: 'globe',
     category: 'fechas-tiempo',
@@ -359,7 +359,7 @@ export const ALL_TOOLS: ToolItem[] = [
   {
     id: 'gasto-combustible-viaje',
     name: 'Calculadora de combustible de viaje',
-    desc: 'Calcula el gasto total de gasolina según distancia, consumo del coche y división por pasajero.',
+    desc: 'Calcula el gasto total de gasolina según distancia, consumo del auto y división por pasajero.',
     href: '/gasto-combustible-viaje',
     icon: 'compass',
     category: 'hogar-vida',
@@ -368,7 +368,7 @@ export const ALL_TOOLS: ToolItem[] = [
   {
     id: 'escalador-recetas',
     name: 'Escalador de recetas de cocina',
-    desc: 'Ajusta proporciones de ingredientes al cambiar el número de comensales o porciones.',
+    desc: 'Ajusta proporciones de ingredientes al cambiar el número de personas o porciones.',
     href: '/escalador-recetas',
     icon: 'coffee',
     category: 'hogar-vida',
@@ -415,7 +415,7 @@ export const ALL_TOOLS: ToolItem[] = [
   {
     id: 'convertir-heic-jpg',
     name: 'Convertidor HEIC a JPG / PNG',
-    desc: 'Convierte fotos de iPhone (.heic) a JPG directamente en tu navegador sin límite.',
+    desc: 'Convierte fotos de iPhone (.heic) a JPG directamente en tu navegador de forma rápida y privada.',
     href: '/convertir-heic-jpg',
     icon: 'refresh',
     category: 'imagenes-multimedia',

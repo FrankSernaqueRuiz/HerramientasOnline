@@ -34,6 +34,86 @@ import Icon from '../components/Icon.astro';
     <button type="button" id="btn-calculate" class="btn-primary btn-full">Calcular división</button>
     <div id="dc-results" class="dc-results hidden"></div>
   </section>
+
+  <!-- Sección de contenido educativo y preguntas frecuentes -->
+  <section class="seo-section">
+    <h2>¿Cómo dividir la cuenta de forma justa en un restaurante?</h2>
+    <p>Dividir la factura entre amigos o compañeros de trabajo suele generar desacuerdos cuando se opta por la clásica división a partes iguales ("a escote"): quien pidió una ensalada y agua termina pagando lo mismo que quien pidió un corte de carne importado y dos cócteles. Nuestra calculadora resuelve este dilema aplicando una <strong>distribución proporcional justa</strong>.</p>
+
+    <div class="step-list">
+      <div class="step-card">
+        <span class="step-num">1</span>
+        <div class="step-body">
+          <h4>Añade a cada comensal con su consumo directo</h4>
+          <p>Escribe el nombre de cada persona y el costo de los platos y bebidas que consumió individualmente.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <span class="step-num">2</span>
+        <div class="step-body">
+          <h4>Ingresa los gastos compartidos por la mesa</h4>
+          <p>Indica el importe de los ítems compartidos (como canastas de pan, entradas al centro, botellas de vino o postres para picar). La calculadora reparte este valor equitativamente entre todos los integrantes.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <span class="step-num">3</span>
+        <div class="step-body">
+          <h4>Selecciona el porcentaje de propina o servicio</h4>
+          <p>Elige entre los porcentajes habituales (10%, 15%, 20%) o define un valor personalizado. La propina de cada persona se pondera en función de su propio consumo total, evitando que quien consumió menos pague la propina de los platos más caros.</p>
+        </div>
+      </div>
+    </div>
+
+    <h3>Casos de uso cotidianos</h3>
+    <div class="guide-grid">
+      <div class="guide-card">
+        <h4>Cenas y almuerzos grupales</h4>
+        <p>Ideal para cumpleaños o reuniones de oficina donde cada persona tiene gustos y presupuestos diferentes.</p>
+      </div>
+      <div class="guide-card">
+        <h4>Gastos de compañeros de departamento</h4>
+        <p>Divide compras comunes de despensa, productos de limpieza y servicios básicos de convivencia sin discusiones.</p>
+      </div>
+      <div class="guide-card">
+        <h4>Viajes por carretera y excursiones</h4>
+        <p>Calcula y divide tickets de supermercado, peajes y comidas en ruta entre todos los pasajeros del viaje.</p>
+      </div>
+    </div>
+
+    <h2>Preguntas frecuentes sobre la división de cuentas</h2>
+    <div class="faq-wrap">
+      <div class="faq-item">
+        <div class="faq-question">¿Por qué la propina proporcional es más justa que la propina fija?</div>
+        <div class="faq-answer">
+          <p>Si la propina se dividiera a partes iguales, una persona cuyo plato costó $10 estaría aportando la misma cantidad de propina que alguien que consumió $50. El cálculo proporcional asegura que cada participante aporte el porcentaje exacto sobre lo que realmente consumió.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Cuál es el porcentaje de propina habitual en Latinoamérica?</div>
+        <div class="faq-answer">
+          <p>En la gran mayoría de países latinoamericanos (como México, Colombia, Perú, Chile o Argentina) la propina voluntaria suele situarse en el 10% del consumo. Para servicios excepcionales o restaurantes gourmet, un 15% es frecuente.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Qué ocurre si alguien no desea dejar propina?</div>
+        <div class="faq-answer">
+          <p>Puedes pulsar el botón "Sin propina (0%)" para obtener únicamente la división exacta del consumo de comida y los gastos compartidos sin ningún recargo adicional.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Puedo redondear los centavos para facilitar el pago en efectivo?</div>
+        <div class="faq-answer">
+          <p>Sí, el desglose final te muestra el monto exacto con dos decimales, permitiendo acordar fácilmente con tus acompañantes el redondeo hacia arriba o hacia abajo en moneda local.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Se almacenan los datos de las cuentas o las personas en UtiliaOnline?</div>
+        <div class="faq-answer">
+          <p>No. En UtiliaOnline todas las operaciones matemáticas se calculan en el momento dentro de tu propio navegador. Ningún dato financiero ni nombre de persona se transmite a internet.</p>
+        </div>
+      </div>
+    </div>
+  </section>
 </Base>
 <style>
   .breadcrumb{font-size:.85rem;color:var(--muted);margin-bottom:.5rem}.breadcrumb a{color:var(--muted)}

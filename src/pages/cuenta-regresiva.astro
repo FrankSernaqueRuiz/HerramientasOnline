@@ -1,11 +1,11 @@
 ---
 import Base from '../layouts/Base.astro';
 ---
-<Base title="Cuenta Regresiva con Enlace Compartible" description="Crea un contador en vivo para cualquier evento y comparte el enlace con amigos para que vean la cuenta atrás.">
+<Base title="Cuenta Regresiva con Enlace Compartible" description="Crea un contador en vivo para cualquier evento y comparte el enlace con amigos para que sigan la cuenta regresiva en tiempo real.">
   <div class="page-header">
-    <div class="breadcrumb"><a href="/">Herramientas</a> / <span>Fechas y tiempo</span></div>
+    <div class="breadcrumb"><a href="/">Inicio</a> / <span>Fechas y tiempo</span></div>
     <h1>Cuenta Regresiva con Enlace Compartible</h1>
-    <p class="lead">Define un evento y su fecha para generar un contador en tiempo real y un enlace que puedes enviar a quien quieras.</p>
+    <p class="lead">Define un evento y su fecha para generar un contador en tiempo real y un enlace que puedes enviar a amigos, familiares o clientes.</p>
   </div>
   <section class="panel">
     <div class="cr-config" id="config-section">
@@ -27,6 +27,86 @@ import Base from '../layouts/Base.astro';
         <span id="cd-copy-msg" class="copy-msg"></span>
       </div>
       <button type="button" id="btn-new" class="btn-text">← Crear otro evento</button>
+    </div>
+  </section>
+
+  <!-- Sección de contenido educativo y preguntas frecuentes -->
+  <section class="seo-section">
+    <h2>¿Cómo crear y compartir una cuenta regresiva en vivo?</h2>
+    <p>Una <strong>cuenta regresiva interactiva</strong> te permite marcar momentos inolvidables y crear expectativa para fechas especiales. Esta herramienta de UtiliaOnline genera un contador dinámico que calcula los días, horas, minutos y segundos exactos que faltan para alcanzar tu objetivo, creando una URL permanente que puedes enviar por WhatsApp, redes sociales o correo electrónico.</p>
+
+    <div class="step-list">
+      <div class="step-card">
+        <span class="step-num">1</span>
+        <div class="step-body">
+          <h4>Nombra tu evento</h4>
+          <p>Escribe un título descriptivo y emotivo (por ejemplo: <em>"Nuestra Boda 💍"</em>, <em>"Viaje a Cancún ✈️"</em> o <em>"Lanzamiento de la Nueva Web 🚀"</em>). Puedes usar emojis para hacerlo más atractivo.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <span class="step-num">2</span>
+        <div class="step-body">
+          <h4>Selecciona la fecha y hora meta</h4>
+          <p>Indica el día exacto y la hora precisa en el selector de fecha y hora local.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <span class="step-num">3</span>
+        <div class="step-body">
+          <h4>Copia el enlace único y compártelo</h4>
+          <p>El sistema genera una dirección web con los parámetros cifrados en la URL. Cualquier persona que abra el enlace verá el contador sincronizado en tiempo real.</p>
+        </div>
+      </div>
+    </div>
+
+    <h3>Casos de uso más populares</h3>
+    <div class="guide-grid">
+      <div class="guide-card">
+        <h4>Bodas, aniversarios y cumpleaños</h4>
+        <p>Acompaña las invitaciones digitales con el enlace para que tus invitados recuerden cuánto falta para la gran celebración.</p>
+      </div>
+      <div class="guide-card">
+        <h4>Lanzamientos de marcas y productos</h4>
+        <p>Genera expectativa en tu comunidad antes de publicar un nuevo video, colección de ropa o curso online.</p>
+      </div>
+      <div class="guide-card">
+        <h4>Vacaciones y viajes soñados</h4>
+        <p>Comparte la cuenta con tus compañeros de viaje para motivarse día a día mientras se acerca la fecha del despegue.</p>
+      </div>
+    </div>
+
+    <h2>Preguntas frecuentes sobre la cuenta regresiva</h2>
+    <div class="faq-wrap">
+      <div class="faq-item">
+        <div class="faq-question">¿El contador se actualiza en vivo segundo a segundo?</div>
+        <div class="faq-answer">
+          <p>Sí. Utiliza un temporizador de alta precisión en JavaScript que refresca los dígitos de días, horas, minutos y segundos cada 1000 milisegundos sin necesidad de recargar la página.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Qué sucede si mis amigos viven en un país con diferente zona horaria?</div>
+        <div class="faq-answer">
+          <p>La fecha y hora meta se codifican en formato estándar universal (ISO 8601). Cuando un amigo en otro país abre el enlace, su navegador ajusta automáticamente la diferencia horaria para que el momento de llegada a cero sea exactamente el mismo para todos.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿El enlace caduca en algún momento?</div>
+        <div class="faq-answer">
+          <p>No caduca. La información del evento viaja en los propios parámetros de la URL, por lo que el enlace funcionará siempre que se mantenga la dirección intacta.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Qué mensaje aparece cuando el contador llega a cero?</div>
+        <div class="faq-answer">
+          <p>Al completarse el tiempo fijado, los dígitos marcan 00:00:00 y la pantalla muestra una felicitación festiva indicando que el momento tan esperado ha llegado.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Se guardan mis eventos privados en una base de datos?</div>
+        <div class="faq-answer">
+          <p>No. En UtiliaOnline no almacenamos bases de datos con tus eventos personales. Todo se procesa en el navegador del visitante a partir del enlace compartido.</p>
+        </div>
+      </div>
     </div>
   </section>
 </Base>

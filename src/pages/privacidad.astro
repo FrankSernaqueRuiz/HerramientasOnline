@@ -2,21 +2,63 @@
 import Base from '../layouts/Base.astro';
 ---
 <Base 
-  title="Política de Privacidad · HerramientasOnline" 
-  description="Conoce nuestra política de privacidad y protección de datos. Todas nuestras herramientas funcionan 100% en tu navegador."
+  title="Política de Privacidad · UtiliaOnline" 
+  description="Conoce la política de privacidad de UtiliaOnline. Explicamos detalladamente el procesamiento local en el navegador, el uso de cookies publicitarias de Google AdSense y tus derechos."
 >
-  <h1>Política de Privacidad</h1>
-  <p class="lead">Tu privacidad es nuestra máxima prioridad. Conoce cómo tratamos la información.</p>
+  <div class="page-header">
+    <div class="breadcrumb"><a href="/">Inicio</a> / <span>Privacidad</span></div>
+    <h1>Política de Privacidad de UtiliaOnline</h1>
+    <p class="lead">Transparencia absoluta: conoce cómo protegemos tus datos, cómo operan nuestras herramientas y cómo gestionamos las cookies publicitarias.</p>
+  </div>
 
-  <section class="panel">
-    <h2>1. Procesamiento 100% Local</h2>
-    <p>La gran mayoría de nuestras herramientas (contador de palabras, lector de documentos Word y PDF, generador de contraseñas, cálculo de fechas y generador de códigos QR) se ejecutan <strong>directamente en tu navegador web</strong>. Tus textos, contraseñas y archivos nunca se transmiten, almacenan ni recopilan en servidores propios.</p>
+  <section class="panel" style="line-height: 1.7; font-size: 0.95rem;">
+    <p><strong>Última actualización:</strong> Octubre 2026</p>
+    
+    <p>En <strong>UtiliaOnline</strong> (accesible desde nuestro sitio web), la privacidad de nuestros visitantes es de vital importancia. Esta Política de Privacidad describe qué información recopilamos, cómo la utilizamos y qué medidas adoptamos para garantizar la seguridad y privacidad de tu navegación.</p>
 
-    <h2>2. Anuncios y Publicidad de Terceros (Google AdSense)</h2>
-    <p>Para mantener este servicio 100% gratuito, utilizamos proveedores publicitarios de terceros, como <strong>Google AdSense</strong>. Google utiliza cookies (incluida la cookie de DoubleClick) para publicar anuncios basados en las visitas anteriores de los usuarios a este sitio web o a otros sitios web de Internet.</p>
-    <p>Los usuarios pueden inhabilitar la publicidad personalizada visitando la <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener">Configuración de anuncios de Google</a>.</p>
+    <h2>1. Procesamiento Local en tu Navegador (Client-Side)</h2>
+    <p>La filosofía central de UtiliaOnline es la privacidad por diseño. <strong>La gran mayoría de nuestras herramientas funcionan directamente en tu navegador web</strong> mediante JavaScript del lado del cliente:</p>
+    <ul>
+      <li><strong>Archivos e imágenes:</strong> Herramientas como recortar fotos, redimensionar imágenes, remover metadatos EXIF o extraer paletas de color procesan los archivos en la memoria local de tu dispositivo a través de la API Canvas y FileReader del navegador. Tus imágenes <em>nunca se suben a un servidor remoto</em>.</li>
+      <li><strong>Textos y contraseñas:</strong> El generador de contraseñas seguras, contador de palabras, limpiador de texto y formateador Unicode realizan todos sus cálculos y transformaciones de forma local e instantánea.</li>
+      <li><strong>Cálculos financieros y fechas:</strong> Calculadoras de división de cuentas, intereses, fechas de gestación o ciclos de sueño operan íntegramente con lógica matemática en tu navegador.</li>
+    </ul>
 
-    <h2>3. Cookies de Rendimiento</h2>
-    <p>Podemos utilizar tecnologías estándar de la industria para evaluar el rendimiento técnico y mejorar la experiencia de navegación del usuario.</p>
+    <h2>2. Excepciones y Herramientas con Servicios Externos</h2>
+    <p>Para ser 100% transparentes, algunas funcionalidades avanzadas pueden interactuar con servicios o endpoints de red:</p>
+    <ul>
+      <li><strong>Texto a voz y síntesis de audio:</strong> Cuando una herramienta requiere convertir texto a locución mediante servicios externos o descargas de audio sintetizado, el fragmento de texto introducido se transmite de forma cifrada al servicio encargado de la síntesis para producir el flujo de audio. Dicho texto no se vincula a tu identidad personal ni se almacena para fines publicitarios. Siempre que esté disponible, UtiliaOnline prioriza la API nativa de síntesis de voz de tu propio sistema operativo y navegador (Web Speech API).</li>
+      <li><strong>Generación de enlaces y mensajería (WhatsApp):</strong> El generador de enlaces genera URLs directas con el protocolo oficial <code>wa.me</code>. No almacenamos números de teléfono, agendas ni el contenido de los mensajes configurados.</li>
+    </ul>
+
+    <h2>3. Cookies Publicitarias y Google AdSense</h2>
+    <p>Para mantener UtiliaOnline como un recurso gratuito y accesible para toda la comunidad sin suscripciones de pago, mostramos anuncios publicitarios gestionados por proveedores externos, principalmente <strong>Google AdSense</strong>.</p>
+    <p>Es importante que conozcas las siguientes prácticas de los proveedores publicitarios:</p>
+    <ul>
+      <li>Google y otros proveedores asociados utilizan <strong>cookies</strong> para publicar anuncios basados en las visitas previas del usuario a este sitio web o a otros sitios de Internet.</li>
+      <li>El uso de cookies de publicidad (incluida la cookie de DoubleClick) permite a Google y a sus socios presentar anuncios orientados a los usuarios en función de los sitios que visitan en la red.</li>
+      <li>Los usuarios pueden optar por <strong>inhabilitar la publicidad personalizada</strong> visitando la página de <a href="https://myadcenter.google.com/" target="_blank" rel="noopener noreferrer">Configuración de Anuncios de Google (My Ad Center)</a>.</li>
+      <li>Alternativamente, puedes inhabilitar el uso de cookies para publicidad basada en intereses por parte de proveedores externos accediendo al portal independiente <a href="https://www.aboutads.info/choices/" target="_blank" rel="noopener noreferrer">AboutAds.info Choices</a>.</li>
+    </ul>
+
+    <h2>4. Tecnologías de Almacenamiento Local (LocalStorage y SessionStorage)</h2>
+    <p>UtiliaOnline puede utilizar el almacenamiento local del navegador (<code>localStorage</code> o <code>sessionStorage</code>) exclusivamente para:</p>
+    <ul>
+      <li>Recordar preferencias del usuario (por ejemplo, el país seleccionado para el cálculo de feriados, la última divisa seleccionada o el estado de visualización de una herramienta).</li>
+      <li>Almacenar borradores temporales para que no pierdas tu trabajo si recargas la página accidentalmente.</li>
+    </ul>
+    <p>Estos datos permanecen estrictamente en la memoria de tu navegador y puedes borrarlos en cualquier momento limpiando los datos de navegación o caché de tu explorador.</p>
+
+    <h2>5. Archivos de Registro y Métricas Técnicas</h2>
+    <p>Al igual que la mayoría de plataformas web modernas, nuestros servidores de alojamiento pueden registrar automáticamente datos técnicos estándar en archivos de registro (logs), que incluyen: dirección de protocolo de Internet (IP), tipo de navegador, proveedor de servicios de Internet (ISP), páginas de referencia/salida, fecha y hora de la solicitud. Estos registros se utilizan con fines de seguridad informática, mitigación de ataques de denegación de servicio (DDoS) y diagnóstico de errores en el servidor, sin asociarse a personas identificables.</p>
+
+    <h2>6. Enlaces a Sitios de Terceros</h2>
+    <p>Nuestro portal puede contener enlaces a recursos externos (como WhatsApp, organismos oficiales o fuentes de documentación). Si haces clic en un enlace de terceros, serás dirigido a su respectivo sitio. Te recomendamos revisar las políticas de privacidad específicas de cualquier sitio externo que visites, ya que no ejercemos control sobre sus prácticas o contenidos.</p>
+
+    <h2>7. Modificaciones a esta Política</h2>
+    <p>Podemos actualizar nuestra Política de Privacidad periódicamente para reflejar cambios en nuestras herramientas, nuevas directivas legales o actualizaciones en las directrices de Google AdSense. Cualquier actualización será publicada inmediatamente en esta página con la fecha de revisión correspondiente.</p>
+
+    <h2>8. Contacto y Consultas</h2>
+    <p>Si tienes preguntas, dudas o inquietudes sobre esta Política de Privacidad o el tratamiento de información en UtiliaOnline, puedes comunicarte con nuestro equipo a través de nuestra página de <a href="/contacto">Contacto y Soporte</a> o escribiéndonos directamente a nuestro correo de soporte técnico.</p>
   </section>
 </Base>

@@ -378,17 +378,196 @@ footer.site .footer-links a:hover {
   color: var(--ink);
 }
 
-/* SEO content */
+/* SEO & Editorial content */
 .seo-section {
-  margin-top: 2.5rem;
-  padding-top: 1.5rem;
+  margin-top: 3rem;
+  padding-top: 2rem;
   border-top: 1px solid var(--line);
+}
+
+.seo-section h2 {
+  font-size: 1.35rem;
+  font-weight: 700;
+  margin: 1.8rem 0 0.8rem;
+  color: var(--ink);
+}
+
+.seo-section h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 1.25rem 0 0.5rem;
+  color: var(--ink);
 }
 
 .seo-section p {
   color: var(--muted);
-  line-height: 1.6;
-  font-size: 0.92rem;
+  line-height: 1.7;
+  font-size: 0.95rem;
+  margin-bottom: 1rem;
+}
+
+.seo-section ul, .seo-section ol {
+  color: var(--muted);
+  line-height: 1.7;
+  font-size: 0.95rem;
+  padding-left: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+.seo-section li {
+  margin-bottom: 0.4rem;
+}
+
+.seo-section strong {
+  color: var(--ink);
+}
+
+/* Guide Cards Grid */
+.guide-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
+  margin: 1.25rem 0 2rem;
+}
+
+.guide-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 1.2rem;
+}
+
+.guide-card h4 {
+  margin: 0 0 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.guide-card p {
+  font-size: 0.88rem;
+  color: var(--muted);
+  margin: 0;
+  line-height: 1.55;
+}
+
+/* Steps list */
+.step-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  margin: 1.25rem 0 2rem;
+}
+
+.step-card {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 1rem 1.15rem;
+}
+
+.step-num {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.step-body h4 {
+  margin: 0 0 0.25rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.step-body p {
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+/* FAQ Accordion / Cards */
+.faq-wrap {
+  margin: 1.5rem 0 2.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.faq-item {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  transition: border-color 0.15s;
+}
+
+.faq-item:hover {
+  border-color: var(--muted);
+}
+
+.faq-question {
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: none;
+  padding: 1rem 1.25rem;
+  font-size: 0.96rem;
+  font-weight: 600;
+  color: var(--ink);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+
+.faq-answer {
+  padding: 0 1.25rem 1.1rem;
+  font-size: 0.9rem;
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+.faq-answer p:last-child {
+  margin-bottom: 0;
+}
+
+/* Medical & Orientative Disclaimers */
+.medical-disclaimer {
+  display: flex;
+  gap: 0.85rem;
+  align-items: flex-start;
+  padding: 1rem 1.2rem;
+  border-radius: var(--radius-sm);
+  background: rgba(234, 179, 8, 0.08);
+  border: 1px solid rgba(234, 179, 8, 0.35);
+  margin: 1.5rem 0;
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: var(--ink);
+}
+
+.medical-disclaimer-icon {
+  font-size: 1.3rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.medical-disclaimer strong {
+  color: #eab308;
+  display: block;
+  margin-bottom: 0.25rem;
 }
 
 @media (prefers-reduced-motion: reduce) {

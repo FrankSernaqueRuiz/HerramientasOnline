@@ -87,8 +87,91 @@ import Icon from '../components/Icon.astro';
   </section>
 
   <section class="seo-section">
-    <h2>Sorteos transparentes y rápidos</h2>
-    <p>Ideal para concursos en Instagram, TikTok o YouTube. Toda la selección ocurre en tu navegador con <code>crypto.getRandomValues</code> para garantizar aleatoriedad criptográfica.</p>
+    <h2>Guía para realizar sorteos limpios y transparentes en redes sociales</h2>
+    <p>Organizar dinámicas de premios en Instagram, TikTok, YouTube o Facebook es una de las estrategias más eficaces para premiar a tu comunidad y aumentar el alcance orgánico. Sin embargo, la credibilidad de tu marca depende de que el sorteo sea <strong>100% verificable e imparcial</strong>.</p>
+    
+    <p>El sorteador de UtiliaOnline utiliza la API nativa <code>crypto.getRandomValues()</code> del navegador, el mismo estándar matemático y criptográfico empleado en seguridad bancaria y generación de claves. A diferencia de generadores basados en funciones pseudoaleatorias simples como <code>Math.random()</code>, la aleatoriedad criptográfica garantiza una distribución uniforme imposible de predecir o manipular.</p>
+
+    <div class="step-list">
+      <div class="step-card">
+        <span class="step-num">1</span>
+        <div class="step-body">
+          <h4>Prepara la lista de participantes</h4>
+          <p>Copia los nombres o usuarios (uno por cada renglón) directamente desde tu hoja de cálculo, comentarios de Instagram o base de datos de inscritos y pégalos en el cuadro de texto.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <span class="step-num">2</span>
+        <div class="step-body">
+          <h4>Configura el número de ganadores y duplicados</h4>
+          <p>Indica si habrá 1 o más ganadores simultáneos. Si la dinámica premiaba a usuarios por comentar varias veces, marca la casilla <em>"Permitir repetidos"</em>; si la regla era una sola participación por persona, déjala desmarcada para eliminar duplicados automáticamente.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <span class="step-num">3</span>
+        <div class="step-body">
+          <h4>Elige el tiempo de animación para generar suspenso</h4>
+          <p>Puedes seleccionar una animación de 2, 5 u 8 segundos para crear expectativa mientras grabas la pantalla para tus historias o transmisiones en directo.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <span class="step-num">4</span>
+        <div class="step-body">
+          <h4>Captura el certificado visual del resultado</h4>
+          <p>Al concluir el sorteo, la herramienta genera una tarjeta elegante con fecha, hora exacta y nombres seleccionados, perfecta para publicar en historias o posts.</p>
+        </div>
+      </div>
+    </div>
+
+    <h3>Casos de uso frecuentes</h3>
+    <div class="guide-grid">
+      <div class="guide-card">
+        <h4>Concursos de comentarios en Instagram / TikTok</h4>
+        <p>Exporta los comentarios de tu publicación y elige al ganador frente a tu audiencia sin depender de aplicaciones de terceros que cobran por lista extensa.</p>
+      </div>
+      <div class="guide-card">
+        <h4>Dinámicas de equipo y amigo secreto</h4>
+        <p>Organiza rifas de regalos navideños, asignación de turnos o dinámicas de integración laboral de manera justa y divertida.</p>
+      </div>
+      <div class="guide-card">
+        <h4>Rifas benéficas y eventos en vivo</h4>
+        <p>Proyecta la pantalla durante eventos presenciales o directos de Twitch/YouTube para que todos los asistentes presencien la animación de ruleta en vivo.</p>
+      </div>
+    </div>
+
+    <h2>Preguntas frecuentes sobre el sorteador</h2>
+    <div class="faq-wrap">
+      <div class="faq-item">
+        <div class="faq-question">¿Cómo puedo demostrar a mis seguidores que el sorteo fue legítimo?</div>
+        <div class="faq-answer">
+          <p>La mejor práctica es grabar la pantalla completa durante el sorteo (usando la grabadora de tu teléfono o programas como OBS). Muestra el momento en que pegas la lista, seleccionas la animación y se revelan los nombres con la hora oficial del sistema.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Hay algún límite en la cantidad de participantes?</div>
+        <div class="faq-answer">
+          <p>No hay límites arbitrarios. Puedes pegar miles de participantes sin problema; al procesarse en la memoria RAM de tu propio navegador, la velocidad de respuesta es prácticamente instantánea.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Qué sucede si un ganador no cumple con los requisitos del concurso?</div>
+        <div class="faq-answer">
+          <p>Puedes configurar el número de ganadores sumando suplentes (por ejemplo, 1 ganador principal y 2 suplentes) o realizar un nuevo sorteo inmediato retirando el nombre no válido de la lista original.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Se envían los datos de mis seguidores a algún servidor?</div>
+        <div class="faq-answer">
+          <p>No. En UtiliaOnline valoramos la privacidad: la lista de participantes jamás se transfiere ni almacena en servidores externos. Todo el proceso ocurre estrictamente en tu navegador.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Funciona en teléfonos móviles o tabletas?</div>
+        <div class="faq-answer">
+          <p>Sí, la interfaz es completamente adaptable y táctil, ideal para ejecutar sorteos rápidos directamente desde tu teléfono móvil.</p>
+        </div>
+      </div>
+    </div>
   </section>
 </Base>
 
