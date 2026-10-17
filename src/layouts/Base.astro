@@ -13,7 +13,7 @@ interface Props {
 
 const { title, description, topAd = false, keywords = '' } = Astro.props;
 const client = import.meta.env.PUBLIC_ADSENSE_CLIENT;
-const siteUrl = Astro.site?.toString().replace(/\/$/, '') || 'https://tudominio.com';
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') || 'https://utiliaonline.com';
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const pagePath = Astro.url.pathname;
 const isHome = pagePath === '/' || pagePath === '';
