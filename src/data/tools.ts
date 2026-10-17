@@ -242,11 +242,22 @@ export const ALL_TOOLS: ToolItem[] = [
     status: 'ready'
   },
   {
+    id: 'calculadora-fechas',
+    name: 'Calculadora de fechas',
+    desc: 'Calcula el tiempo exacto en años, meses y días entre fechas, o suma y resta días a cualquier fecha.',
+    href: '/calculadora-fechas',
+    icon: 'calendar',
+    featured: true,
+    category: 'fechas-tiempo',
+    status: 'ready'
+  },
+  {
     id: 'dias-habiles-fechas',
-    name: 'Días hábiles entre fechas',
-    desc: 'Cuenta días laborables hábiles excluyendo sábados, domingos y feriados.',
+    name: 'Días hábiles entre fechas (con feriados)',
+    desc: 'Calcula días hábiles laborables excluyendo fines de semana y feriados oficiales por país.',
     href: '/dias-habiles-fechas',
     icon: 'calendar',
+    featured: true,
     category: 'fechas-tiempo',
     status: 'ready'
   },
@@ -459,15 +470,7 @@ export const ALL_TOOLS: ToolItem[] = [
     category: 'texto-utilidades',
     status: 'ready'
   },
-  {
-    id: 'contador-meses',
-    name: 'Calculadora de Fechas',
-    desc: 'Cálculo de meses, semanas y días entre dos fechas. Incluye cuenta regresiva para días festivos.',
-    href: '/contador-meses',
-    icon: 'calendar',
-    category: 'texto-utilidades',
-    status: 'ready'
-  },
+
   {
     id: 'generador-qr',
     name: 'Generador de Códigos QR',

@@ -3,86 +3,181 @@ import Base from '../layouts/Base.astro';
 ---
 <Base 
   title="Calculadora de Días Hábiles entre Dos Fechas con Feriados por País" 
-  description="Calcula los días hábiles y laborables entre dos fechas, descontando fines de semana y feriados nacionales oficiales de México, Colombia, Argentina, Perú, Chile, España y más."
+  description="Calcula los días hábiles y laborables entre dos fechas, descontando fines de semana y feriados oficiales de Perú, México, Colombia, Argentina, Chile, España, EE.UU. y más."
 >
   <div class="page-header">
-    <div class="breadcrumb"><a href="/">Inicio</a> / <span>Fechas y tiempo</span></div>
+    <div class="breadcrumb">
+      <a href="/">Inicio</a> / <a href="/categoria/fechas-tiempo">Fechas y tiempo</a> / <span>Días hábiles entre fechas</span>
+    </div>
     <h1>Días Hábiles entre Fechas</h1>
-    <p class="lead">Calcula con precisión los días laborables hábiles en cualquier periodo, seleccionando tu país para excluir automáticamente los feriados oficiales.</p>
+    <p class="lead">Calcula con precisión los días laborables hábiles en cualquier periodo, seleccionando tu país para excluir automáticamente los feriados oficiales nacionales.</p>
+  </div>
+
+  <!-- Banner a Calculadora de Fechas generales -->
+  <div class="biz-notice-banner">
+    <div class="biz-notice-content">
+      <span class="biz-notice-icon">⏱️</span>
+      <div>
+        <strong>¿Buscas calcular días naturales, meses y años sin descontar feriados?</strong>
+        <p>Utiliza nuestra calculadora general de fechas con suma, resta y cuenta regresiva.</p>
+      </div>
+    </div>
+    <a href="/calculadora-fechas" class="biz-notice-btn">Ir a Calculadora de Fechas →</a>
   </div>
 
   <section class="panel">
-    <div class="dh-grid">
-      <div class="field">
-        <label for="dh-start">Fecha de inicio:</label>
-        <input type="date" id="dh-start" class="form-input" />
-      </div>
-      <div class="field">
-        <label for="dh-end">Fecha de fin:</label>
-        <input type="date" id="dh-end" class="form-input" />
-      </div>
+    <!-- Pestañas de modo -->
+    <div class="dh-tabs">
+      <button type="button" class="dh-tab active" data-tab="between">
+        <span>📅</span> Contar días hábiles entre dos fechas
+      </button>
+      <button type="button" class="dh-tab" data-tab="addsub">
+        <span>➕➖</span> Sumar o restar días hábiles a una fecha
+      </button>
     </div>
 
-    <div class="dh-controls-grid">
-      <div class="field">
+    <!-- SELECTOR DE PAÍS Y OPCIONES COMPARTIDAS -->
+    <div class="config-bar">
+      <div class="field country-field">
         <label for="dh-country">País para feriados oficiales:</label>
         <select id="dh-country" class="form-input">
-          <option value="none">Sin feriados (solo descontar fines de semana)</option>
-          <option value="MX" selected>México (Feriados oficiales LFT)</option>
-          <option value="CO">Colombia (Feriados Ley Emiliani)</option>
-          <option value="AR">Argentina (Feriados nacionales)</option>
-          <option value="PE">Perú (Feriados nacionales)</option>
-          <option value="CL">Chile (Feriados nacionales)</option>
-          <option value="ES">España (Feriados nacionales)</option>
-          <option value="US">Estados Unidos (Federal Holidays)</option>
+          <option value="PE" selected>🇵🇪 Perú (Feriados nacionales Ley 31530 + Semana Santa)</option>
+          <option value="MX">🇲🇽 México (Feriados oficiales LFT + festivos bancarios)</option>
+          <option value="CO">🇨🇴 Colombia (Ley Emiliani con traslados a lunes + Semana Santa)</option>
+          <option value="AR">🇦🇷 Argentina (Feriados nacionales e inamovibles)</option>
+          <option value="ES">🇪🇸 España (Festivos nacionales BOE + Viernes Santo)</option>
+          <option value="CL">🇨🇱 Chile (Feriados nacionales irrenunciables y legales)</option>
+          <option value="US">🇺🇸 Estados Unidos (US Federal Holidays)</option>
+          <option value="EC">🇪🇨 Ecuador (Feriados nacionales)</option>
+          <option value="BO">🇧🇴 Bolivia (Feriados nacionales)</option>
+          <option value="UY">🇺🇾 Uruguay (Feriados nacionales)</option>
+          <option value="none">🌐 Sin feriados (solo descontar fines de semana)</option>
         </select>
       </div>
 
-      <div class="check-opt-wrap">
+      <div class="check-group">
         <label class="check-opt" for="dh-sat">
           <input type="checkbox" id="dh-sat" />
-          <span>Considerar sábados como días laborables</span>
+          <span>Considerar sábados como laborables</span>
         </label>
+        <div class="hours-inline">
+          <label for="dh-work-hours">Jornada:</label>
+          <input type="number" id="dh-work-hours" value="8" min="1" max="24" class="form-input hours-input" />
+          <span>h/día</span>
+        </div>
       </div>
     </div>
 
-    <div id="dh-results" class="dh-results"></div>
+    <!-- MODO 1: CONTAR ENTRE DOS FECHAS -->
+    <div id="pane-between" class="tab-pane active">
+      <div class="dh-grid">
+        <div class="field">
+          <label for="dh-start">Fecha de inicio:</label>
+          <input type="date" id="dh-start" class="form-input" />
+        </div>
+        <div class="field">
+          <label for="dh-end">Fecha de fin:</label>
+          <input type="date" id="dh-end" class="form-input" />
+        </div>
+      </div>
 
-    <div id="dh-holidays-box" class="holidays-box" style="display: none;">
-      <h3>Feriados oficiales detectados en este rango:</h3>
-      <ul id="dh-holidays-list" class="holidays-list"></ul>
+      <div class="quick-presets">
+        <span class="preset-label">Periodos rápidos:</span>
+        <button type="button" class="preset-btn" data-preset="month">Próximos 30 días</button>
+        <button type="button" class="preset-btn" data-preset="cur-month">Mes en curso</button>
+        <button type="button" class="preset-btn" data-preset="next-month">Mes siguiente</button>
+        <button type="button" class="preset-btn" data-preset="end-year">Hoy a fin de año</button>
+      </div>
+
+      <div id="dh-results" class="dh-results"></div>
+
+      <div class="summary-box" style="margin-bottom: 1.25rem;">
+        <div class="summary-text" id="dh-human-text">
+          Calculando días hábiles...
+        </div>
+        <button type="button" id="btn-copy-dh" class="copy-btn" title="Copiar resumen">
+          📋 Copiar resumen
+        </button>
+      </div>
+
+      <div id="dh-holidays-box" class="holidays-box" style="display: none;">
+        <div class="holidays-box-head">
+          <h3>Feriados oficiales detectados en este rango:</h3>
+          <span class="holidays-badge" id="dh-holidays-count-badge">0 feriados</span>
+        </div>
+        <ul id="dh-holidays-list" class="holidays-list"></ul>
+      </div>
+    </div>
+
+    <!-- MODO 2: SUMAR O RESTAR DÍAS HÁBILES -->
+    <div id="pane-addsub" class="tab-pane">
+      <div class="dh-addsub-grid">
+        <div class="field">
+          <label for="dha-start">Fecha inicial:</label>
+          <input type="date" id="dha-start" class="form-input" />
+        </div>
+        <div class="field">
+          <label for="dha-op">Operación:</label>
+          <select id="dha-op" class="form-input">
+            <option value="add" selected>Sumar días hábiles (+)</option>
+            <option value="sub">Restar días hábiles (−)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="dha-days">Cantidad de días hábiles:</label>
+          <input type="number" id="dha-days" class="form-input" min="1" max="3650" value="15" />
+        </div>
+      </div>
+
+      <div class="quick-presets">
+        <span class="preset-label">Plazos frecuentes:</span>
+        <button type="button" class="preset-btn dha-quick" data-days="5">5 días hábiles (1 sem)</button>
+        <button type="button" class="preset-btn dha-quick" data-days="10">10 días hábiles (2 sem)</button>
+        <button type="button" class="preset-btn dha-quick" data-days="15">15 días hábiles (plazo legal)</button>
+        <button type="button" class="preset-btn dha-quick" data-days="20">20 días hábiles (1 mes aprox.)</button>
+        <button type="button" class="preset-btn dha-quick" data-days="30">30 días hábiles</button>
+      </div>
+
+      <div class="as-result-card" id="dha-result-box">
+        <div class="as-result-tag">Fecha límite resultante</div>
+        <div class="as-result-date" id="dha-res-date">--</div>
+        <div class="as-result-sub" id="dha-res-sub">--</div>
+        <button type="button" id="btn-copy-dha" class="copy-btn" style="margin-top: .75rem;">
+          📋 Copiar fecha límite
+        </button>
+      </div>
     </div>
   </section>
 
   <!-- Sección de contenido educativo y preguntas frecuentes -->
   <section class="seo-section">
     <h2>¿Qué son los días hábiles y cómo se calculan?</h2>
-    <p>Los <strong>días hábiles</strong> (también denominados días laborables o útiles según la legislación de cada país) son aquellos días de la semana en los que operan normalmente las administraciones públicas, los tribunales de justicia, el sistema bancario y el comercio general. Por norma general, abarcan de lunes a viernes, quedando excluidos los sábados, los domingos y los <strong>días feriados oficiales</strong> establecidos por ley en cada territorio nacional.</p>
+    <p>Los <strong>días hábiles</strong> (también denominados días útiles o laborables según la legislación de cada país) son las jornadas en las que operan con normalidad las dependencias judiciales, los organismos públicos, el sistema financiero y el comercio. Por regla general, van de lunes a viernes, quedando excluidos los sábados, los domingos y los <strong>días feriados nacionales no laborables</strong> decretados por el Estado.</p>
     
-    <p>Calcular este intervalo con exactitud es indispensable para evitar vencimientos fuera de plazo en trámites gubernamentales, responder a requerimientos legales o calcular la fecha de entrega de un envío comercial.</p>
+    <p>Contar este intervalo con precisión matemática es indispensable para no incurrir en extemporaneidad en recursos judiciales, contestación de demandas, presentación de licitaciones públicas, cumplimiento de contratos mercantiles o cómputo de términos administrativos.</p>
 
     <h3>Diferencias clave entre tipos de días</h3>
     <div class="guide-grid">
       <div class="guide-card">
         <h4>Días Naturales o Calendario</h4>
-        <p>Son absolutamente todos los días consecutivos del año (de lunes a domingo, incluidos festivos). Se utilizan frecuentemente en contratos de alquiler, plazos de garantía y periodos de suscripción.</p>
+        <p>Son todos los días sucesivos del año sin excepción (de lunes a domingo, incluidos festivos). Se aplican en plazos de garantía, suscripciones y contratos de alquiler.</p>
       </div>
       <div class="guide-card">
-        <h4>Días Hábiles</h4>
-        <p>Son los días formalmente aptos para realizar actos procesales, administrativos y bancarios. Excluyen fines de semana y feriados oficiales decretados por el Estado.</p>
+        <h4>Días Hábiles Judiciales y Administrativos</h4>
+        <p>Son los días formalmente aptos para actos procesales. Excluyen fines de semana y feriados del país. En materia procesal suele regir el cómputo a partir del día siguiente al de la notificación (dies a quo).</p>
       </div>
       <div class="guide-card">
         <h4>Días Laborables Comerciales</h4>
-        <p>Dependen del convenio o sector económico. En comercio y hotelería, los sábados suelen computarse como laborables, mientras que en oficinas corporativas y bancos la jornada termina el viernes.</p>
+        <p>Dependen del convenio o sector. En comercio, distribución y hostelería el sábado suele computarse como laborable, mientras que en entidades bancarias finaliza el viernes.</p>
       </div>
     </div>
 
     <h3>Casos de uso frecuentes</h3>
     <ul>
-      <li><strong>Plazos judiciales y administrativos:</strong> Conteo de términos procesales (por ejemplo, 15 días hábiles para interponer un recurso o responder una notificación legal).</li>
-      <li><strong>Comercio electrónico y logística:</strong> Estimación de plazos reales de despacho y entrega de paquetes (ej. "entrega en 3 a 5 días hábiles").</li>
-      <li><strong>Recursos Humanos y nómina:</strong> Cálculo de días trabajados en periodos parciales, liquidación de vacaciones no disfrutadas y altas ante la seguridad social.</li>
-      <li><strong>Trámites bancarios e inversiones:</strong> Compensación de transferencias interbancarias internacionales o acreditación de cheques.</li>
+      <li><strong>Plazos judiciales y administrativos:</strong> Conteo de términos procesales (por ejemplo, 15 días hábiles para subsanar observaciones ante la administración tributaria o interponer recursos de apelación).</li>
+      <li><strong>Logística y compras por internet:</strong> Estimación real del plazo de despacho y entrega de pedidos en días hábiles de transporte.</li>
+      <li><strong>Recursos Humanos y nómina:</strong> Cálculo de días laborables netos en periodos parciales, liquidación de vacaciones no gozadas y altas ante la seguridad social.</li>
+      <li><strong>Operaciones financieras:</strong> Liquidación de transferencias interbancarias internacionales (SWIFT) o compensación de cheques.</li>
     </ul>
 
     <h2>Preguntas frecuentes sobre el conteo de días hábiles</h2>
@@ -90,31 +185,25 @@ import Base from '../layouts/Base.astro';
       <div class="faq-item">
         <div class="faq-question">¿El día inicial y el final se incluyen en el conteo?</div>
         <div class="faq-answer">
-          <p>Nuestra calculadora incluye ambos extremos si coinciden con días hábiles. Sin embargo, en muchas normativas jurídicas rige el principio procesal de que los plazos comienzan a contar a partir del día siguiente al de la notificación (dies a quo) y vencen al finalizar el último día del plazo. Verifica siempre el código procesal de tu país.</p>
+          <p>Nuestra calculadora incluye ambos extremos si corresponden a días hábiles. Si en tu caso procesal el término comienza a correr a partir del día siguiente al de la notificación, introduce la fecha del día siguiente como fecha inicial.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Cómo se calculan los feriados de Semana Santa?</div>
+        <div class="faq-answer">
+          <p>Nuestra herramienta incorpora el algoritmo astronómico universal para calcular la Pascua gregoriana (Computus), determinando automáticamente la fecha exacta del Jueves Santo y Viernes Santo para cualquier año que elijas.</p>
         </div>
       </div>
       <div class="faq-item">
         <div class="faq-question">¿Qué ocurre si un feriado coincide con un fin de semana?</div>
         <div class="faq-answer">
-          <p>Depende de la ley del país seleccionado. En algunos países (como México o Colombia con la Ley Emiliani), ciertos feriados se trasladan automáticamente al lunes más próximo. Si el feriado coincide con un domingo y no es trasladable, no resta un día hábil adicional porque el domingo ya fue descontado como fin de semana.</p>
-        </div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-question">¿Se incluyen feriados locales o provinciales?</div>
-        <div class="faq-answer">
-          <p>La calculadora contempla los feriados de carácter <strong>nacional u oficial</strong> de cada país. Los festivos municipales, patronales o autonómicos de una ciudad específica no se descuentan automáticamente, pero puedes tenerlos en cuenta restando los días puntuales que correspondan a tu localidad.</p>
-        </div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-question">¿Por qué es importante activar o desactivar los sábados?</div>
-        <div class="faq-answer">
-          <p>Muchas actividades mercantiles y tiendas operan los sábados como jornada regular de trabajo. Nuestra casilla te permite activar los sábados como laborables si tu empresa o convenio colectivo cuenta los sábados dentro de la jornada laboral.</p>
+          <p>En legislaciones como Colombia (Ley Emiliani) o México, los festivos trasladables se mueven al lunes. En los países donde el feriado no se traslada y coincide con domingo, no resta un día hábil extra porque el domingo ya fue excluido como fin de semana.</p>
         </div>
       </div>
       <div class="faq-item">
         <div class="faq-question">¿Se envían las fechas o el país a un servidor externo?</div>
         <div class="faq-answer">
-          <p>No. En UtiliaOnline todo el algoritmo de cálculo, el calendario perpetuo y la base de datos de feriados se ejecutan 100% en el código local de tu navegador.</p>
+          <p>No. En UtiliaOnline todo el algoritmo de cálculo, el calendario perpetuo y la base de feriados se ejecutan de manera privada y 100% local en tu navegador.</p>
         </div>
       </div>
     </div>
@@ -122,43 +211,396 @@ import Base from '../layouts/Base.astro';
 </Base>
 
 <style>
-  .breadcrumb{font-size:.85rem;color:var(--muted);margin-bottom:.5rem}.breadcrumb a{color:var(--muted)}
-  .dh-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1rem}
-  @media(max-width:768px){.dh-grid{grid-template-columns:1fr}}
+  .breadcrumb { font-size: .85rem; color: var(--muted); margin-bottom: .5rem; }
+  .breadcrumb a { color: var(--muted); text-decoration: none; }
+  .breadcrumb a:hover { color: var(--accent); }
 
-  .dh-controls-grid{display:grid;grid-template-columns:1.5fr 1fr;gap:1.25rem;align-items:end;margin-bottom:1.5rem}
-  @media(max-width:768px){.dh-controls-grid{grid-template-columns:1fr}}
+  .biz-notice-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    background: rgba(47, 129, 247, 0.08);
+    border: 1px solid rgba(47, 129, 247, 0.25);
+    border-radius: var(--radius-sm);
+    padding: 0.9rem 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+  @media(max-width: 768px) {
+    .biz-notice-banner { flex-direction: column; align-items: flex-start; }
+  }
+  .biz-notice-content {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+  }
+  .biz-notice-icon { font-size: 1.75rem; line-height: 1; }
+  .biz-notice-content strong { color: var(--ink); font-size: 0.95rem; }
+  .biz-notice-content p { margin: 0.2rem 0 0; color: var(--muted); font-size: 0.85rem; }
+  .biz-notice-btn {
+    white-space: nowrap;
+    background: var(--surface-card);
+    border: 1px solid var(--line);
+    color: var(--ink);
+    padding: 0.55rem 0.95rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.15s;
+  }
+  .biz-notice-btn:hover { border-color: var(--accent); color: var(--accent); }
 
-  .field label{display:block;font-weight:600;font-size:.9rem;margin-bottom:.4rem}
-  .form-input{width:100%;padding:.65rem;background:var(--bg);border:1px solid var(--line);border-radius:var(--radius-sm);color:var(--ink);font:inherit}
+  /* Pestañas */
+  .dh-tabs {
+    display: flex;
+    gap: 0.5rem;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.5rem;
+  }
+  .dh-tab {
+    background: none;
+    border: 1px solid transparent;
+    padding: 0.65rem 1.15rem;
+    border-radius: var(--radius-sm);
+    font: inherit;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--muted);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    transition: all 0.15s;
+  }
+  .dh-tab:hover { color: var(--ink); background: var(--surface-card); }
+  .dh-tab.active {
+    color: var(--accent);
+    background: rgba(47, 129, 247, 0.1);
+    border-color: rgba(47, 129, 247, 0.3);
+  }
 
-  .check-opt-wrap{padding-bottom:.65rem}
-  .check-opt{display:inline-flex;align-items:center;gap:.55rem;font-size:.88rem;cursor:pointer;color:var(--ink);font-weight:500}
-  .check-opt input{cursor:pointer}
+  .tab-pane { display: none; }
+  .tab-pane.active { display: block; }
 
-  .dh-results{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.85rem;margin-bottom:1.5rem}
-  :global(.dh-card){background:var(--surface-card);border:1px solid var(--line);border-radius:var(--radius-sm);padding:1.1rem .85rem;text-align:center}
-  :global(.dh-card .num){font-size:2rem;font-weight:800;color:var(--accent);display:block;line-height:1.2}
-  :global(.dh-card .lbl){font-size:.76rem;color:var(--muted);text-transform:uppercase;font-weight:600;letter-spacing:.03em;margin-top:.25rem}
-  :global(.dh-card.main){border-color:var(--accent);background:rgba(47,129,247,.08)}
-  :global(.dh-card.holiday-card){border-color:#eab308;background:rgba(234,179,8,.08)}
-  :global(.dh-card.holiday-card .num){color:#eab308}
+  /* Config bar común */
+  .config-bar {
+    background: var(--surface-card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.25rem;
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 1.25rem;
+    align-items: center;
+  }
+  @media(max-width: 768px) {
+    .config-bar { grid-template-columns: 1fr; }
+  }
 
-  .holidays-box{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-sm);padding:1.2rem;margin-top:1rem}
-  .holidays-box h3{margin:0 0 .75rem;font-size:.98rem;font-weight:600;color:var(--ink)}
-  .holidays-list{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:.5rem}
-  :global(.holidays-list li){font-size:.85rem;color:var(--muted);background:var(--surface-card);padding:.4rem .7rem;border-radius:4px;border:1px solid var(--line);display:flex;justify-content:space-between}
-  :global(.holidays-list li strong){color:var(--ink)}
+  .check-group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 1rem;
+  }
+  @media(max-width: 768px) {
+    .check-group { justify-content: flex-start; }
+  }
+  .check-opt {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.88rem;
+    cursor: pointer;
+    color: var(--ink);
+    font-weight: 500;
+  }
+  .check-opt input { cursor: pointer; }
+
+  .hours-inline {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.88rem;
+    color: var(--muted);
+  }
+  .hours-input {
+    width: 60px !important;
+    padding: 0.35rem 0.5rem !important;
+    text-align: center;
+  }
+
+  .dh-grid, .dh-addsub-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+    margin-bottom: 1rem;
+  }
+  .dh-addsub-grid {
+    grid-template-columns: 1.2fr 1.2fr 1fr;
+  }
+  @media(max-width: 768px) {
+    .dh-grid, .dh-addsub-grid { grid-template-columns: 1fr; }
+  }
+
+  .field label {
+    display: block;
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 0.4rem;
+    color: var(--ink);
+  }
+  .form-input {
+    width: 100%;
+    padding: 0.7rem 0.85rem;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    color: var(--ink);
+    font: inherit;
+    font-size: 0.95rem;
+  }
+  .form-input:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+
+  .quick-presets {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .preset-label {
+    color: var(--muted);
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin-right: 0.25rem;
+  }
+  .preset-btn {
+    background: var(--surface-card);
+    border: 1px solid var(--line);
+    color: var(--ink);
+    padding: 0.35rem 0.75rem;
+    border-radius: 999px;
+    font: inherit;
+    font-size: 0.82rem;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .preset-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(47, 129, 247, 0.05);
+  }
+
+  .dh-results {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    gap: 0.85rem;
+    margin-bottom: 1.25rem;
+  }
+  :global(.dh-card) {
+    background: var(--surface-card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    padding: 1.1rem 0.85rem;
+    text-align: center;
+  }
+  :global(.dh-card .num) {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--accent);
+    display: block;
+    line-height: 1.2;
+  }
+  :global(.dh-card .lbl) {
+    font-size: 0.76rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: .03em;
+    margin-top: 0.25rem;
+    display: block;
+  }
+  :global(.dh-card.main) {
+    border-color: var(--accent);
+    background: rgba(47, 129, 247, 0.08);
+  }
+  :global(.dh-card.holiday-card) {
+    border-color: #eab308;
+    background: rgba(234, 179, 8, 0.08);
+  }
+  :global(.dh-card.holiday-card .num) {
+    color: #eab308;
+  }
+
+  .summary-box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    background: var(--surface-card);
+    padding: 0.9rem 1.2rem;
+    border-radius: var(--radius-sm);
+    border-left: 3px solid var(--accent);
+    border-top: 1px solid var(--line);
+    border-right: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+  @media(max-width: 640px) {
+    .summary-box { flex-direction: column; align-items: stretch; }
+  }
+  .summary-text {
+    font-size: 0.95rem;
+    color: var(--ink);
+    line-height: 1.5;
+  }
+
+  .copy-btn {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    color: var(--ink);
+    padding: 0.45rem 0.85rem;
+    border-radius: var(--radius-sm);
+    font: inherit;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.15s;
+  }
+  .copy-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .holidays-box {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    padding: 1.2rem;
+    margin-top: 1rem;
+  }
+  .holidays-box-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.85rem;
+  }
+  .holidays-box h3 {
+    margin: 0;
+    font-size: 0.98rem;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .holidays-badge {
+    background: rgba(234, 179, 8, 0.15);
+    color: #ca8a04;
+    border: 1px solid rgba(234, 179, 8, 0.4);
+    font-size: 0.78rem;
+    font-weight: 700;
+    padding: 0.2rem 0.55rem;
+    border-radius: 999px;
+  }
+  .holidays-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 0.5rem;
+  }
+  :global(.holidays-list li) {
+    font-size: 0.85rem;
+    color: var(--muted);
+    background: var(--surface-card);
+    padding: 0.55rem 0.85rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--line);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  :global(.holidays-list li strong) { color: var(--ink); }
+
+  /* Tarjeta resultado suma/resta */
+  .as-result-card {
+    background: rgba(47, 129, 247, 0.06);
+    border: 1.5px solid var(--accent);
+    border-radius: var(--radius-sm);
+    padding: 1.5rem;
+    text-align: center;
+    margin-top: 1rem;
+  }
+  .as-result-tag {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    font-weight: 700;
+    color: var(--muted);
+    margin-bottom: 0.35rem;
+  }
+  .as-result-date {
+    font-size: 2.1rem;
+    font-weight: 800;
+    color: var(--accent);
+    line-height: 1.2;
+    margin-bottom: 0.4rem;
+  }
+  @media(max-width: 640px) {
+    .as-result-date { font-size: 1.5rem; }
+  }
+  .as-result-sub {
+    font-size: 0.92rem;
+    color: var(--muted);
+  }
 </style>
 
 <script>
-  const startEl = document.getElementById('dh-start') as HTMLInputElement;
-  const endEl = document.getElementById('dh-end') as HTMLInputElement;
+  // Tab Switching
+  const dhTabs = document.querySelectorAll('.dh-tab');
+  const dhPanes = document.querySelectorAll('.tab-pane');
+  dhTabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const target = tab.getAttribute('data-tab');
+      dhTabs.forEach(t => t.classList.remove('active'));
+      dhPanes.forEach(p => p.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById('pane-' + target)?.classList.add('active');
+      if (target === 'addsub') calcAddSub();
+      else calcBetween();
+    });
+  });
+
+  // ELEMENTOS COMUNES
   const countryEl = document.getElementById('dh-country') as HTMLSelectElement;
   const satEl = document.getElementById('dh-sat') as HTMLInputElement;
+  const hoursEl = document.getElementById('dh-work-hours') as HTMLInputElement;
+
+  // ELEMENTOS MODO 1 (ENTRE FECHAS)
+  const startEl = document.getElementById('dh-start') as HTMLInputElement;
+  const endEl = document.getElementById('dh-end') as HTMLInputElement;
   const results = document.getElementById('dh-results')!;
   const holidaysBox = document.getElementById('dh-holidays-box')!;
   const holidaysList = document.getElementById('dh-holidays-list')!;
+  const holidaysCountBadge = document.getElementById('dh-holidays-count-badge')!;
+  const humanText = document.getElementById('dh-human-text')!;
+  const btnCopyDh = document.getElementById('btn-copy-dh')!;
+
+  // ELEMENTOS MODO 2 (SUMAR DÍAS)
+  const dhaStart = document.getElementById('dha-start') as HTMLInputElement;
+  const dhaOp = document.getElementById('dha-op') as HTMLSelectElement;
+  const dhaDays = document.getElementById('dha-days') as HTMLInputElement;
+  const dhaResDate = document.getElementById('dha-res-date')!;
+  const dhaResSub = document.getElementById('dha-res-sub')!;
+  const btnCopyDha = document.getElementById('btn-copy-dha')!;
 
   // Fechas iniciales por defecto: hoy y un mes adelante
   const today = new Date();
@@ -166,111 +608,281 @@ import Base from '../layouts/Base.astro';
   const nextMonth = new Date(today);
   nextMonth.setMonth(nextMonth.getMonth() + 1);
   endEl.value = nextMonth.toISOString().split('T')[0];
+  dhaStart.value = today.toISOString().split('T')[0];
 
-  // Base de feriados estándar fijos y representativos por país (formato MM-DD)
-  const HOLIDAYS_BY_COUNTRY: Record<string, Array<{ date: string; name: string }>> = {
-    MX: [
-      { date: '01-01', name: 'Año Nuevo' },
-      { date: '02-05', name: 'Día de la Constitución' },
-      { date: '03-21', name: 'Natalicio de Benito Juárez' },
-      { date: '05-01', name: 'Día del Trabajo' },
-      { date: '09-16', name: 'Día de la Independencia' },
-      { date: '11-20', name: 'Revolución Mexicana' },
-      { date: '12-25', name: 'Navidad' }
-    ],
-    CO: [
-      { date: '01-01', name: 'Año Nuevo' },
-      { date: '01-06', name: 'Reyes Magos' },
-      { date: '03-19', name: 'Día de San José' },
-      { date: '05-01', name: 'Día del Trabajo' },
-      { date: '07-20', name: 'Día de la Independencia' },
-      { date: '08-07', name: 'Batalla de Boyacá' },
-      { date: '08-15', name: 'Asunción de la Virgen' },
-      { date: '10-12', name: 'Día de la Raza' },
-      { date: '11-01', name: 'Todos los Santos' },
-      { date: '11-11', name: 'Independencia de Cartagena' },
-      { date: '12-08', name: 'Inmaculada Concepción' },
-      { date: '12-25', name: 'Navidad' }
-    ],
-    AR: [
-      { date: '01-01', name: 'Año Nuevo' },
-      { date: '03-24', name: 'Día de la Memoria por la Verdad y la Justicia' },
-      { date: '04-02', name: 'Día del Veterano y de los Caídos en Malvinas' },
-      { date: '05-01', name: 'Día del Trabajador' },
-      { date: '05-25', name: 'Revolución de Mayo' },
-      { date: '06-20', name: 'Paso a la Inmortalidad de Manuel Belgrano' },
-      { date: '07-09', name: 'Día de la Independencia' },
-      { date: '08-17', name: 'Paso a la Inmortalidad de San Martín' },
-      { date: '10-12', name: 'Respeto a la Diversidad Cultural' },
-      { date: '11-20', name: 'Día de la Soberanía Nacional' },
-      { date: '12-08', name: 'Inmaculada Concepción' },
-      { date: '12-25', name: 'Navidad' }
-    ],
-    PE: [
-      { date: '01-01', name: 'Año Nuevo' },
-      { date: '05-01', name: 'Día del Trabajo' },
-      { date: '06-07', name: 'Batalla de Arica y Día de la Bandera' },
-      { date: '06-29', name: 'San Pedro y San Pablo' },
-      { date: '07-23', name: 'Día de la Fuerza Aérea' },
-      { date: '07-28', name: 'Fiestas Patrias' },
-      { date: '07-29', name: 'Fiestas Patrias (Gran Parada)' },
-      { date: '08-06', name: 'Batalla de Junín' },
-      { date: '08-30', name: 'Santa Rosa de Lima' },
-      { date: '10-08', name: 'Combate de Angamos' },
-      { date: '11-01', name: 'Todos los Santos' },
-      { date: '12-08', name: 'Inmaculada Concepción' },
-      { date: '12-09', name: 'Batalla de Ayacucho' },
-      { date: '12-25', name: 'Navidad' }
-    ],
-    CL: [
-      { date: '01-01', name: 'Año Nuevo' },
-      { date: '05-01', name: 'Día Nacional del Trabajo' },
-      { date: '05-21', name: 'Día de las Glorias Navales' },
-      { date: '06-21', name: 'Día Nacional de los Pueblos Indígenas' },
-      { date: '06-29', name: 'San Pedro y San Pablo' },
-      { date: '07-16', name: 'Día de la Virgen del Carmen' },
-      { date: '08-15', name: 'Asunción de la Virgen' },
-      { date: '09-18', name: 'Fiestas Patrias' },
-      { date: '09-19', name: 'Glorias del Ejército' },
-      { date: '10-12', name: 'Encuentro de Dos Mundos' },
-      { date: '10-31', name: 'Día de las Iglesias Evangélicas' },
-      { date: '11-01', name: 'Día de Todos los Santos' },
-      { date: '12-08', name: 'Inmaculada Concepción' },
-      { date: '12-25', name: 'Navidad' }
-    ],
-    ES: [
-      { date: '01-01', name: 'Año Nuevo' },
-      { date: '01-06', name: 'Epifanía del Señor / Reyes' },
-      { date: '05-01', name: 'Fiesta del Trabajo' },
-      { date: '08-15', name: 'Asunción de la Virgen' },
-      { date: '10-12', name: 'Fiesta Nacional de España' },
-      { date: '11-01', name: 'Todos los Santos' },
-      { date: '12-06', name: 'Día de la Constitución' },
-      { date: '12-08', name: 'Inmaculada Concepción' },
-      { date: '12-25', name: 'Navidad' }
-    ],
-    US: [
-      { date: '01-01', name: "New Year's Day" },
-      { date: '06-19', name: 'Juneteenth National Independence Day' },
-      { date: '07-04', name: 'Independence Day' },
-      { date: '11-11', name: 'Veterans Day' },
-      { date: '12-25', name: 'Christmas Day' }
-    ]
-  };
+  // Algoritmo de Gauss para Domingo de Resurrección (Pascua)
+  function getEasterSunday(year: number): Date {
+    const a = year % 19;
+    const b = Math.floor(year / 100);
+    const c = year % 100;
+    const d = Math.floor(b / 4);
+    const e = b % 4;
+    const f = Math.floor((b + 8) / 25);
+    const g = Math.floor((b - f + 1) / 3);
+    const h = (19 * a + b - d - g + 15) % 30;
+    const i = Math.floor(c / 4);
+    const k = c % 4;
+    const l = (32 + 2 * e + 2 * i - h - k) % 7;
+    const m = Math.floor((a + 11 * h + 22 * l) / 451);
+    const month = Math.floor((h + l - 7 * m + 114) / 31);
+    const day = ((h + l - 7 * m + 114) % 31) + 1;
+    return new Date(year, month - 1, day);
+  }
 
-  function calc() {
+  // Feriado móvil al lunes siguiente (Ley Emiliani de Colombia y similares)
+  function moveToNextMonday(year: number, month: number, day: number): Date {
+    const d = new Date(year, month - 1, day);
+    const dow = d.getDay();
+    if (dow === 1) return d; // ya es lunes
+    const diff = (8 - dow) % 7;
+    d.setDate(d.getDate() + diff);
+    return d;
+  }
+
+  // N-ésimo día de la semana de un mes (ej. tercer lunes de febrero)
+  function getNthDayOfMonth(year: number, month: number, targetDow: number, nth: number): Date {
+    const first = new Date(year, month - 1, 1);
+    let count = 0;
+    const cur = new Date(first);
+    while (cur.getMonth() === month - 1) {
+      if (cur.getDay() === targetDow) {
+        count++;
+        if (count === nth) return new Date(cur);
+      }
+      cur.setDate(cur.getDate() + 1);
+    }
+    return cur;
+  }
+
+  // Último día de la semana de un mes (ej. último lunes de mayo)
+  function getLastDayOfMonth(year: number, month: number, targetDow: number): Date {
+    const last = new Date(year, month, 0); // último día del mes
+    while (last.getDay() !== targetDow) {
+      last.setDate(last.getDate() - 1);
+    }
+    return last;
+  }
+
+  function toKey(d: Date): string {
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    const dd = String(d.getDate()).padStart(2, '0');
+    return `${d.getFullYear()}-${mm}-${dd}`;
+  }
+
+  // Generador de feriados para un año y país específico
+  function getHolidaysForYear(year: number, country: string): Array<{ dateKey: string; name: string }> {
+    const list: Array<{ dateKey: string; name: string }> = [];
+    if (country === 'none') return list;
+
+    const easter = getEasterSunday(year);
+
+    const addFixed = (month: number, day: number, name: string) => {
+      list.push({ dateKey: toKey(new Date(year, month - 1, day)), name });
+    };
+
+    const addRelativeEaster = (daysOffset: number, name: string) => {
+      const target = new Date(easter);
+      target.setDate(target.getDate() + daysOffset);
+      list.push({ dateKey: toKey(target), name });
+    };
+
+    if (country === 'PE') {
+      addFixed(1, 1, 'Año Nuevo');
+      addRelativeEaster(-3, 'Jueves Santo');
+      addRelativeEaster(-2, 'Viernes Santo');
+      addFixed(5, 1, 'Día del Trabajo');
+      addFixed(6, 7, 'Batalla de Arica y Día de la Bandera');
+      addFixed(6, 29, 'San Pedro y San Pablo');
+      addFixed(7, 23, 'Día de la Fuerza Aérea del Perú');
+      addFixed(7, 28, 'Fiestas Patrias (Independencia)');
+      addFixed(7, 29, 'Fiestas Patrias (Gran Parada Militar)');
+      addFixed(8, 6, 'Batalla de Junín');
+      addFixed(8, 30, 'Santa Rosa de Lima');
+      addFixed(10, 8, 'Combate de Angamos');
+      addFixed(11, 1, 'Día de Todos los Santos');
+      addFixed(12, 8, 'Inmaculada Concepción');
+      addFixed(12, 9, 'Batalla de Ayacucho');
+      addFixed(12, 25, 'Navidad');
+    } else if (country === 'MX') {
+      addFixed(1, 1, 'Año Nuevo');
+      // Primer lunes de febrero (Constitución)
+      list.push({ dateKey: toKey(getNthDayOfMonth(year, 2, 1, 1)), name: 'Día de la Constitución' });
+      // Tercer lunes de marzo (Natalicio de Juárez)
+      list.push({ dateKey: toKey(getNthDayOfMonth(year, 3, 1, 3)), name: 'Natalicio de Benito Juárez' });
+      addRelativeEaster(-3, 'Jueves Santo (Bancario/Observado)');
+      addRelativeEaster(-2, 'Viernes Santo (Bancario/Observado)');
+      addFixed(5, 1, 'Día del Trabajo');
+      addFixed(9, 16, 'Día de la Independencia');
+      // Tercer lunes de noviembre (Revolución)
+      list.push({ dateKey: toKey(getNthDayOfMonth(year, 11, 1, 3)), name: 'Revolución Mexicana' });
+      addFixed(12, 25, 'Navidad');
+    } else if (country === 'CO') {
+      // Feriados fijos
+      addFixed(1, 1, 'Año Nuevo');
+      addRelativeEaster(-3, 'Jueves Santo');
+      addRelativeEaster(-2, 'Viernes Santo');
+      addFixed(5, 1, 'Día del Trabajo');
+      addFixed(7, 20, 'Grito de Independencia');
+      addFixed(8, 7, 'Batalla de Boyacá');
+      addFixed(12, 8, 'Inmaculada Concepción');
+      addFixed(12, 25, 'Navidad');
+
+      // Ley Emiliani (traslado al lunes)
+      const emiliani = [
+        { m: 1, d: 6, name: 'Día de los Reyes Magos' },
+        { m: 3, d: 19, name: 'Día de San José' },
+        { m: 6, d: 29, name: 'San Pedro y San Pablo' },
+        { m: 8, d: 15, name: 'Asunción de la Virgen' },
+        { m: 10, d: 12, name: 'Día de la Raza' },
+        { m: 11, d: 1, name: 'Todos los Santos' },
+        { m: 11, d: 11, name: 'Independencia de Cartagena' }
+      ];
+      emiliani.forEach(h => {
+        list.push({ dateKey: toKey(moveToNextMonday(year, h.m, h.d)), name: `${h.name} (Ley Emiliani)` });
+      });
+
+      // Móviles Pascua trasladados a lunes
+      const asc = new Date(easter);
+      asc.setDate(asc.getDate() + 43); // 40 días + lunes
+      list.push({ dateKey: toKey(moveToNextMonday(asc.getFullYear(), asc.getMonth() + 1, asc.getDate())), name: 'Ascensión del Señor' });
+
+      const corp = new Date(easter);
+      corp.setDate(corp.getDate() + 64);
+      list.push({ dateKey: toKey(moveToNextMonday(corp.getFullYear(), corp.getMonth() + 1, corp.getDate())), name: 'Corpus Christi' });
+
+      const sag = new Date(easter);
+      sag.setDate(sag.getDate() + 71);
+      list.push({ dateKey: toKey(moveToNextMonday(sag.getFullYear(), sag.getMonth() + 1, sag.getDate())), name: 'Sagrado Corazón de Jesús' });
+    } else if (country === 'AR') {
+      addFixed(1, 1, 'Año Nuevo');
+      addRelativeEaster(-48, 'Carnaval (Lunes)');
+      addRelativeEaster(-47, 'Carnaval (Martes)');
+      addFixed(3, 24, 'Día de la Memoria por la Verdad y la Justicia');
+      addFixed(4, 2, 'Día del Veterano y de los Caídos en Malvinas');
+      addRelativeEaster(-3, 'Jueves Santo (Día no laborable)');
+      addRelativeEaster(-2, 'Viernes Santo');
+      addFixed(5, 1, 'Día del Trabajador');
+      addFixed(5, 25, 'Día de la Revolución de Mayo');
+      addFixed(6, 20, 'Paso a la Inmortalidad de Manuel Belgrano');
+      addFixed(7, 9, 'Día de la Independencia');
+      list.push({ dateKey: toKey(getNthDayOfMonth(year, 8, 1, 3)), name: 'Paso a la Inmortalidad del Gral. San Martín' });
+      list.push({ dateKey: toKey(getNthDayOfMonth(year, 10, 1, 2)), name: 'Día del Respeto a la Diversidad Cultural' });
+      list.push({ dateKey: toKey(getNthDayOfMonth(year, 11, 1, 4)), name: 'Día de la Soberanía Nacional' });
+      addFixed(12, 8, 'Inmaculada Concepción');
+      addFixed(12, 25, 'Navidad');
+    } else if (country === 'ES') {
+      addFixed(1, 1, 'Año Nuevo');
+      addFixed(1, 6, 'Epifanía del Señor (Reyes)');
+      addRelativeEaster(-2, 'Viernes Santo');
+      addFixed(5, 1, 'Fiesta del Trabajo');
+      addFixed(8, 15, 'Asunción de la Virgen');
+      addFixed(10, 12, 'Fiesta Nacional de España');
+      addFixed(11, 1, 'Todos los Santos');
+      addFixed(12, 6, 'Día de la Constitución');
+      addFixed(12, 8, 'Inmaculada Concepción');
+      addFixed(12, 25, 'Navidad');
+    } else if (country === 'CL') {
+      addFixed(1, 1, 'Año Nuevo');
+      addRelativeEaster(-2, 'Viernes Santo');
+      addRelativeEaster(-1, 'Sábado Santo');
+      addFixed(5, 1, 'Día Nacional del Trabajo');
+      addFixed(5, 21, 'Día de las Glorias Navales');
+      addFixed(6, 21, 'Día Nacional de los Pueblos Indígenas');
+      addFixed(6, 29, 'San Pedro y San Pablo');
+      addFixed(7, 16, 'Día de la Virgen del Carmen');
+      addFixed(8, 15, 'Asunción de la Virgen');
+      addFixed(9, 18, 'Fiestas Patrias');
+      addFixed(9, 19, 'Día de las Glorias del Ejército');
+      addFixed(10, 12, 'Encuentro de Dos Mundos');
+      addFixed(10, 31, 'Día de las Iglesias Evangélicas');
+      addFixed(11, 1, 'Día de Todos los Santos');
+      addFixed(12, 8, 'Inmaculada Concepción');
+      addFixed(12, 25, 'Navidad');
+    } else if (country === 'US') {
+      addFixed(1, 1, "New Year's Day");
+      list.push({ dateKey: toKey(getNthDayOfMonth(year, 1, 1, 3)), name: 'Martin Luther King Jr. Day' });
+      list.push({ dateKey: toKey(getNthDayOfMonth(year, 2, 1, 3)), name: "Washington's Birthday / Presidents Day" });
+      list.push({ dateKey: toKey(getLastDayOfMonth(year, 5, 1)), name: 'Memorial Day' });
+      addFixed(6, 19, 'Juneteenth National Independence Day');
+      addFixed(7, 4, 'Independence Day');
+      list.push({ dateKey: toKey(getNthDayOfMonth(year, 9, 1, 1)), name: 'Labor Day' });
+      list.push({ dateKey: toKey(getNthDayOfMonth(year, 10, 1, 2)), name: 'Columbus Day' });
+      addFixed(11, 11, 'Veterans Day');
+      list.push({ dateKey: toKey(getNthDayOfMonth(year, 11, 4, 4)), name: 'Thanksgiving Day' });
+      addFixed(12, 25, 'Christmas Day');
+    } else if (country === 'EC') {
+      addFixed(1, 1, 'Año Nuevo');
+      addRelativeEaster(-48, 'Carnaval (Lunes)');
+      addRelativeEaster(-47, 'Carnaval (Martes)');
+      addRelativeEaster(-2, 'Viernes Santo');
+      addFixed(5, 1, 'Día del Trabajo');
+      addFixed(5, 24, 'Batalla de Pichincha');
+      addFixed(8, 10, 'Primer Grito de Independencia');
+      addFixed(10, 9, 'Independencia de Guayaquil');
+      addFixed(11, 2, 'Día de Difuntos');
+      addFixed(11, 3, 'Independencia de Cuenca');
+      addFixed(12, 25, 'Navidad');
+    } else if (country === 'BO') {
+      addFixed(1, 1, 'Año Nuevo');
+      addFixed(1, 22, 'Día del Estado Plurinacional');
+      addRelativeEaster(-48, 'Carnaval (Lunes)');
+      addRelativeEaster(-47, 'Carnaval (Martes)');
+      addRelativeEaster(-2, 'Viernes Santo');
+      addFixed(5, 1, 'Día del Trabajo');
+      addRelativeEaster(60, 'Corpus Christi');
+      addFixed(6, 21, 'Año Nuevo Andino Amazónico');
+      addFixed(8, 6, 'Día de la Independencia de Bolivia');
+      addFixed(11, 2, 'Día de Todos los Santos');
+      addFixed(12, 25, 'Navidad');
+    } else if (country === 'UY') {
+      addFixed(1, 1, 'Año Nuevo');
+      addRelativeEaster(-48, 'Carnaval (Lunes)');
+      addRelativeEaster(-47, 'Carnaval (Martes)');
+      addRelativeEaster(-3, 'Semana de Turismo (Jueves)');
+      addRelativeEaster(-2, 'Semana de Turismo (Viernes)');
+      addFixed(5, 1, 'Día de los Trabajadores');
+      addFixed(5, 18, 'Batalla de las Piedras');
+      addFixed(6, 19, 'Natalicio de Artigas');
+      addFixed(7, 18, 'Jura de la Constitución');
+      addFixed(8, 25, 'Declaratoria de la Independencia');
+      addFixed(12, 25, 'Día de la Familia / Navidad');
+    }
+
+    return list;
+  }
+
+  // Mapa de feriados en caché para los años consultados
+  function getHolidaysInRange(start: Date, end: Date, country: string): Map<string, string> {
+    const map = new Map<string, string>();
+    if (country === 'none') return map;
+    const yStart = start.getFullYear();
+    const yEnd = end.getFullYear();
+    for (let y = yStart; y <= yEnd; y++) {
+      const yearHolidays = getHolidaysForYear(y, country);
+      yearHolidays.forEach(h => {
+        map.set(h.dateKey, h.name);
+      });
+    }
+    return map;
+  }
+
+  // MODO 1: CONTAR ENTRE DOS FECHAS
+  function calcBetween() {
     if (!startEl.value || !endEl.value) return;
     const s = new Date(startEl.value + 'T00:00:00');
     const e = new Date(endEl.value + 'T00:00:00');
+
     if (s > e) {
-      results.innerHTML = '<p style="color:var(--muted);text-align:center;grid-column:1/-1;">La fecha de inicio debe ser anterior o igual a la fecha de fin.</p>';
+      results.innerHTML = '<p style="color:var(--muted);text-align:center;grid-column:1/-1;padding:1rem;">La fecha de inicio debe ser anterior o igual a la fecha de fin.</p>';
       holidaysBox.style.display = 'none';
+      humanText.textContent = 'Ajusta las fechas para que el inicio sea previo o igual al fin.';
       return;
     }
 
     const countryCode = countryEl.value;
-    const countryHolidays = HOLIDAYS_BY_COUNTRY[countryCode] || [];
+    const holidayMap = getHolidaysInRange(s, e, countryCode);
     const includeSat = satEl.checked;
+    const workHours = Math.max(1, parseInt(hoursEl.value || '8', 10));
 
     let totalDays = 0;
     let weekendDays = 0;
@@ -283,20 +895,16 @@ import Base from '../layouts/Base.astro';
       totalDays++;
       const dow = cur.getDay(); // 0 Dom, 6 Sab
       const isWeekend = dow === 0 || (dow === 6 && !includeSat);
-
-      const mm = String(cur.getMonth() + 1).padStart(2, '0');
-      const dd = String(cur.getDate()).padStart(2, '0');
-      const key = `${mm}-${dd}`;
-
-      const matchedHoliday = countryHolidays.find(h => h.date === key);
+      const key = toKey(cur);
+      const holidayName = holidayMap.get(key);
 
       if (isWeekend) {
         weekendDays++;
-      } else if (matchedHoliday) {
+      } else if (holidayName) {
         holidaysCount++;
         detectedHolidays.push({
-          dateStr: cur.toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' }),
-          name: matchedHoliday.name
+          dateStr: cur.toLocaleDateString('es-ES', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' }),
+          name: holidayName
         });
       } else {
         businessDays++;
@@ -306,13 +914,15 @@ import Base from '../layouts/Base.astro';
     }
 
     const weeks = Math.floor(totalDays / 7);
+    const totalWorkHours = businessDays * workHours;
 
     const cards = [
-      { num: businessDays, lbl: 'Días hábiles netos', main: true },
-      { num: totalDays, lbl: 'Días naturales totales' },
-      { num: weekendDays, lbl: 'Fines de semana' },
-      { num: holidaysCount, lbl: 'Feriados descontados', isHoliday: countryCode !== 'none' && holidaysCount > 0 },
-      { num: weeks, lbl: 'Semanas completas' }
+      { num: businessDays.toLocaleString('es-ES'), lbl: 'Días hábiles netos', main: true },
+      { num: totalDays.toLocaleString('es-ES'), lbl: 'Días calendario totales' },
+      { num: weekendDays.toLocaleString('es-ES'), lbl: 'Fines de semana' },
+      { num: holidaysCount.toLocaleString('es-ES'), lbl: 'Feriados descontados', isHoliday: countryCode !== 'none' && holidaysCount > 0 },
+      { num: `${totalWorkHours.toLocaleString('es-ES')} h`, lbl: `Horas laborables (${workHours}h/d)` },
+      { num: weeks.toLocaleString('es-ES'), lbl: 'Semanas completas' }
     ];
 
     results.innerHTML = cards.map(c => `
@@ -322,8 +932,15 @@ import Base from '../layouts/Base.astro';
       </div>
     `).join('');
 
+    const startFmt = s.toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' });
+    const endFmt = e.toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' });
+    const countryName = countryEl.options[countryEl.selectedIndex].text.split('(')[0].trim();
+
+    humanText.innerHTML = `Del <strong>${startFmt}</strong> al <strong>${endFmt}</strong> hay <strong>${businessDays} días hábiles</strong> (${totalDays} días naturales). Se excluyeron <strong>${weekendDays} días de fin de semana</strong> y <strong>${holidaysCount} días feriados</strong> para ${countryName}. Total: ~<strong>${totalWorkHours} horas laborales</strong>.`;
+
     if (detectedHolidays.length > 0) {
       holidaysBox.style.display = 'block';
+      holidaysCountBadge.textContent = `${detectedHolidays.length} ${detectedHolidays.length === 1 ? 'feriado' : 'feriados'}`;
       holidaysList.innerHTML = detectedHolidays.map(h => `
         <li>
           <span><strong>${h.dateStr}</strong></span>
@@ -336,8 +953,142 @@ import Base from '../layouts/Base.astro';
     }
   }
 
-  [startEl, endEl, countryEl, satEl].forEach(el => el.addEventListener('change', calc));
-  [startEl, endEl].forEach(el => el.addEventListener('input', calc));
+  // Presets Modo 1
+  document.querySelectorAll('.preset-btn[data-preset]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const type = btn.getAttribute('data-preset');
+      const now = new Date();
+      if (type === 'month') {
+        startEl.value = now.toISOString().split('T')[0];
+        const future = new Date(now);
+        future.setDate(future.getDate() + 30);
+        endEl.value = future.toISOString().split('T')[0];
+      } else if (type === 'cur-month') {
+        const first = new Date(now.getFullYear(), now.getMonth(), 1);
+        const last = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+        startEl.value = first.toISOString().split('T')[0];
+        endEl.value = last.toISOString().split('T')[0];
+      } else if (type === 'next-month') {
+        const first = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+        const last = new Date(now.getFullYear(), now.getMonth() + 2, 0);
+        startEl.value = first.toISOString().split('T')[0];
+        endEl.value = last.toISOString().split('T')[0];
+      } else if (type === 'end-year') {
+        startEl.value = now.toISOString().split('T')[0];
+        endEl.value = `${now.getFullYear()}-12-31`;
+      }
+      calcBetween();
+    });
+  });
 
-  calc();
+  // Copiar resumen Modo 1
+  btnCopyDh.addEventListener('click', () => {
+    const text = humanText.innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      const orig = btnCopyDh.textContent;
+      btnCopyDh.textContent = '✅ ¡Copiado!';
+      setTimeout(() => { btnCopyDh.textContent = orig; }, 2000);
+    });
+  });
+
+  // MODO 2: SUMAR O RESTAR DÍAS HÁBILES
+  function calcAddSub() {
+    if (!dhaStart.value) return;
+    const base = new Date(dhaStart.value + 'T00:00:00');
+    const targetDays = Math.max(1, parseInt(dhaDays.value || '1', 10));
+    const isAdd = dhaOp.value === 'add';
+    const countryCode = countryEl.value;
+    const includeSat = satEl.checked;
+
+    // Buffer amplio para feriados de varios años
+    const stepDir = isAdd ? 1 : -1;
+    let counted = 0;
+    let weekendSkipped = 0;
+    let holidaySkipped = 0;
+    const skippedHolidaysList: string[] = [];
+
+    const cur = new Date(base);
+    let cachedYear = -1;
+    let currentYearHolidays = new Map<string, string>();
+
+    while (counted < targetDays) {
+      cur.setDate(cur.getDate() + stepDir);
+      const curYear = cur.getFullYear();
+      if (curYear !== cachedYear) {
+        cachedYear = curYear;
+        currentYearHolidays.clear();
+        if (countryCode !== 'none') {
+          getHolidaysForYear(curYear, countryCode).forEach(h => currentYearHolidays.set(h.dateKey, h.name));
+        }
+      }
+
+      const dow = cur.getDay();
+      const isWeekend = dow === 0 || (dow === 6 && !includeSat);
+      const key = toKey(cur);
+      const hName = currentYearHolidays.get(key);
+
+      if (isWeekend) {
+        weekendSkipped++;
+      } else if (hName) {
+        holidaySkipped++;
+        skippedHolidaysList.push(hName);
+      } else {
+        counted++;
+      }
+    }
+
+    const fullStr = cur.toLocaleDateString('es-ES', {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    });
+    const capitalized = fullStr.charAt(0).toUpperCase() + fullStr.slice(1);
+    dhaResDate.textContent = capitalized;
+
+    const opWord = isAdd ? 'sumar' : 'restar';
+    const totalCalDays = Math.round(Math.abs(cur.getTime() - base.getTime()) / 86400000);
+
+    dhaResSub.innerHTML = `Tras <strong>${opWord} ${targetDays} días hábiles</strong> (se omitieron <strong>${weekendSkipped} días de fin de semana</strong> y <strong>${holidaySkipped} feriados</strong>). Tiempo total transcurrido: <strong>${totalCalDays} días calendario</strong>. Formato: <code>${toKey(cur)}</code>`;
+  }
+
+  // Atajos rápidos Modo 2
+  document.querySelectorAll('.dha-quick').forEach(btn => {
+    btn.addEventListener('click', () => {
+      dhaDays.value = btn.getAttribute('data-days') || '15';
+      dhaOp.value = 'add';
+      calcAddSub();
+    });
+  });
+
+  btnCopyDha.addEventListener('click', () => {
+    const text = `${dhaResDate.textContent} (${dhaResSub.innerText})`;
+    navigator.clipboard.writeText(text).then(() => {
+      const orig = btnCopyDha.textContent;
+      btnCopyDha.textContent = '✅ ¡Copiado!';
+      setTimeout(() => { btnCopyDha.textContent = orig; }, 2000);
+    });
+  });
+
+  // Event listeners globales y locales
+  [countryEl, satEl, hoursEl].forEach(el => {
+    el.addEventListener('change', () => {
+      calcBetween();
+      calcAddSub();
+    });
+  });
+  hoursEl.addEventListener('input', calcBetween);
+
+  [startEl, endEl].forEach(el => {
+    el.addEventListener('change', calcBetween);
+    el.addEventListener('input', calcBetween);
+  });
+
+  [dhaStart, dhaOp, dhaDays].forEach(el => {
+    el.addEventListener('change', calcAddSub);
+    el.addEventListener('input', calcAddSub);
+  });
+
+  // Init
+  calcBetween();
 </script>

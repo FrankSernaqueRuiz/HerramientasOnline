@@ -47,7 +47,7 @@ Colección de **herramientas web gratuitas** que funcionan directamente en tu na
 | Calculadora de fecha probable de parto | [`/fecha-probable-parto`](https://tudominio.com/fecha-probable-parto) |
 | Calculadora de ciclos de sueño | [`/ciclos-sueno`](https://tudominio.com/ciclos-sueno) |
 | Temporizador Pomodoro interactivo | [`/temporizador-pomodoro`](https://tudominio.com/temporizador-pomodoro) |
-| Calculadora de fechas y meses | [`/contador-meses`](https://tudominio.com/contador-meses) |
+| Calculadora de fechas | [`/calculadora-fechas`](https://tudominio.com/calculadora-fechas) |
 
 ### Estudio y trabajo
 | Herramienta | Enlace directo |

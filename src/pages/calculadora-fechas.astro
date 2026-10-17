@@ -1,0 +1,764 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base 
+  title="Calculadora de Fechas – Sumar, Restar y Diferencia entre Fechas" 
+  description="Calcula el tiempo exacto entre dos fechas (años, meses, días, horas) o suma y resta días, semanas y meses a cualquier fecha de forma rápida y gratuita."
+>
+  <div class="page-header">
+    <div class="breadcrumb"><a href="/">Inicio</a> / <a href="/categoria/fechas-tiempo">Fechas y tiempo</a> / <span>Calculadora de fechas</span></div>
+    <h1>Calculadora de fechas</h1>
+    <p class="lead">Calcula el tiempo exacto entre dos fechas en años, meses, días y horas, o suma y resta periodos a cualquier fecha.</p>
+  </div>
+
+  <!-- Banner a Días Hábiles -->
+  <div class="biz-notice-banner">
+    <div class="biz-notice-content">
+      <span class="biz-notice-icon">📅</span>
+      <div>
+        <strong>¿Necesitas calcular solo días laborables o plazos hábiles?</strong>
+        <p>Descuenta fines de semana y feriados nacionales oficiales de México, Colombia, Perú, Argentina, España y más.</p>
+      </div>
+    </div>
+    <a href="/dias-habiles-fechas" class="biz-notice-btn">Ir a Días Hábiles por País →</a>
+  </div>
+
+  <section class="panel">
+    <!-- Pestañas de modo -->
+    <div class="cf-tabs">
+      <button type="button" class="cf-tab active" data-tab="diff">
+        <span>⏱️</span> Diferencia entre dos fechas
+      </button>
+      <button type="button" class="cf-tab" data-tab="addsub">
+        <span>➕➖</span> Sumar o restar a una fecha
+      </button>
+    </div>
+
+    <!-- MODO 1: DIFERENCIA ENTRE DOS FECHAS -->
+    <div id="tab-diff" class="tab-pane active">
+      <div class="date-inputs">
+        <div class="field">
+          <label for="date-start">Fecha inicial:</label>
+          <input type="date" id="date-start" class="form-input" />
+        </div>
+        <div class="field">
+          <label for="date-end">Fecha final:</label>
+          <input type="date" id="date-end" class="form-input" />
+        </div>
+      </div>
+
+      <div class="quick-presets">
+        <span class="preset-label">Accesos rápidos:</span>
+        <button type="button" class="preset-btn" data-preset="start-of-year">Inicio del año a hoy</button>
+        <button type="button" class="preset-btn" data-preset="today-to-end-of-year">Hoy a fin de año</button>
+        <button type="button" class="preset-btn" data-preset="last-month">Último mes</button>
+        <button type="button" class="preset-btn" data-preset="next-100">Próximos 100 días</button>
+        <button type="button" class="preset-btn" data-preset="today">Hoy a hoy (0 días)</button>
+      </div>
+
+      <div class="results-grid" aria-live="polite">
+        <div class="result-card main-card">
+          <span class="res-num" id="res-breakdown">0a 0m 0d</span>
+          <span class="res-lbl">Años, meses y días exactos</span>
+        </div>
+        <div class="result-card">
+          <span class="res-num" id="res-total-days">0</span>
+          <span class="res-lbl">Días naturales totales</span>
+        </div>
+        <div class="result-card">
+          <span class="res-num" id="res-weeks">0</span>
+          <span class="res-lbl">Semanas y días</span>
+        </div>
+        <div class="result-card">
+          <span class="res-num" id="res-months">0</span>
+          <span class="res-lbl">Meses aproximados</span>
+        </div>
+        <div class="result-card">
+          <span class="res-num" id="res-hours">0 h</span>
+          <span class="res-lbl">Total de horas</span>
+        </div>
+        <div class="result-card">
+          <span class="res-num" id="res-pct">0%</span>
+          <span class="res-lbl">% de un año completo</span>
+        </div>
+      </div>
+
+      <div class="summary-box">
+        <div class="summary-text" id="human-text">
+          Selecciona dos fechas para ver el desglose detallado.
+        </div>
+        <button type="button" id="btn-copy-diff" class="copy-btn" title="Copiar resumen">
+          📋 Copiar resultado
+        </button>
+      </div>
+    </div>
+
+    <!-- MODO 2: SUMAR O RESTAR TIEMPO -->
+    <div id="tab-addsub" class="tab-pane">
+      <div class="addsub-grid">
+        <div class="field">
+          <label for="as-start">Fecha de inicio:</label>
+          <input type="date" id="as-start" class="form-input" />
+        </div>
+        <div class="field">
+          <label for="as-op">Operación:</label>
+          <select id="as-op" class="form-input">
+            <option value="add" selected>Sumar tiempo (+)</option>
+            <option value="sub">Restar tiempo (−)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="units-grid">
+        <div class="field">
+          <label for="as-years">Años:</label>
+          <input type="number" id="as-years" class="form-input" min="0" max="1000" value="0" />
+        </div>
+        <div class="field">
+          <label for="as-months">Meses:</label>
+          <input type="number" id="as-months" class="form-input" min="0" max="1000" value="0" />
+        </div>
+        <div class="field">
+          <label for="as-weeks">Semanas:</label>
+          <input type="number" id="as-weeks" class="form-input" min="0" max="1000" value="0" />
+        </div>
+        <div class="field">
+          <label for="as-days">Días:</label>
+          <input type="number" id="as-days" class="form-input" min="0" max="10000" value="30" />
+        </div>
+      </div>
+
+      <div class="quick-presets">
+        <span class="preset-label">Atajos comunes:</span>
+        <button type="button" class="preset-btn as-quick" data-days="15">+15 días</button>
+        <button type="button" class="preset-btn as-quick" data-days="30">+30 días</button>
+        <button type="button" class="preset-btn as-quick" data-days="60">+60 días</button>
+        <button type="button" class="preset-btn as-quick" data-days="90">+90 días</button>
+        <button type="button" class="preset-btn as-quick" data-months="6">+6 meses</button>
+        <button type="button" class="preset-btn as-quick" data-years="1">+1 año</button>
+      </div>
+
+      <div class="as-result-card" id="as-result-box">
+        <div class="as-result-tag">Fecha resultante calculada</div>
+        <div class="as-result-date" id="as-res-date">--</div>
+        <div class="as-result-sub" id="as-res-sub">--</div>
+        <button type="button" id="btn-copy-date" class="copy-btn" style="margin-top: .75rem;">
+          📋 Copiar fecha
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Próximas festividades -->
+  <section class="panel holidays-panel" style="margin-top: 1.5rem;">
+    <div class="holidays-header">
+      <div>
+        <h2 style="font-size: 1.15rem; margin: 0;">Próximas festividades y eventos</h2>
+        <span class="holidays-hint">Haz clic en cualquiera para calcular la cuenta regresiva desde hoy:</span>
+      </div>
+    </div>
+    <div class="holidays-row" id="holidays-container"></div>
+  </section>
+
+  <!-- Sección educativa y SEO -->
+  <section class="seo-section">
+    <h2>¿Cómo calcular la diferencia exacta entre fechas?</h2>
+    <p>El cálculo de intervalos cronológicos entre dos fechas parece simple a primera vista, pero intervienen variables como los meses con diferente número de días (28, 29, 30 o 31 días) y los <strong>años bisiestos</strong>. Nuestra calculadora de fechas realiza el cómputo exacto siguiendo el calendario gregoriano estándar internacional.</p>
+
+    <div class="guide-grid">
+      <div class="guide-card">
+        <h3>Vencimientos y plazos legales</h3>
+        <p>Ideal para verificar plazos contractuales, términos de arrendamiento, periodos de garantía o fechas de prescripción fijadas en días o meses calendario.</p>
+      </div>
+      <div class="guide-card">
+        <h3>Planificación y proyectos</h3>
+        <p>Calcula con exactitud cuántas semanas y días faltan para un lanzamiento, entrega de sprint, finalización de semestre universitario o vacaciones.</p>
+      </div>
+      <div class="guide-card">
+        <h3>Antigüedad y aniversarios</h3>
+        <p>Averigua con precisión matemática cuánto tiempo ha transcurrido desde un evento histórico, contratación laboral, matrimonio o hito personal.</p>
+      </div>
+    </div>
+
+    <h2>Preguntas frecuentes sobre cálculo de fechas</h2>
+    <div class="faq-wrap">
+      <div class="faq-item">
+        <div class="faq-question">¿Cuál es la diferencia entre días naturales y días hábiles?</div>
+        <div class="faq-answer">
+          <p>Los <strong>días naturales</strong> o calendario abarcan todos los días consecutivos del año (lunes a domingo, incluidos festivos). Los <strong>días hábiles</strong> descuentan sábados, domingos y días feriados oficiales. Si necesitas descontar feriados de tu país, utiliza nuestra <a href="/dias-habiles-fechas">Calculadora de Días Hábiles</a>.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Cómo se calculan los meses cuando los días no coinciden?</div>
+        <div class="faq-answer">
+          <p>El algoritmo resta año con año, mes con mes y día con día, ajustando automáticamente los días según la duración del mes anterior si el día final es menor al día inicial. Así se garantiza un resultado exacto en años, meses y días.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Se toman en cuenta los años bisiestos?</div>
+        <div class="faq-answer">
+          <p>Sí, la calculadora toma en consideración los años bisiestos (febrero de 29 días) correspondientes a cada año del intervalo analizado.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .breadcrumb { font-size: .85rem; color: var(--muted); margin-bottom: .5rem; }
+  .breadcrumb a { color: var(--muted); text-decoration: none; }
+  .breadcrumb a:hover { color: var(--accent); }
+
+  .biz-notice-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    background: rgba(47, 129, 247, 0.08);
+    border: 1px solid rgba(47, 129, 247, 0.25);
+    border-radius: var(--radius-sm);
+    padding: 0.9rem 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+  @media(max-width: 768px) {
+    .biz-notice-banner { flex-direction: column; align-items: flex-start; }
+  }
+  .biz-notice-content {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+  }
+  .biz-notice-icon { font-size: 1.75rem; line-height: 1; }
+  .biz-notice-content strong { color: var(--ink); font-size: 0.95rem; }
+  .biz-notice-content p { margin: 0.2rem 0 0; color: var(--muted); font-size: 0.85rem; }
+  .biz-notice-btn {
+    white-space: nowrap;
+    background: var(--accent);
+    color: #fff;
+    padding: 0.55rem 0.95rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: opacity 0.15s;
+  }
+  .biz-notice-btn:hover { opacity: 0.9; }
+
+  /* Pestañas */
+  .cf-tabs {
+    display: flex;
+    gap: 0.5rem;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+  }
+  .cf-tab {
+    background: none;
+    border: 1px solid transparent;
+    padding: 0.65rem 1.15rem;
+    border-radius: var(--radius-sm);
+    font: inherit;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--muted);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    transition: all 0.15s;
+  }
+  .cf-tab:hover { color: var(--ink); background: var(--surface-card); }
+  .cf-tab.active {
+    color: var(--accent);
+    background: rgba(47, 129, 247, 0.1);
+    border-color: rgba(47, 129, 247, 0.3);
+  }
+
+  .tab-pane { display: none; }
+  .tab-pane.active { display: block; }
+
+  .date-inputs, .addsub-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+    margin-bottom: 1.25rem;
+  }
+  @media(max-width: 640px) {
+    .date-inputs, .addsub-grid { grid-template-columns: 1fr; }
+  }
+
+  .units-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+  }
+  @media(max-width: 640px) {
+    .units-grid { grid-template-columns: 1fr 1fr; }
+  }
+
+  .field label {
+    display: block;
+    margin-bottom: 0.4rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--ink);
+  }
+  .form-input {
+    width: 100%;
+    padding: 0.7rem 0.85rem;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    color: var(--ink);
+    font: inherit;
+    font-size: 0.95rem;
+  }
+  .form-input:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+
+  .quick-presets {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .preset-label {
+    color: var(--muted);
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin-right: 0.25rem;
+  }
+  .preset-btn {
+    background: var(--surface-card);
+    border: 1px solid var(--line);
+    color: var(--ink);
+    padding: 0.35rem 0.75rem;
+    border-radius: 999px;
+    font: inherit;
+    font-size: 0.82rem;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .preset-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(47, 129, 247, 0.05);
+  }
+
+  /* Resultados Grid */
+  .results-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 0.85rem;
+    margin-bottom: 1.25rem;
+  }
+  .result-card {
+    background: var(--surface-card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    padding: 1.1rem 0.85rem;
+    text-align: center;
+  }
+  .result-card.main-card {
+    border-color: var(--accent);
+    background: rgba(47, 129, 247, 0.08);
+  }
+  .res-num {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: var(--accent);
+    display: block;
+    line-height: 1.2;
+  }
+  .res-lbl {
+    font-size: 0.76rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: .03em;
+    margin-top: 0.35rem;
+    display: block;
+  }
+
+  .summary-box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    background: var(--surface-card);
+    padding: 0.9rem 1.2rem;
+    border-radius: var(--radius-sm);
+    border-left: 3px solid var(--accent);
+    border-top: 1px solid var(--line);
+    border-right: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+  @media(max-width: 640px) {
+    .summary-box { flex-direction: column; align-items: stretch; }
+  }
+  .summary-text {
+    font-size: 0.95rem;
+    color: var(--ink);
+    line-height: 1.5;
+  }
+
+  .copy-btn {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    color: var(--ink);
+    padding: 0.45rem 0.85rem;
+    border-radius: var(--radius-sm);
+    font: inherit;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.15s;
+  }
+  .copy-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* Tarjeta resultado suma/resta */
+  .as-result-card {
+    background: rgba(47, 129, 247, 0.06);
+    border: 1.5px solid var(--accent);
+    border-radius: var(--radius-sm);
+    padding: 1.5rem;
+    text-align: center;
+    margin-top: 1rem;
+  }
+  .as-result-tag {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    font-weight: 700;
+    color: var(--muted);
+    margin-bottom: 0.35rem;
+  }
+  .as-result-date {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--accent);
+    line-height: 1.2;
+    margin-bottom: 0.4rem;
+  }
+  @media(max-width: 640px) {
+    .as-result-date { font-size: 1.5rem; }
+  }
+  .as-result-sub {
+    font-size: 0.92rem;
+    color: var(--muted);
+  }
+
+  /* Festividades */
+  .holidays-panel { margin-top: 1.5rem; }
+  .holidays-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.85rem;
+  }
+  .holidays-hint {
+    color: var(--muted);
+    font-size: 0.82rem;
+    display: block;
+    margin-top: 0.2rem;
+  }
+  .holidays-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 0.65rem;
+  }
+  :global(.holiday-mini-card) {
+    background: var(--surface-card);
+    border-radius: var(--radius-sm);
+    padding: 0.75rem 0.65rem;
+    border: 1px solid var(--line);
+    cursor: pointer;
+    transition: border-color 0.15s, transform 0.15s;
+    user-select: none;
+    text-align: center;
+  }
+  :global(.holiday-mini-card:hover) {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+  :global(.holiday-mini-card .h-top) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 0.35rem;
+  }
+  :global(.holiday-mini-card .h-countdown) {
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 0.92rem;
+    line-height: 1.2;
+  }
+  :global(.holiday-mini-card .h-date) {
+    display: block;
+    color: var(--muted);
+    font-size: 0.75rem;
+    margin-top: 0.2rem;
+  }
+</style>
+
+<script>
+  // Tab Switching
+  const tabs = document.querySelectorAll('.cf-tab');
+  const panes = document.querySelectorAll('.tab-pane');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const target = tab.getAttribute('data-tab');
+      tabs.forEach(t => t.classList.remove('active'));
+      panes.forEach(p => p.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById('tab-' + target)?.classList.add('active');
+    });
+  });
+
+  // MODO 1: DIFERENCIA ENTRE DOS FECHAS
+  const startInput = document.getElementById('date-start') as HTMLInputElement;
+  const endInput = document.getElementById('date-end') as HTMLInputElement;
+  const resBreakdown = document.getElementById('res-breakdown')!;
+  const resTotalDays = document.getElementById('res-total-days')!;
+  const resWeeks = document.getElementById('res-weeks')!;
+  const resMonths = document.getElementById('res-months')!;
+  const resHours = document.getElementById('res-hours')!;
+  const resPct = document.getElementById('res-pct')!;
+  const humanText = document.getElementById('human-text')!;
+  const btnCopyDiff = document.getElementById('btn-copy-diff')!;
+
+  const today = new Date();
+  startInput.value = today.toISOString().split('T')[0];
+  const endOfYear = new Date(today.getFullYear(), 11, 31);
+  endInput.value = endOfYear.toISOString().split('T')[0];
+
+  function calcDiff() {
+    if (!startInput.value || !endInput.value) return;
+    const s = new Date(startInput.value + 'T00:00:00');
+    const e = new Date(endInput.value + 'T00:00:00');
+
+    const isNegative = s > e;
+    const d1 = isNegative ? e : s;
+    const d2 = isNegative ? s : e;
+
+    let yDiff = d2.getFullYear() - d1.getFullYear();
+    let mDiff = d2.getMonth() - d1.getMonth();
+    let dayDiff = d2.getDate() - d1.getDate();
+
+    if (dayDiff < 0) {
+      mDiff--;
+      const prevMonth = new Date(d2.getFullYear(), d2.getMonth(), 0);
+      dayDiff += prevMonth.getDate();
+    }
+    if (mDiff < 0) {
+      yDiff--;
+      mDiff += 12;
+    }
+
+    const diffMs = Math.abs(e.getTime() - s.getTime());
+    const totalDays = Math.round(diffMs / 86400000);
+    const weeks = Math.floor(totalDays / 7);
+    const remDays = totalDays % 7;
+    const totalHours = totalDays * 24;
+    const approxMonths = (totalDays / 30.4375).toFixed(1);
+    const pctYear = ((totalDays / 365) * 100).toFixed(1);
+
+    const parts: string[] = [];
+    if (yDiff > 0) parts.push(`${yDiff} ${yDiff === 1 ? 'año' : 'años'}`);
+    if (mDiff > 0) parts.push(`${mDiff} ${mDiff === 1 ? 'mes' : 'meses'}`);
+    if (dayDiff > 0 || parts.length === 0) parts.push(`${dayDiff} ${dayDiff === 1 ? 'día' : 'días'}`);
+    const breakdownStr = parts.join(', ');
+
+    resBreakdown.textContent = breakdownStr;
+    resTotalDays.textContent = totalDays.toLocaleString('es-ES');
+    resWeeks.textContent = `${weeks} sem ${remDays} d`;
+    resMonths.textContent = `~${approxMonths}`;
+    resHours.textContent = totalHours.toLocaleString('es-ES') + ' h';
+    resPct.textContent = `${pctYear}%`;
+
+    const startFmt = s.toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' });
+    const endFmt = e.toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' });
+
+    if (totalDays === 0) {
+      humanText.innerHTML = `Las dos fechas seleccionadas son idénticas (<strong>${startFmt}</strong>). El intervalo es de 0 días.`;
+    } else {
+      const orderTxt = isNegative ? 'hacia atrás en el tiempo' : 'hacia adelante';
+      humanText.innerHTML = `Entre el <strong>${startFmt}</strong> y el <strong>${endFmt}</strong> (${orderTxt}) hay <strong>${totalDays.toLocaleString('es-ES')} días naturales</strong>, equivalentes exactamente a <strong>${breakdownStr}</strong> (o <strong>${weeks} semanas y ${remDays} días</strong>).`;
+    }
+  }
+
+  [startInput, endInput].forEach(el => el.addEventListener('input', calcDiff));
+  [startInput, endInput].forEach(el => el.addEventListener('change', calcDiff));
+
+  // Presets Modo 1
+  document.querySelectorAll('.preset-btn[data-preset]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const type = btn.getAttribute('data-preset');
+      const now = new Date();
+      if (type === 'start-of-year') {
+        startInput.value = `${now.getFullYear()}-01-01`;
+        endInput.value = now.toISOString().split('T')[0];
+      } else if (type === 'today-to-end-of-year') {
+        startInput.value = now.toISOString().split('T')[0];
+        endInput.value = `${now.getFullYear()}-12-31`;
+      } else if (type === 'last-month') {
+        const last = new Date(now);
+        last.setMonth(last.getMonth() - 1);
+        startInput.value = last.toISOString().split('T')[0];
+        endInput.value = now.toISOString().split('T')[0];
+      } else if (type === 'next-100') {
+        startInput.value = now.toISOString().split('T')[0];
+        const future = new Date(now);
+        future.setDate(future.getDate() + 100);
+        endInput.value = future.toISOString().split('T')[0];
+      } else if (type === 'today') {
+        startInput.value = now.toISOString().split('T')[0];
+        endInput.value = now.toISOString().split('T')[0];
+      }
+      calcDiff();
+    });
+  });
+
+  // Copiar resultado Modo 1
+  btnCopyDiff.addEventListener('click', () => {
+    const text = humanText.innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      const original = btnCopyDiff.textContent;
+      btnCopyDiff.textContent = '✅ ¡Copiado!';
+      setTimeout(() => { btnCopyDiff.textContent = original; }, 2000);
+    });
+  });
+
+  // MODO 2: SUMAR O RESTAR TIEMPO
+  const asStart = document.getElementById('as-start') as HTMLInputElement;
+  const asOp = document.getElementById('as-op') as HTMLSelectElement;
+  const asYears = document.getElementById('as-years') as HTMLInputElement;
+  const asMonths = document.getElementById('as-months') as HTMLInputElement;
+  const asWeeks = document.getElementById('as-weeks') as HTMLInputElement;
+  const asDays = document.getElementById('as-days') as HTMLInputElement;
+  const asResDate = document.getElementById('as-res-date')!;
+  const asResSub = document.getElementById('as-res-sub')!;
+  const btnCopyDate = document.getElementById('btn-copy-date')!;
+
+  asStart.value = today.toISOString().split('T')[0];
+
+  function calcAddSub() {
+    if (!asStart.value) return;
+    const base = new Date(asStart.value + 'T00:00:00');
+    const factor = asOp.value === 'sub' ? -1 : 1;
+
+    const y = parseInt(asYears.value || '0', 10) * factor;
+    const m = parseInt(asMonths.value || '0', 10) * factor;
+    const w = parseInt(asWeeks.value || '0', 10) * factor;
+    const d = parseInt(asDays.value || '0', 10) * factor;
+
+    const res = new Date(base);
+    if (y !== 0) res.setFullYear(res.getFullYear() + y);
+    if (m !== 0) res.setMonth(res.getMonth() + m);
+    if (w !== 0) res.setDate(res.getDate() + w * 7);
+    if (d !== 0) res.setDate(res.getDate() + d);
+
+    const fullStr = res.toLocaleDateString('es-ES', {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    });
+    // Capitalize first letter
+    const capitalized = fullStr.charAt(0).toUpperCase() + fullStr.slice(1);
+    asResDate.textContent = capitalized;
+
+    const diffDaysFromToday = Math.round((res.getTime() - new Date().setHours(0,0,0,0)) / 86400000);
+    let relText = '';
+    if (diffDaysFromToday === 0) relText = 'Es exactamente hoy';
+    else if (diffDaysFromToday === 1) relText = 'Es mañana';
+    else if (diffDaysFromToday === -1) relText = 'Fue ayer';
+    else if (diffDaysFromToday > 1) relText = `Faltan ${diffDaysFromToday.toLocaleString('es-ES')} días desde hoy`;
+    else relText = `Ocurrió hace ${Math.abs(diffDaysFromToday).toLocaleString('es-ES')} días`;
+
+    asResSub.textContent = `${relText} · Formato ISO: ${res.toISOString().split('T')[0]}`;
+  }
+
+  [asStart, asOp, asYears, asMonths, asWeeks, asDays].forEach(el => {
+    el.addEventListener('input', calcAddSub);
+    el.addEventListener('change', calcAddSub);
+  });
+
+  // Atajos rápidos Modo 2
+  document.querySelectorAll('.as-quick').forEach(btn => {
+    btn.addEventListener('click', () => {
+      asYears.value = btn.getAttribute('data-years') || '0';
+      asMonths.value = btn.getAttribute('data-months') || '0';
+      asWeeks.value = '0';
+      asDays.value = btn.getAttribute('data-days') || '0';
+      asOp.value = 'add';
+      calcAddSub();
+    });
+  });
+
+  btnCopyDate.addEventListener('click', () => {
+    const text = asResDate.textContent || '';
+    navigator.clipboard.writeText(text).then(() => {
+      const original = btnCopyDate.textContent;
+      btnCopyDate.textContent = '✅ ¡Copiado!';
+      setTimeout(() => { btnCopyDate.textContent = original; }, 2000);
+    });
+  });
+
+  // FESTIVIDADES
+  const holidays = [
+    { name: 'Año Nuevo', emoji: '🥂', month: 1, day: 1 },
+    { name: 'San Valentín', emoji: '💘', month: 2, day: 14 },
+    { name: 'Día del Trabajo', emoji: '🛠️', month: 5, day: 1 },
+    { name: 'Halloween', emoji: '🎃', month: 10, day: 31 },
+    { name: 'Navidad', emoji: '🎄', month: 12, day: 25 },
+    { name: 'Fin de Año', emoji: '🎆', month: 12, day: 31 }
+  ];
+
+  const holidaysContainer = document.getElementById('holidays-container')!;
+  const now = new Date();
+  now.setHours(0, 0, 0, 0);
+
+  holidays.forEach(h => {
+    let target = new Date(now.getFullYear(), h.month - 1, h.day);
+    if (target < now) {
+      target = new Date(now.getFullYear() + 1, h.month - 1, h.day);
+    }
+    const daysLeft = Math.ceil((target.getTime() - now.getTime()) / 86400000);
+    const formatted = target.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' });
+
+    const card = document.createElement('div');
+    card.className = 'holiday-mini-card';
+    card.innerHTML = `
+      <div class="h-top"><span class="h-emoji">${h.emoji}</span> <span>${h.name}</span></div>
+      <div class="h-countdown">${daysLeft === 0 ? '¡Es hoy!' : `en ${daysLeft} d`}</div>
+      <small class="h-date">${formatted}</small>
+    `;
+    card.addEventListener('click', () => {
+      // Set Tab 1 start to today, end to target
+      startInput.value = now.toISOString().split('T')[0];
+      endInput.value = target.toISOString().split('T')[0];
+      // Switch to tab 1
+      tabs[0].click();
+      calcDiff();
+      window.scrollTo({ top: startInput.offsetTop - 100, behavior: 'smooth' });
+    });
+    holidaysContainer.appendChild(card);
+  });
+
+  // Init calculations
+  calcDiff();
+  calcAddSub();
+</script>
