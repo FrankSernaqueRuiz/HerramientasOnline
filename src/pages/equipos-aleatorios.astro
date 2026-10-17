@@ -21,6 +21,79 @@ import Icon from '../components/Icon.astro';
       <div id="eq-results" class="eq-results"><p class="placeholder">Los equipos aparecerán aquí</p></div>
     </div>
   </section>
+
+  <section class="seo-section">
+    <h2>¿Cómo funciona el generador de equipos aleatorios?</h2>
+    <p>El generador utiliza el algoritmo de barajado de <strong>Fisher-Yates</strong>, el estándar de oro en informática para permutaciones aleatorias perfectas. Cada participante tiene exactamente la misma probabilidad matemática de ser asignado a cualquier grupo, logrando una distribución equitativa de integrantes.</p>
+
+    <div class="step-list">
+      <div class="step-card">
+        <span class="step-num">1</span>
+        <div class="step-body">
+          <h4>Introduce los nombres de los participantes</h4>
+          <p>Escribe o pega la lista de personas (un nombre por línea). Puedes añadir tantos participantes como desees.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <span class="step-num">2</span>
+        <div class="step-body">
+          <h4>Indica el número de equipos que deseas formar</h4>
+          <p>Configura cuántos grupos necesitas (de 2 a 20 equipos). La herramienta balanceará el número de miembros por equipo de forma automática.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <span class="step-num">3</span>
+        <div class="step-body">
+          <h4>Genera tus equipos y compártelos</h4>
+          <p>Pulsa "Generar equipos" para ver los grupos identificados con colores distintivos listos para jugar o trabajar.</p>
+        </div>
+      </div>
+    </div>
+
+    <h3>Casos de uso para grupos y deportes</h3>
+    <div class="guide-grid">
+      <div class="guide-card">
+        <h4>Partidos de fútbol, básquet o pádel</h4>
+        <p>Arma escuadras rápidas y transparentes para tus partidos de fin de semana evitando discusiones sobre favoritos.</p>
+      </div>
+      <div class="guide-card">
+        <h4>Trabajos grupales en colegios y universidades</h4>
+        <p>Profesores y docentes pueden crear equipos de estudio heterogéneos fomentando la integración entre todos los alumnos.</p>
+      </div>
+      <div class="guide-card">
+        <h4>Dinámicas de Team Building en empresas</h4>
+        <p>Organiza mesas de trabajo, hackathones o juegos corporativos mezclando diferentes áreas de la organización.</p>
+      </div>
+    </div>
+
+    <h2>Preguntas frecuentes sobre la división de equipos</h2>
+    <div class="faq-wrap">
+      <div class="faq-item">
+        <div class="faq-question">¿Qué pasa si la cantidad de personas no es divisible exacta?</div>
+        <div class="faq-answer">
+          <p>La herramienta distribuye los miembros sobrantes equitativamente entre los primeros equipos (por ejemplo, 10 personas en 3 equipos generará dos grupos de 3 personas y un grupo de 4).</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿El sorteo es verdaderamente imparcial?</div>
+        <div class="faq-answer">
+          <p>Totalmente. El barajado se ejecuta con aleatoriedad pura en tu navegador sin ningún algoritmo de preferencia o emparejamiento oculto.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Puedo volver a sortear si un equipo no convence?</div>
+        <div class="faq-answer">
+          <p>Sí, con solo hacer clic nuevamente en "Generar equipos" se realizará una nueva mezcla instantánea de todos los nombres.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Se guardan las listas de nombres ingresadas?</div>
+        <div class="faq-answer">
+          <p>No. En UtiliaOnline cuidamos tu privacidad: los nombres solo permanecen en tu pantalla mientras la página está abierta y no se envían a ningún servidor.</p>
+        </div>
+      </div>
+    </div>
+  </section>
 </Base>
 <style>
   .breadcrumb{font-size:.85rem;color:var(--muted);margin-bottom:.5rem}.breadcrumb a{color:var(--muted)}

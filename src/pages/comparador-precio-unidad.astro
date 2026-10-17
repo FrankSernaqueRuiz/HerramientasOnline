@@ -18,6 +18,79 @@ import Base from '../layouts/Base.astro';
     </div>
     <div id="comp-result" class="comp-result hidden"></div>
   </section>
+
+  <section class="seo-section">
+    <h2>¿Cómo funciona el comparador de precio por unidad?</h2>
+    <p>Muchos envases de supermercado inducen a error con formatos "familiares" o "ahorro" que en realidad resultan más costosos por kilo o litro que el tamaño estándar. Nuestra herramienta normaliza el coste matemático de cada artículo a una unidad de medida estándar (por gramo, kilo, litro, mililitro o pieza), revelando instantáneamente la opción que verdaderamente rinde más por tu dinero.</p>
+
+    <div class="step-list">
+      <div class="step-card">
+        <span class="step-num">1</span>
+        <div class="step-body">
+          <h4>Selecciona la unidad de medida común</h4>
+          <p>Elige si vas a comparar productos por peso (gramos/kilos), volumen (litros/mililitros) o por piezas individuales.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <span class="step-num">2</span>
+        <div class="step-body">
+          <h4>Introduce el precio y contenido de cada producto</h4>
+          <p>Escribe el precio y la cantidad neta de la Opción A, Opción B o agrega más alternativas con el botón "+ Agregar producto".</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <span class="step-num">3</span>
+        <div class="step-body">
+          <h4>Descubre el producto más económico</h4>
+          <p>La herramienta destaca en verde la alternativa ganadora con el menor coste unitario y te muestra cuánto ahorras porcentualmente frente a las demás.</p>
+        </div>
+      </div>
+    </div>
+
+    <h3>Casos de uso para compras inteligentes</h3>
+    <div class="guide-grid">
+      <div class="guide-card">
+        <h4>Supermercado y despensa básica</h4>
+        <p>Compara si conviene comprar el paquete de detergente de 3 kg frente al bote de 1.5 kg, o el aceite de 900 ml frente al bidón de 5 litros.</p>
+      </div>
+      <div class="guide-card">
+        <h4>Papel higiénico y servilletas</h4>
+        <p>Determina el verdadero coste comparando el precio por metro lineal o por rollo entre paquetes de 4, 12 o 24 unidades.</p>
+      </div>
+      <div class="guide-card">
+        <h4>Comida para mascotas y granos</h4>
+        <p>Evalúa promociones de alimento para perros, gatos, arroz o café para verificar si las ofertas 2x1 o paquetes gigantes ofrecen un ahorro real.</p>
+      </div>
+    </div>
+
+    <h2>Preguntas frecuentes sobre precio unitario</h2>
+    <div class="faq-wrap">
+      <div class="faq-item">
+        <div class="faq-question">¿El paquete más grande siempre es el más barato?</div>
+        <div class="faq-answer">
+          <p>No siempre. Es una creencia popular muy común, pero en la práctica los supermercados frecuentemente aplican márgenes más altos en presentaciones grandes o promociones engañosas sabiendo que el cliente asume que ahorra sin calcular.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Puedo comparar artículos con diferentes unidades (ej. gramos vs kilos)?</div>
+        <div class="faq-answer">
+          <p>Debes ingresar las cantidades en la misma escala seleccionada. Por ejemplo, si seleccionas "Kilos", introduce <code>0.5</code> para 500 gramos o <code>1.5</code> para 1500 gramos para que la comparación sea matemáticamente homogénea.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Cuántos productos puedo comparar simultáneamente?</div>
+        <div class="faq-answer">
+          <p>Puedes comparar desde 2 hasta todos los productos que necesites añadiendo filas con el botón "+ Agregar producto".</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Cómo se calcula el ahorro porcentual?</div>
+        <div class="faq-answer">
+          <p>Comparamos el coste unitario del producto más caro con el ganador mediante la fórmula: <code>((Precio_Unitario_Caro - Precio_Unitario_Barato) / Precio_Unitario_Caro) * 100</code>.</p>
+        </div>
+      </div>
+    </div>
+  </section>
 </Base>
 <style>
   .breadcrumb{font-size:.85rem;color:var(--muted);margin-bottom:.5rem}.breadcrumb a{color:var(--muted)}

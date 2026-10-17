@@ -80,8 +80,76 @@ import Icon from '../components/Icon.astro';
   </section>
 
   <section class="seo-section">
-    <h2>¿Por qué los textos de PDF se copian rotos?</h2>
-    <p>El formato PDF está diseñado para la composición visual en página física, no para el flujo continuo de texto. Por eso, al final de cada línea visual en el visor se suele insertar un retorno de carro <code>\n</code> rígido o guiones de separación tipográfica que arruinan la lectura al pegarlo en Word, WhatsApp o Google Docs. Esta herramienta restaura el flujo natural de los párrafos.</p>
+    <h2>¿Por qué los textos de PDF se copian rotos y cómo funciona el limpiador?</h2>
+    <p>El formato PDF está diseñado para la composición visual en hoja fija, no para texto dinámico continuo. Al copiar desde un lector de PDF, el portapapeles arrastra retornos de carro rígidos (<code>\n</code>) al final de cada línea visual, guiones partidos ("pa- labra") y dobles espacios que deforman el contenido al pegarlo en Word o Google Docs.</p>
+
+    <div class="step-list">
+      <div class="step-card">
+        <span class="step-num">1</span>
+        <div class="step-body">
+          <h4>Pega el texto extraído del documento PDF</h4>
+          <p>Copia el fragmento o artículo desde tu visor de PDF (Adobe Acrobat, navegador o lector electrónico) y pégalo en el cuadro de entrada.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <span class="step-num">2</span>
+        <div class="step-body">
+          <h4>Configura las opciones de limpieza automática</h4>
+          <p>Activa la unión de saltos de línea huérfanos, eliminación de guiones de separación silábica y unificación de espacios múltiples.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <span class="step-num">3</span>
+        <div class="step-body">
+          <h4>Obtén el texto fluido y cópialo al instante</h4>
+          <p>Pulsa "Procesar texto" para obtener una lectura limpia y continua lista para pegar directamente en tu procesador de textos favorito.</p>
+        </div>
+      </div>
+    </div>
+
+    <h3>Casos de uso para estudiantes y profesionales</h3>
+    <div class="guide-grid">
+      <div class="guide-card">
+        <h4>Tesis, ensayos e investigaciones académicas</h4>
+        <p>Limpia citas textuales de papers científicos y libros digitales sin tener que borrar a mano los saltos de línea de cada renglón.</p>
+      </div>
+      <div class="guide-card">
+        <h4>Documentos jurídicos y contratos escaneados</h4>
+        <p>Restaura párrafos de sentencias, decretos y contratos oficiales para redactar informes legales impecables.</p>
+      </div>
+      <div class="guide-card">
+        <h4>Traducción y resúmenes con IA</h4>
+        <p>Evita que traductores como DeepL o modelos de IA interpreten líneas cortadas como oraciones separadas, mejorando la precisión del resultado.</p>
+      </div>
+    </div>
+
+    <h2>Preguntas frecuentes sobre la limpieza de texto PDF</h2>
+    <div class="faq-wrap">
+      <div class="faq-item">
+        <div class="faq-question">¿Se mantienen los puntos y aparte entre párrafos reales?</div>
+        <div class="faq-answer">
+          <p>Sí. Nuestro algoritmo distingue entre un salto de línea artificial (renglón roto a mitad de frase) y un salto de párrafo genuino (doble salto de línea o final de punto y aparte), preservando la estructura lógica de tu documento.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Mis textos confidenciales se suben a algún servidor?</div>
+        <div class="faq-answer">
+          <p>No. En UtiliaOnline toda la limpieza y reemplazo de caracteres se ejecuta al 100% en la memoria de tu navegador con JavaScript. Ningún fragmento de texto sale jamás de tu dispositivo.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Sirve también para texto copiado de páginas web o correos?</div>
+        <div class="faq-answer">
+          <p>Sí, funciona a la perfección para limpiar textos con columnas estrechas copiados de correos electrónicos antiguos, blogs, periódicos digitales o terminales de código.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Cómo soluciona las palabras divididas con guion ("con- clusión")?</div>
+        <div class="faq-answer">
+          <p>La herramienta detecta automáticamente los guiones al final de línea seguidos de un salto y los reconecta en una sola palabra fluida eliminando el guion innecesario.</p>
+        </div>
+      </div>
+    </div>
   </section>
 </Base>
 

@@ -46,6 +46,79 @@ import Icon from '../components/Icon.astro';
       </div>
     </div>
   </section>
+
+  <section class="seo-section">
+    <h2>¿Cómo funciona el extractor de paletas de color y cuentagotas?</h2>
+    <p>Inspirarse en la fotografía real, carteles o paisajes de la naturaleza es uno de los métodos más efectivos para diseñar identidades visuales atractivas. Esta herramienta utiliza un algoritmo de <strong>cuantización cromática k-means</strong> para agrupar los millones de píxeles de una imagen en los 6 tonos dominantes más representativos y armónicos. Además, incorpora un <strong>cuentagotas interactivo de lupa</strong> para tomar cualquier tono exacto con un clic.</p>
+
+    <div class="step-list">
+      <div class="step-card">
+        <span class="step-num">1</span>
+        <div class="step-body">
+          <h4>Sube tu imagen de referencia o inspiración</h4>
+          <p>Arrastra cualquier fotografía, logotipo, render o captura de pantalla en formato JPG, PNG o WebP.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <span class="step-num">2</span>
+        <div class="step-body">
+          <h4>Extracción automática de tonos dominantes</h4>
+          <p>El sistema genera instantáneamente la paleta armónica con sus códigos hexadecimales (HEX) y valores RGB.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <span class="step-num">3</span>
+        <div class="step-body">
+          <h4>Usa el cuentagotas y copia con un solo clic</h4>
+          <p>Haz clic en cualquier muestra de la paleta o sobre cualquier punto de la foto para copiar el código HEX listo para pegar en Figma, Canva o CSS.</p>
+        </div>
+      </div>
+    </div>
+
+    <h3>Casos de uso para diseñadores y creadores</h3>
+    <div class="guide-grid">
+      <div class="guide-card">
+        <h4>Diseño web y aplicaciones móviles (UI/UX)</h4>
+        <p>Crea esquemas de color coherentes para botones, fondos y tipografías a partir de la fotografía de portada de tu proyecto.</p>
+      </div>
+      <div class="guide-card">
+        <h4>Branding y creación de marca personal</h4>
+        <p>Construye tu manual de identidad corporativa extrayendo paletas armónicas de fotografías de producto o estilo de vida.</p>
+      </div>
+      <div class="guide-card">
+        <h4>Ilustración digital y arte conceptual</h4>
+        <p>Estudia la armonía cromática y el contraste de luces y sombras de grandes obras de arte y directores de fotografía de cine.</p>
+      </div>
+    </div>
+
+    <h2>Preguntas frecuentes sobre paletas de colores</h2>
+    <div class="faq-wrap">
+      <div class="faq-item">
+        <div class="faq-question">¿Qué es el código HEX y para qué sirve?</div>
+        <div class="faq-answer">
+          <p>El código hexadecimal (ej: <code>#2f81f7</code>) es una combinación de 6 caracteres que representa la cantidad exacta de Rojo, Verde y Azul de un color. Es el estándar universal utilizado en CSS, HTML, Photoshop, Figma, Illustrator y Canva.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Puedo seleccionar un píxel muy pequeño con el cuentagotas?</div>
+        <div class="faq-answer">
+          <p>Sí, al pasar el cursor o hacer clic sobre cualquier parte del lienzo Canvas, la herramienta lee el valor RGBA exacto del píxel ubicado bajo la punta del cursor.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Por qué la paleta automática no incluye un color específico que veo en la foto?</div>
+        <div class="faq-answer">
+          <p>El algoritmo dominante busca los tonos que ocupan mayor superficie o volumen cromático en la imagen. Si deseas capturar un detalle pequeño (como un ojo o una flor lejana), utiliza el cuentagotas manual sobre la foto.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Las imágenes que subo se almacenan en la nube?</div>
+        <div class="faq-answer">
+          <p>No. El análisis cromático se ejecuta por completo en el navegador de tu computadora o teléfono. Ningún archivo se envía a servidores de terceros.</p>
+        </div>
+      </div>
+    </div>
+  </section>
 </Base>
 
 <style>

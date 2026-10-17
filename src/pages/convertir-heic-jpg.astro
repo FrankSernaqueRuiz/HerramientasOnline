@@ -53,6 +53,79 @@ import Icon from '../components/Icon.astro';
       </div>
     </div>
   </section>
+
+  <section class="seo-section">
+    <h2>¿Qué es el formato HEIC de iPhone y cómo convertirlo a JPG o PNG?</h2>
+    <p>Desde iOS 11, los teléfonos iPhone y dispositivos Apple guardan por defecto las fotografías en formato <strong>HEIC (High Efficiency Image Container)</strong>. Aunque este formato reduce el peso del archivo a la mitad manteniendo gran calidad, tiene una enorme desventaja: <strong>muchos ordenadores Windows, televisores, impresoras y páginas web no pueden abrirlo ni visualizarlo</strong>. Nuestra herramienta decodifica el contenedor HEIC directamente en tu navegador y lo transforma a JPG o PNG universal.</p>
+
+    <div class="step-list">
+      <div class="step-card">
+        <span class="step-num">1</span>
+        <div class="step-body">
+          <h4>Arrastra o selecciona tus fotos .HEIC o .HEIF</h4>
+          <p>Carga las fotos tomadas con tu iPhone o iPad directamente desde tu galería o explorador de archivos.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <span class="step-num">2</span>
+        <div class="step-body">
+          <h4>Elige el formato de salida (JPG o PNG) y la calidad</h4>
+          <p>Selecciona JPG estándar para un peso ligero o PNG para máxima fidelidad visual, y regula el deslizador de compresión.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <span class="step-num">3</span>
+        <div class="step-body">
+          <h4>Convierte y descarga al instante</h4>
+          <p>Pulsa "Iniciar conversión" para obtener tu imagen universal lista para ver en Windows, enviar por correo o subir a cualquier portal.</p>
+        </div>
+      </div>
+    </div>
+
+    <h3>Casos de uso para fotos de Apple</h3>
+    <div class="guide-grid">
+      <div class="guide-card">
+        <h4>Trámites web en Windows y trámites oficiales</h4>
+        <p>Convierte fotos de documentos de identidad o recibos tomadas con el iPhone para subirlas a portales que solo admiten JPG o PNG.</p>
+      </div>
+      <div class="guide-card">
+        <h4>Compartir recuerdos con usuarios de Android y PC</h4>
+        <p>Asegúrate de que tus amigos y familiares puedan ver tus fotos de viajes en sus ordenadores sin tener que instalar códecs de pago.</p>
+      </div>
+      <div class="guide-card">
+        <h4>Edición en programas de diseño antiguos</h4>
+        <p>Importa tus fotos a versiones clásicas de Photoshop, Illustrator o programas de oficina que no reconocen archivos HEIC nativos.</p>
+      </div>
+    </div>
+
+    <h2>Preguntas frecuentes sobre archivos HEIC</h2>
+    <div class="faq-wrap">
+      <div class="faq-item">
+        <div class="faq-question">¿Por qué mi ordenador Windows no abre las fotos de mi iPhone?</div>
+        <div class="faq-answer">
+          <p>Windows no incluye de fábrica el códec para decodificar HEIC/HEVC y en la tienda de Microsoft suele requerir un pago. Con nuestro conversor gratuito puedes transformar tus fotos a JPG en segundos sin pagar ni instalar nada.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Se pierde calidad al convertir de HEIC a JPG?</div>
+        <div class="faq-answer">
+          <p>Si mantienes el deslizador de calidad entre el 90% y 100%, la diferencia visual es completamente imperceptible para el ojo humano, manteniendo los colores vivos y la nitidez original.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Mis fotos se envían a algún servidor de internet?</div>
+        <div class="faq-answer">
+          <p>No. La conversión se realiza 100% en local en tu dispositivo utilizando la librería WebAssembly/JavaScript <code>heic2any</code>. Tu privacidad está absolutamente garantizada.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Cómo puedo hacer que mi iPhone tome fotos en JPG directamente?</div>
+        <div class="faq-answer">
+          <p>En tu iPhone ve a <strong>Ajustes > Cámara > Formatos</strong> y marca la opción <strong>"El más compatible"</strong> en lugar de "Alta eficiencia". A partir de ese momento, tus nuevas fotos se guardarán automáticamente en JPG.</p>
+        </div>
+      </div>
+    </div>
+  </section>
 </Base>
 
 <!-- Load heic2any client library dynamically -->

@@ -70,6 +70,79 @@ import Icon from '../components/Icon.astro';
       </div>
     </div>
   </section>
+
+  <section class="seo-section">
+    <h2>¿Qué son los metadatos EXIF y por qué es peligroso compartirlos?</h2>
+    <p>Cada vez que tomas una fotografía con tu teléfono móvil o cámara digital, el dispositivo incrusta de forma invisible un bloque de datos técnicos denominado <strong>metadatos EXIF (Exchangeable Image File Format)</strong>. Estos datos contienen información altamente sensible sobre tu privacidad: las <strong>coordenadas GPS exactas</strong> de tu casa o trabajo, la fecha y hora de la captura, el modelo de tu dispositivo y el número de serie de la cámara. Limpiar estos datos antes de compartir fotos en internet protege tu intimidad y la de tu familia.</p>
+
+    <div class="step-list">
+      <div class="step-card">
+        <span class="step-num">1</span>
+        <div class="step-body">
+          <h4>Arrastra o selecciona la fotografía</h4>
+          <p>Sube cualquier imagen en formato JPG, JPEG, PNG o WebP desde tu ordenador o smartphone.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <span class="step-num">2</span>
+        <div class="step-body">
+          <h4>Inspección y eliminación inmediata</h4>
+          <p>La herramienta decodifica la cabecera del archivo, extrae los datos de geolocalización y los purga por completo sin alterar la calidad visual de la imagen.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <span class="step-num">3</span>
+        <div class="step-body">
+          <h4>Descarga la foto limpia y segura</h4>
+          <p>Pulsa "Descargar foto limpia" para guardar una copia idéntica en píxeles pero totalmente desprovista de rastros de GPS o dispositivo.</p>
+        </div>
+      </div>
+    </div>
+
+    <h3>Casos de uso para proteger tu privacidad</h3>
+    <div class="guide-grid">
+      <div class="guide-card">
+        <h4>Venta de artículos de segunda mano</h4>
+        <p>Evita que desconocidos averigüen la dirección de tu domicilio al publicar fotos de muebles o vehículos en plataformas como Facebook Marketplace o Wallapop.</p>
+      </div>
+      <div class="guide-card">
+        <h4>Fotografías familiares y de menores</h4>
+        <p>Protege la seguridad de tus hijos eliminando las coordenadas del colegio, parque o casa antes de enviar fotos a grupos o foros.</p>
+      </div>
+      <div class="guide-card">
+        <h4>Periodismo, activismo e investigación</h4>
+        <p>Garantiza el anonimato de tus fuentes protegiendo la fecha exacta, modelo de cámara y ubicación de testimonios gráficos.</p>
+      </div>
+    </div>
+
+    <h2>Preguntas frecuentes sobre metadatos EXIF</h2>
+    <div class="faq-wrap">
+      <div class="faq-item">
+        <div class="faq-question">¿Redes sociales como WhatsApp o Instagram no borran ya los metadatos?</div>
+        <div class="faq-answer">
+          <p>Al subir una foto al feed de Instagram o como mensaje estándar de WhatsApp, estas redes comprimen y suelen remover el EXIF público. Sin embargo, si envías una foto por correo electrónico, AirDrop, Telegram como archivo sin comprimir, o la subes a blogs, foros o Google Drive, <strong>los metadatos viajan intactos con la ubicación GPS visible</strong> para cualquiera que la descargue.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Se pierde calidad de imagen al quitar los metadatos?</div>
+        <div class="faq-answer">
+          <p>No. Los metadatos son simplemente texto plano en la cabecera binaria del archivo. Al borrarlos, los píxeles, colores, resolución y nitidez de la foto permanecen 100% inalterados.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Es seguro procesar fotos íntimas o confidenciales en esta página?</div>
+        <div class="faq-answer">
+          <p>Absolutamente. En UtiliaOnline el procesamiento se realiza en local en tu propio navegador con JavaScript. La foto nunca se sube a internet ni a ningún servidor externo.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Cómo puedo evitar que mi móvil siga guardando mi ubicación en las fotos?</div>
+        <div class="faq-answer">
+          <p>En los ajustes de la cámara de tu smartphone (tanto en iPhone como en Android), puedes desactivar el permiso de "Etiquetas de ubicación" o "Guardar ubicación geográfica" para futuras fotografías.</p>
+        </div>
+      </div>
+    </div>
+  </section>
 </Base>
 
 <style>

@@ -45,8 +45,76 @@ import Base from '../layouts/Base.astro';
   </section>
 
   <section class="seo-section">
-    <h2>Seguridad de las contraseñas</h2>
-    <p>Esta herramienta utiliza <code>crypto.getRandomValues</code>, un generador criptográficamente seguro disponible en los navegadores modernos. Las claves se generan de forma aislada en tu dispositivo sin transmitirse por internet.</p>
+    <h2>¿Cómo funciona el generador de contraseñas seguras y aleatorias?</h2>
+    <p>A diferencia de los generadores básicos que usan funciones predecibles (como <code>Math.random</code>), nuestra herramienta utiliza la <strong>API Web Cryptography (<code>crypto.getRandomValues</code>)</strong>, un motor de aleatoriedad criptográficamente seguro (CSPRNG) integrado a nivel de sistema operativo. Esto garantiza que cada clave generada sea computacionalmente imposible de predecir o vulnerar mediante ataques de fuerza bruta o diccionarios.</p>
+
+    <div class="step-list">
+      <div class="step-card">
+        <span class="step-num">1</span>
+        <div class="step-body">
+          <h4>Configura la longitud recomendada (16 a 24 caracteres)</h4>
+          <p>Desplaza el control deslizante para definir el número de caracteres de tu clave.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <span class="step-num">2</span>
+        <div class="step-body">
+          <h4>Personaliza los juegos de caracteres</h4>
+          <p>Activa o desactiva mayúsculas, minúsculas, números y símbolos especiales, o marca la opción de excluir caracteres visualmente confusos (como 'l', '1', 'I', 'O', '0').</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <span class="step-num">3</span>
+        <div class="step-body">
+          <h4>Copia tu nueva contraseña con un clic</h4>
+          <p>Pulsa "Copiar" para llevarla directamente al portapapeles y pégala en tu gestor de contraseñas o servicio web.</p>
+        </div>
+      </div>
+    </div>
+
+    <h3>Casos de uso para ciberseguridad personal y empresarial</h3>
+    <div class="guide-grid">
+      <div class="guide-card">
+        <h4>Cuentas bancarias y correos principales</h4>
+        <p>Crea contraseñas robustas e irrepetibles para tus servicios críticos donde el riesgo de robo de identidad es más alto.</p>
+      </div>
+      <div class="guide-card">
+        <h4>Gestores de contraseñas (1Password, Bitwarden, Keepass)</h4>
+        <p>Genera claves ultra-seguras de 20 o 32 caracteres para almacenarlas de forma cifrada en tu bóveda digital.</p>
+      </div>
+      <div class="guide-card">
+        <h4>Claves de redes Wi-Fi (WPA3) y servidores SSH</h4>
+        <p>Protege tu router doméstico y accesos a bases de datos o servidores en la nube con claves complejas que resistan escaneos automatizados.</p>
+      </div>
+    </div>
+
+    <h2>Preguntas frecuentes sobre seguridad de contraseñas</h2>
+    <div class="faq-wrap">
+      <div class="faq-item">
+        <div class="faq-question">¿Se envían o guardan mis contraseñas en sus servidores?</div>
+        <div class="faq-answer">
+          <p><strong>Bajo ninguna circunstancia.</strong> Toda la generación criptográfica ocurre en la memoria local de tu navegador web. Ningún paquete de red sale de tu dispositivo, por lo que nadie (ni siquiera nosotros) puede ver ni registrar las contraseñas creadas.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Cuánto tiempo tardaría un hacker en descifrar una contraseña de 16 caracteres?</div>
+        <div class="faq-answer">
+          <p>Una contraseña de 16 caracteres que combina mayúsculas, minúsculas, números y símbolos posee más de 95 billones de combinaciones posibles, tardando miles de millones de años en ser descifrada por supercomputadoras actuales mediante fuerza bruta.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Por qué es peligroso reutilizar la misma contraseña en varios sitios?</div>
+        <div class="faq-answer">
+          <p>Porque si un solo sitio web menor sufre una brecha de seguridad (filtración de base de datos), los ciberdelincuentes probarán automáticamente esas mismas credenciales en tu correo, redes sociales y bancos mediante ataques de "Credential Stuffing". Cada cuenta debe tener una clave única.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Qué significa la opción "Evitar caracteres similares"?</div>
+        <div class="faq-answer">
+          <p>Elimina letras y números que se confunden fácilmente a simple vista en ciertas tipografías (como la 'L' minúscula, el número '1', la 'i' mayúscula, la 'o' mayúscula y el número '0'). Es ideal si necesitas escribir la contraseña a mano en un teclado físico.</p>
+        </div>
+      </div>
+    </div>
   </section>
 </Base>
 

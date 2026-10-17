@@ -36,6 +36,79 @@ import Icon from '../components/Icon.astro';
       <div id="dice-history" class="history"></div>
     </div>
   </section>
+
+  <section class="seo-section">
+    <h2>¿Cómo funciona el simulador de dados y moneda?</h2>
+    <p>Este simulador combina animaciones 3D interactivas con algoritmos de aleatoriedad criptográfica (<code>crypto.getRandomValues</code>). Cada lanzamiento de moneda tiene una probabilidad exacta del 50% (cara o cruz) y cada dado ofrece una distribución uniforme de probabilidad entre 1 y el número de caras seleccionado (D4, D6, D8, D10, D12, D20 o D100).</p>
+
+    <div class="step-list">
+      <div class="step-card">
+        <span class="step-num">1</span>
+        <div class="step-body">
+          <h4>Elige entre modo Moneda o modo Dados</h4>
+          <p>Selecciona la pestaña correspondiente según el tipo de azar que necesites para tu juego o decisión.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <span class="step-num">2</span>
+        <div class="step-body">
+          <h4>Configura el tipo y cantidad de dados</h4>
+          <p>En el modo dados, escoge las caras que deseas (desde dados clásicos D6 hasta dados poliédricos para rol D20) y la cantidad simultánea.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <span class="step-num">3</span>
+        <div class="step-body">
+          <h4>Lanza con animación y consulta la suma total</h4>
+          <p>Haz clic en la moneda para verla girar en el aire, o pulsa "Lanzar dados" para obtener la tirada animada, el desglose y la suma acumulada.</p>
+        </div>
+      </div>
+    </div>
+
+    <h3>Casos de uso para juegos y desempates</h3>
+    <div class="guide-grid">
+      <div class="guide-card">
+        <h4>Partidas de rol (D&D, Pathfinder)</h4>
+        <p>Lanza dados de 4, 8, 10, 12 o 20 caras en cualquier momento cuando olvides tus dados físicos en casa.</p>
+      </div>
+      <div class="guide-card">
+        <h4>Juegos de mesa tradicionales</h4>
+        <p>Sustituye los dados de Monopoly, Generala, Ludo o Catán con tiradas limpias que calculan la suma automáticamente.</p>
+      </div>
+      <div class="guide-card">
+        <h4>Desempates y decisiones instantáneas</h4>
+        <p>Resuelve dilemas rápidos entre dos opciones ("cara o cruz") de forma justa, limpia y transparente.</p>
+      </div>
+    </div>
+
+    <h2>Preguntas frecuentes sobre dados y monedas virtuales</h2>
+    <div class="faq-wrap">
+      <div class="faq-item">
+        <div class="faq-question">¿Los resultados son realmente aleatorios o están programados?</div>
+        <div class="faq-answer">
+          <p>Son 100% aleatorios e impredecibles. Se utiliza la API Web Cryptography de tu navegador, el mismo estándar de entropía que se usa en seguridad informática para generar claves de cifrado.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Puedo lanzar varios dados a la vez?</div>
+        <div class="faq-answer">
+          <p>Sí, puedes lanzar desde 1 hasta 10 dados simultáneamente en una sola tirada. La herramienta sumará automáticamente todos los valores obtenidos.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Queda guardado el historial de tiradas recientes?</div>
+        <div class="faq-answer">
+          <p>Sí, debajo del resultado principal se muestra el historial de tus últimas tiradas para que puedas verificar los turnos anteriores durante tu partida.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Funciona en teléfonos móviles?</div>
+        <div class="faq-answer">
+          <p>Completamente. La interfaz es táctil y ligera, permitiéndote lanzar la moneda o los dados con un solo toque desde cualquier smartphone o tablet.</p>
+        </div>
+      </div>
+    </div>
+  </section>
 </Base>
 <style>
   .breadcrumb{font-size:.85rem;color:var(--muted);margin-bottom:.5rem}.breadcrumb a{color:var(--muted)}

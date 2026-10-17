@@ -55,8 +55,76 @@ import Icon from '../components/Icon.astro';
   </section>
 
   <section class="seo-section">
-    <h2>Información sobre el contador</h2>
-    <p>Esta utilidad permite calcular el volumen de texto para artículos, publicaciones, tareas académicas o traducciones. Compatible con archivos Word (.docx), PDF y apto para textos extensos con procesamiento instantáneo.</p>
+    <h2>¿Cómo funciona el contador de palabras y caracteres en tiempo real?</h2>
+    <p>Nuestra herramienta analiza la cadena de texto mediante expresiones regulares Unicode avanzadas, detectando con exactitud la separación de palabras, caracteres (con y sin espacios), oraciones gramaticales, párrafos y tiempo estimado de lectura y locución (a una velocidad promedio de 200 palabras por minuto). Además, incluye una barra de herramientas para transformar a mayúsculas, minúsculas, capitalizar o limpiar espacios redundantes.</p>
+
+    <div class="step-list">
+      <div class="step-card">
+        <span class="step-num">1</span>
+        <div class="step-body">
+          <h4>Escribe, pega o arrastra un archivo</h4>
+          <p>Introduce tu texto en el editor o arrastra directamente un documento en formato Word (.docx), PDF o texto plano (.txt).</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <span class="step-num">2</span>
+        <div class="step-body">
+          <h4>Inspecciona las métricas analíticas en vivo</h4>
+          <p>Monitorea el total de palabras, caracteres netos, tiempo de lectura silenciosa, tiempo de locución oral y párrafos.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <span class="step-num">3</span>
+        <div class="step-body">
+          <h4>Aplica transformaciones de formato y copia</h4>
+          <p>Corrige el texto con botones rápidos (eliminar saltos huérfanos, limpiar espacios dobles o convertir a mayúsculas) y cópialo listo.</p>
+        </div>
+      </div>
+    </div>
+
+    <h3>Casos de uso para redactores y estudiantes</h3>
+    <div class="guide-grid">
+      <div class="guide-card">
+        <h4>Ensayos académicos y tesis universitarias</h4>
+        <p>Asegúrate de cumplir los límites estrictos de palabras fijados por revistas científicas o convocatorias de becas (ej: "resumen de 250 palabras").</p>
+      </div>
+      <div class="guide-card">
+        <h4>Copywriting, blogs y redacción SEO</h4>
+        <p>Controla la extensión óptima de artículos para posicionamiento en Google (1,500 - 2,500 palabras) y la longitud de metaetiquetas.</p>
+      </div>
+      <div class="guide-card">
+        <h4>Guiones de video, discursos y podcasts</h4>
+        <p>Calcula con precisión los minutos exactos que durará tu exposición oral o guion de YouTube antes de ponerte frente al micrófono.</p>
+      </div>
+    </div>
+
+    <h2>Preguntas frecuentes sobre conteo de palabras</h2>
+    <div class="faq-wrap">
+      <div class="faq-item">
+        <div class="faq-question">¿Cómo se calcula el tiempo estimado de lectura?</div>
+        <div class="faq-answer">
+          <p>Se toma como estándar científico una velocidad de lectura silenciosa promedio para un adulto hispanohablante de <strong>200 a 220 palabras por minuto (ppm)</strong>, y una velocidad de lectura en voz alta (locución) de aproximadamente 130 ppm.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Los números y símbolos cuentan como palabras?</div>
+        <div class="faq-answer">
+          <p>Sí, las cifras separadas por espacios (ej: "2026" o "$150") se contabilizan como unidades de palabra individuales, siguiendo el estándar de los procesadores de texto más utilizados como Microsoft Word y Google Docs.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Hay algún límite en la longitud del texto?</div>
+        <div class="faq-answer">
+          <p>No. Puedes pegar libros enteros, monografías de más de 50,000 palabras o documentos PDF extensos; la herramienta los procesa al instante sin ralentizarse.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Mis textos privados o manuscritos se guardan en internet?</div>
+        <div class="faq-answer">
+          <p>No. En UtiliaOnline todo el análisis léxico se realiza estrictamente en la memoria RAM de tu navegador web. Ningún texto se transmite ni se almacena en servidores externos.</p>
+        </div>
+      </div>
+    </div>
   </section>
 </Base>
 

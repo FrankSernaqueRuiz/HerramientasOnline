@@ -35,8 +35,76 @@ import Icon from '../components/Icon.astro';
   </section>
 
   <section class="seo-section">
-    <h2>Decide sin complicaciones</h2>
-    <p>Perfecta para resolver debates sobre qué cenar, qué serie empezar o a quién le toca lavar los platos. La selección se realiza con aleatoriedad criptográfica directamente en tu navegador.</p>
+    <h2>¿Cómo funciona la ruleta de decisiones aleatoria?</h2>
+    <p>La ruleta utiliza el generador de números pseudoaleatorios criptográficamente seguros de tu navegador (<code>crypto.getRandomValues</code>), garantizando giros 100% justos, imparciales y sin sesgo. Una simulación física con desaceleración realista (fricción angular) le da la emoción del giro antes de detenerse en la opción ganadora.</p>
+
+    <div class="step-list">
+      <div class="step-card">
+        <span class="step-num">1</span>
+        <div class="step-body">
+          <h4>Introduce tus opciones o usa una plantilla</h4>
+          <p>Escribe cada alternativa en una línea distinta dentro del panel de opciones (o pulsa un botón rápido como "¿Qué comer?", "Sí o No" o "Números 1-10").</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <span class="step-num">2</span>
+        <div class="step-body">
+          <h4>Visualiza los segmentos en la ruleta</h4>
+          <p>La ruleta divide el círculo en porciones equitativas, asignando colores vibrantes y contrastados a cada una de tus opciones.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <span class="step-num">3</span>
+        <div class="step-body">
+          <h4>¡Hazla girar y obtén el resultado!</h4>
+          <p>Pulsa "¡Girar la ruleta!" para ver el giro con física suave. Al detenerse, la flecha superior marcará la opción seleccionada.</p>
+        </div>
+      </div>
+    </div>
+
+    <h3>Casos de uso divertidos y cotidianos</h3>
+    <div class="guide-grid">
+      <div class="guide-card">
+        <h4>Elegir qué comer o pedir a domicilio</h4>
+        <p>Acaba con el clásico dilema de "¿qué cenamos hoy?" entre pizza, sushi, hamburguesas, tacos o comida casera.</p>
+      </div>
+      <div class="guide-card">
+        <h4>Dinámicas de clase y gamificación</h4>
+        <p>Profesores y formadores pueden elegir alumnos al azar para responder preguntas o presentar proyectos sin preferencias.</p>
+      </div>
+      <div class="guide-card">
+        <h4>Sorteos rápidos y juegos entre amigos</h4>
+        <p>Decide quién empieza una partida de mesa, a quién le toca pagar o qué película ver en una noche de cine.</p>
+      </div>
+    </div>
+
+    <h2>Preguntas frecuentes sobre la ruleta aleatoria</h2>
+    <div class="faq-wrap">
+      <div class="faq-item">
+        <div class="faq-question">¿Todas las opciones tienen exactamente la misma probabilidad de salir?</div>
+        <div class="faq-answer">
+          <p>Sí. Cada opción ocupa un arco idéntico en el círculo de 360 grados. La fuerza de giro y el ángulo final se calculan matemáticamente con aleatoriedad pura.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Cuántas opciones como máximo puedo añadir?</div>
+        <div class="faq-answer">
+          <p>Puedes ingresar desde 2 hasta más de 50 opciones. Para una mejor legibilidad visual de los textos, recomendamos entre 2 y 20 alternativas.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Puedo eliminar una opción que ya haya salido ganadora?</div>
+        <div class="faq-answer">
+          <p>Sí, simplemente borra esa línea del campo de texto a la izquierda y la ruleta se redibujará automáticamente con las opciones restantes.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Se requiere conexión a internet para girar la ruleta?</div>
+        <div class="faq-answer">
+          <p>No. Una vez cargada la página, el motor gráfico Canvas y las funciones de física se ejecutan en local dentro de tu dispositivo.</p>
+        </div>
+      </div>
+    </div>
   </section>
 </Base>
 

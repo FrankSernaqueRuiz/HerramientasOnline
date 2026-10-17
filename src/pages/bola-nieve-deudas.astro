@@ -22,6 +22,79 @@ import Base from '../layouts/Base.astro';
     <button type="button" id="btn-plan" class="btn-primary btn-full">Generar plan de pagos</button>
     <div id="debt-results" class="debt-results hidden"></div>
   </section>
+
+  <section class="seo-section">
+    <h2>¿Cómo funciona el planificador Bola de Nieve vs Avalancha de deudas?</h2>
+    <p>Existen dos grandes estrategias financieras para liquidar múltiples deudas. El método de la <strong>Bola de Nieve</strong> (popularizado por Dave Ramsey) prioriza pagar primero la deuda con el saldo más pequeño para obtener victorias psicológicas rápidas. El método de la <strong>Avalancha</strong> liquida primero la deuda con la tasa de interés más alta para minimizar el pago total de intereses bancarios. Nuestra herramienta calcula ambos métodos para que elijas el que mejor se adapte a tu perfil.</p>
+
+    <div class="step-list">
+      <div class="step-card">
+        <span class="step-num">1</span>
+        <div class="step-body">
+          <h4>Registra cada una de tus deudas</h4>
+          <p>Indica el nombre de la deuda (tarjeta, préstamo personal, auto), el saldo pendiente, la tasa de interés anual (CAT/TIR %) y el pago mínimo mensual obligatorio.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <span class="step-num">2</span>
+        <div class="step-body">
+          <h4>Define un pago adicional mensual</h4>
+          <p>Introduce la cantidad extra que puedes destinar cada mes para acelerar la amortización de tus deudas.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <span class="step-num">3</span>
+        <div class="step-body">
+          <h4>Compara tu fecha libre de deudas y el ahorro en intereses</h4>
+          <p>Genera el cronograma de amortización y descubre el mes exacto en que quedarás completamente libre de deudas.</p>
+        </div>
+      </div>
+    </div>
+
+    <h3>Casos de uso para salir de deudas</h3>
+    <div class="guide-grid">
+      <div class="guide-card">
+        <h4>Consolidación y orden de tarjetas de crédito</h4>
+        <p>Crea un plan estructurado para salir del pago mínimo interminable en tarjetas bancarias con altas tasas de interés.</p>
+      </div>
+      <div class="guide-card">
+        <h4>Préstamos personales y de consumo</h4>
+        <p>Combina cuotas de compras a plazos y créditos de libre inversión para liquidarlos en el menor número de meses posible.</p>
+      </div>
+      <div class="guide-card">
+        <h4>Motivación financiera en pareja o familia</h4>
+        <p>Establece un mapa de ruta visual claro y consensuado para celebrar cada cuenta saldada hasta alcanzar la libertad financiera.</p>
+      </div>
+    </div>
+
+    <h2>Preguntas frecuentes sobre liquidación de deudas</h2>
+    <div class="faq-wrap">
+      <div class="faq-item">
+        <div class="faq-question">¿Cuál método es mejor: Bola de Nieve o Avalancha?</div>
+        <div class="faq-answer">
+          <p>Matemáticamente, el método Avalancha ahorra más dinero en intereses al atacar las tasas más altas. Sin embargo, psicológicamente el método Bola de Nieve tiene una tasa de éxito mucho mayor en personas reales, porque eliminar deudas pequeñas al inicio brinda una enorme inyección de motivación y disciplina.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Por qué debo seguir pagando el mínimo en las demás deudas?</div>
+        <div class="faq-answer">
+          <p>Pagar el mínimo obligatorio en todas las deudas es indispensable para no incurrir en moras, comisiones de penalización ni dañar tu historial en las centrales de riesgo crediticio (Buró de Crédito, Infocorp, Datacrédito).</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Qué significa el "efecto bola de nieve" cuando se liquida una cuenta?</div>
+        <div class="faq-answer">
+          <p>Cuando terminas de pagar tu primera deuda, todo el dinero que destinabas a ella (su pago mínimo + el pago extra) se suma al pago de la siguiente deuda. Con cada cuenta saldada, tu capacidad de amortización crece como una bola de nieve rodando colina abajo.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Mis datos financieros están seguros en esta página?</div>
+        <div class="faq-answer">
+          <p>100% seguros. Toda la simulación de amortización se calcula en local en tu navegador con JavaScript. Ningún saldo ni entidad bancaria se transmite a internet.</p>
+        </div>
+      </div>
+    </div>
+  </section>
 </Base>
 <style>
   .breadcrumb{font-size:.85rem;color:var(--muted);margin-bottom:.5rem}.breadcrumb a{color:var(--muted)}

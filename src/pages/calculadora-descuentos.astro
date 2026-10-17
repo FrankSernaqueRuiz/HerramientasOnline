@@ -25,6 +25,79 @@ import Base from '../layouts/Base.astro';
       </div>
     </div>
   </section>
+
+  <section class="seo-section">
+    <h2>¿Cómo funciona la calculadora de descuentos?</h2>
+    <p>Esta calculadora determina el precio final a pagar y el ahorro neto en moneda real. Además del descuento individual clásico, permite calcular <strong>descuentos dobles o encadenados</strong> (como "40% de liquidación + 10% adicional con tarjeta"), evitando el error común de sumar los porcentajes de forma directa.</p>
+
+    <div class="step-list">
+      <div class="step-card">
+        <span class="step-num">1</span>
+        <div class="step-body">
+          <h4>Introduce el precio original de lista</h4>
+          <p>Escribe el precio inicial que figura en la etiqueta o anuncio antes de cualquier rebaja.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <span class="step-num">2</span>
+        <div class="step-body">
+          <h4>Indica el porcentaje de descuento principal</h4>
+          <p>Escribe el descuento inicial (ej: 20%, 30% o 50%). El cálculo se actualiza automáticamente.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <span class="step-num">3</span>
+        <div class="step-body">
+          <h4>Añade descuentos sucesivos opcionales</h4>
+          <p>Si la tienda ofrece cupones o beneficios bancarios acumulables, añádelos en los campos de 2º y 3º descuento para ver el precio neto real.</p>
+        </div>
+      </div>
+    </div>
+
+    <h3>Casos de uso para compras inteligentes</h3>
+    <div class="guide-grid">
+      <div class="guide-card">
+        <h4>Temporadas de rebajas (Black Friday, Cyber Monday)</h4>
+        <p>Calcula al instante cuánto pagarás realmente cuando las tiendas combinan rebajas de liquidación con códigos promocionales.</p>
+      </div>
+      <div class="guide-card">
+        <h4>Descuentos de empleado o membresías VIP</h4>
+        <p>Averigua tu precio final aplicando tu descuento corporativo sobre artículos que ya tienen una rebaja vigente en tienda.</p>
+      </div>
+      <div class="guide-card">
+        <h4>Comercio y cotizaciones de clientes</h4>
+        <p>Emprendedores y vendedores pueden calcular con precisión márgenes de descuento por pronto pago o volumen sin cometer errores.</p>
+      </div>
+    </div>
+
+    <h2>Preguntas frecuentes sobre descuentos comerciales</h2>
+    <div class="faq-wrap">
+      <div class="faq-item">
+        <div class="faq-question">¿Por qué un 50% + 20% no equivale a un 70% de descuento?</div>
+        <div class="faq-answer">
+          <p>Porque el segundo descuento se aplica sobre el importe ya rebajado, no sobre el precio original. Por ejemplo, en un producto de $100, el 50% lo deja en $50, y el 20% sobre esos $50 resta $10, dejando el precio final en $40 (lo que representa un 60% de descuento real, no un 70%).</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Cómo se calcula el porcentaje de ahorro si solo sé el precio anterior y el nuevo?</div>
+        <div class="faq-answer">
+          <p>La fórmula matemática es: <code>((Precio Original - Precio Rebajado) / Precio Original) * 100</code>. El resultado es el porcentaje exacto que estás ahorrando.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Puedo ingresar decimales en los porcentajes o precios?</div>
+        <div class="faq-answer">
+          <p>Sí, la calculadora acepta decimales tanto en el precio como en las tasas de descuento (ej: 12.5% o $99.99).</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Se incluyen impuestos o IVA en el cálculo?</div>
+        <div class="faq-answer">
+          <p>Si ingresas el precio con impuestos incluidos (IVA/IGV), el precio final resultante también los incluirá. La proporción matemática del descuento no se altera.</p>
+        </div>
+      </div>
+    </div>
+  </section>
 </Base>
 <style>
   .breadcrumb{font-size:.85rem;color:var(--muted);margin-bottom:.5rem}.breadcrumb a{color:var(--muted)}

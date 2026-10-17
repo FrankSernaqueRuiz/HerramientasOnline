@@ -48,6 +48,79 @@ import Icon from '../components/Icon.astro';
       <span class="legend-item"><span class="badge-dot red"></span> Noche / Fuera de horario</span>
     </div>
   </section>
+
+  <section class="seo-section">
+    <h2>¿Cómo funciona el planificador interactivo de zonas horarias?</h2>
+    <p>Coordinar reuniones entre diferentes países suele ser propenso a confusiones debido a los husos horarios (GMT/UTC) y los <strong>cambios estacionales de horario de verano (Daylight Saving Time)</strong>. Esta herramienta utiliza la base de datos de zonas horarias estándar IANA para proyectar una línea de tiempo simultánea codificada por colores que muestra al instante qué horas coinciden dentro del horario laboral normal de todos los participantes.</p>
+
+    <div class="step-list">
+      <div class="step-card">
+        <span class="step-num">1</span>
+        <div class="step-body">
+          <h4>Selecciona la fecha y añade las ciudades involucradas</h4>
+          <p>Elige el día de la reunión y agrega las capitales o zonas horarias donde residen tus clientes o compañeros de equipo.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <span class="step-num">2</span>
+        <div class="step-body">
+          <h4>Mueve la barra deslizadora de hora</h4>
+          <p>Desplaza el control horario para ver cómo cambia la hora local en cada ciudad en tiempo real.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <span class="step-num">3</span>
+        <div class="step-body">
+          <h4>Identifica la franja verde compartida</h4>
+          <p>Encuentra la ventana horaria en la que todas las ciudades seleccionadas estén en verde (9:00 a 18:00) para agendar la reunión sin interrumpir el descanso de nadie.</p>
+        </div>
+      </div>
+    </div>
+
+    <h3>Casos de uso para equipos remotos y globales</h3>
+    <div class="guide-grid">
+      <div class="guide-card">
+        <h4>Equipos internacionales y trabajo remoto</h4>
+        <p>Coordina reuniones de seguimiento diarias (dailies) o demostraciones entre miembros en España, México, Colombia, Argentina y EE.UU.</p>
+      </div>
+      <div class="guide-card">
+        <h4>Llamadas con clientes y proveedores en el extranjero</h4>
+        <p>Evita enviar invitaciones de calendario en horas intempestivas o de madrugada para socios comerciales en Europa o Asia.</p>
+      </div>
+      <div class="guide-card">
+        <h4>Viajes internacionales y jet lag</h4>
+        <p>Planifica la mejor hora para comunicarte con tus familiares en casa mientras estás de viaje por otro continente.</p>
+      </div>
+    </div>
+
+    <h2>Preguntas frecuentes sobre husos horarios</h2>
+    <div class="faq-wrap">
+      <div class="faq-item">
+        <div class="faq-question">¿Se contemplan automáticamente los cambios de horario de verano?</div>
+        <div class="faq-answer">
+          <p>Sí. La herramienta consulta la base de datos oficial IANA según la fecha exacta que selecciones en el calendario, por lo que aplicará el horario de verano o invierno correspondiente para cada territorio.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Qué significan los colores verde, naranja y rojo en las barras?</div>
+        <div class="faq-answer">
+          <p>El color <strong>verde</strong> representa la jornada laboral idónea (9:00 a 18:00), el <strong>naranja</strong> indica horas tempranas o tardías aún razonables (7:00 a 9:00 o 18:00 a 22:00), y el <strong>rojo</strong> señala horario nocturno o descanso habitual (22:00 a 7:00).</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Puedo eliminar una ciudad que ya no necesito en la comparación?</div>
+        <div class="faq-answer">
+          <p>Sí, cada fila de ciudad cuenta con un botón para cerrarla o reorganizar el orden de las ciudades en pantalla.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Por qué algunos países de América Latina tienen la misma hora en invierno pero no en verano?</div>
+        <div class="faq-answer">
+          <p>Países cercanos al ecuador (como Colombia o Perú) no cambian de hora a lo largo del año, mientras que regiones más al norte o al sur (o ciertos estados de EE.UU. y México) modifican sus relojes en primavera y otoño, alterando la diferencia horaria.</p>
+        </div>
+      </div>
+    </div>
+  </section>
 </Base>
 
 <style>
