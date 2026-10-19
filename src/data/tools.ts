@@ -347,6 +347,17 @@ export const ALL_TOOLS: ToolItem[] = [
     category: 'estudio-trabajo',
     status: 'ready'
   },
+  {
+    id: 'registro-notas-profesor',
+    name: 'Registro de notas para profesores',
+    desc: 'Planilla de notas de alumnos con múltiples hojas, importación desde celda de Excel y exportación a Excel y PDF.',
+    href: '/registro-notas-profesor',
+    icon: 'award',
+    featured: true,
+    badge: 'Nuevo',
+    category: 'estudio-trabajo',
+    status: 'ready'
+  },
 
   // Hogar y vida diaria
   {
