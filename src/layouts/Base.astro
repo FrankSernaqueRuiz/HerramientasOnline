@@ -15,27 +15,19 @@ const { title, description, topAd = false, keywords = '' } = Astro.props;
 const client = import.meta.env.PUBLIC_ADSENSE_CLIENT;
 const siteUrl = Astro.site?.toString().replace(/\/$/, '') || 'https://utiliaonline.com';
 const canonical = new URL(Astro.url.pathname, Astro.site);
-const pagePath = Astro.url.pathname;
+const pagePath = Astro.url.pathname.replace(/\/$/, '') || '/';
 const isHome = pagePath === '/' || pagePath === '';
 
 // Find current tool info for individual tool pages
 const currentTool = ALL_TOOLS.find((t) => t.href === pagePath);
 
-// JSON-LD: WebSite schema (shown on all pages, enables sitelinks search box)
+// JSON-LD: WebSite schema (shown on all pages)
 const websiteSchema = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
   name: 'UtiliaOnline',
   url: siteUrl,
-  description: 'UtiliaOnline: herramientas web prácticas para el día a día. La mayoría de las herramientas funcionan directamente en tu navegador sin enviar datos a servidores.',
-  potentialAction: {
-    '@type': 'SearchAction',
-    target: {
-      '@type': 'EntryPoint',
-      urlTemplate: `${siteUrl}/?q={search_term_string}`
-    },
-    'query-input': 'required name=search_term_string'
-  }
+  description: 'UtiliaOnline: herramientas web prácticas para el día a día. La mayoría de las herramientas funcionan directamente en tu navegador sin enviar datos a servidores.'
 };
 
 // JSON-LD: SiteNavigationElement (helps Google generate sitelinks to individual tools)
@@ -186,7 +178,9 @@ const SHORT_NAMES: Record<string, string> = {
     <header class="site">
       <div class="header-inner">
         <a class="brand" href="/" aria-label="UtiliaOnline - Inicio">
-          <span class="brand-badge">⚡</span>
+          <span class="brand-badge" aria-hidden="true">
+            <Icon name="zap" size={16} />
+          </span>
           <span class="brand-name">Utilia<span class="brand-accent">Online</span></span>
         </a>
 
@@ -317,7 +311,16 @@ const SHORT_NAMES: Record<string, string> = {
     flex-shrink: 0;
   }
   .brand-badge {
-    font-size: 1.2rem;
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, rgba(47, 129, 247, 0.18), rgba(56, 189, 248, 0.15));
+    border: 1px solid rgba(47, 129, 247, 0.35);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent);
+    flex-shrink: 0;
   }
   .brand-accent {
     color: var(--accent);

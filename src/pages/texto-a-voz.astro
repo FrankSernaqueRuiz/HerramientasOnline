@@ -43,9 +43,9 @@ import Base from '../layouts/Base.astro';
     </div>
 
     <div class="actions">
-      <button id="btn-play" class="primary">▶ Reproducir</button>
-      <button id="btn-pause">⏸ Pausar</button>
-      <button id="btn-stop">⏹ Detener</button>
+      <button id="btn-play" class="primary">Reproducir</button>
+      <button id="btn-pause">Pausar</button>
+      <button id="btn-stop">Detener</button>
       <button id="btn-clear">Limpiar texto</button>
     </div>
 
@@ -58,9 +58,9 @@ import Base from '../layouts/Base.astro';
   <!-- Sección de contenido educativo y preguntas frecuentes -->
   <section class="seo-section">
     <h2>¿Cómo funciona la síntesis de voz en el navegador?</h2>
-    <p>Nuestra herramienta de texto a voz utiliza la <strong>Web Speech API (SpeechSynthesis)</strong>, un estándar moderno implementado directamente en todos los navegadores principales (Google Chrome, Mozilla Firefox, Apple Safari y Microsoft Edge). A diferencia de otros conversores web que envían tus textos a servidores no oficiales (con riesgos de caída, bloqueos de IP y vulnerabilidades de privacidad), esta utilidad procesa el sonido utilizando el motor de voz nativo instalado en tu propio sistema operativo (Windows, macOS, Android, iOS o Linux).</p>
+    <p>Nuestra herramienta de texto a voz utiliza la <strong>Web Speech API (SpeechSynthesis)</strong>, un estándar moderno implementado directamente en los navegadores principales (Google Chrome, Mozilla Firefox, Apple Safari y Microsoft Edge). La utilidad interactúa con los motores de síntesis disponibles en tu equipo (Windows, macOS, Android, iOS o Linux) para reproducir el texto en audio en tiempo real.</p>
 
-    <p>Esto garantiza que <strong>tu texto jamás abandona tu dispositivo</strong>, ofreciendo una latencia prácticamente nula y permitiendo leer textos de cualquier longitud sin cuotas ni límites de caracteres.</p>
+    <p>En la gran mayoría de las voces instaladas localmente en tu sistema operativo, el procesamiento se realiza directamente en tu dispositivo. No obstante, ten en cuenta que en navegadores como Google Chrome, ciertas voces catalogadas como "Google" o de red pueden requerir conexión a los servicios del proveedor del navegador para sintetizar el habla con mayor fidelidad.</p>
 
     <h3>Casos de uso cotidianos</h3>
     <div class="guide-grid">
@@ -83,7 +83,7 @@ import Base from '../layouts/Base.astro';
       <div class="faq-item">
         <div class="faq-question">¿Por qué este método es más seguro y privado?</div>
         <div class="faq-answer">
-          <p>Porque el procesamiento es 100% local en tu navegador. Tus notas privadas, contratos o mensajes confidenciales no se envían a ningún servidor de Google Translate ni a APIs de terceros.</p>
+          <p>Porque prioriza las capacidades nativas de tu propio navegador y sistema operativo, sin requerir cuentas de usuario ni almacenar tus textos en bases de datos externas de terceros. Si seleccionas voces del sistema operativo, el procesamiento ocurre de forma local en tu equipo; si eliges voces en la nube provistas por tu navegador (como algunas voces de Google en Chrome), la síntesis es gestionada por el proveedor de tu navegador.</p>
         </div>
       </div>
       <div class="faq-item">

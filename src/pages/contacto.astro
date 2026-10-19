@@ -54,13 +54,15 @@ import Icon from '../components/Icon.astro';
         </div>
 
         <button type="submit" id="btn-submit" class="btn btn-primary btn-submit">
-          <span class="btn-text">📨 Enviar mensaje</span>
+          <span class="btn-text">Enviar mensaje</span>
         </button>
       </form>
 
       <!-- Mensaje de confirmación de éxito -->
       <div id="form-success" class="alert-box success hidden">
-        <span class="alert-icon">🎉</span>
+        <div class="alert-icon-box">
+          <Icon name="check" size={20} />
+        </div>
         <div>
           <h3>¡Mensaje enviado con éxito!</h3>
           <p>Hemos recibido tu mensaje y te responderemos a la brevedad posible a tu correo.</p>
@@ -70,38 +72,22 @@ import Icon from '../components/Icon.astro';
 
       <!-- Mensaje de error -->
       <div id="form-error" class="alert-box error hidden">
-        <span class="alert-icon">⚠️</span>
         <div>
           <h3>No se pudo enviar el mensaje</h3>
-          <p>Ocurrió un inconveniente al procesar el formulario. Puedes escribirnos directamente a: <a href="mailto:fff20252@gmail.com" class="error-mail">fff20252@gmail.com</a></p>
+          <p>Ocurrió un inconveniente temporal de conexión al procesar el formulario. Por favor, inténtalo de nuevo en unos minutos.</p>
         </div>
       </div>
     </section>
 
-    <!-- Información lateral directa -->
+    <!-- Información lateral de soporte -->
     <aside class="panel contact-info-card">
-      <h3>Información de Contacto</h3>
-      <p class="info-desc">Si prefieres no usar el formulario, puedes escribirnos directamente desde tu proveedor de correo habitual:</p>
-
-      <div class="email-box">
-        <label>Correo oficial:</label>
-        <div class="email-copy-row">
-          <input type="text" readonly value="fff20252@gmail.com" id="direct-email" class="email-input" />
-          <button type="button" id="btn-copy-email" class="btn-copy" title="Copiar correo">
-            <Icon name="copy" size={16} />
-          </button>
-        </div>
-        <span id="copy-email-notice" class="copy-notice"></span>
-      </div>
-
-      <a href="mailto:fff20252@gmail.com?subject=Contacto%20desde%20UtiliaOnline" class="btn-open-mail">
-        <Icon name="external-link" size={15} /> Abrir en tu app de correo
-      </a>
-
-      <hr class="divider" />
+      <h3>Canal de Soporte</h3>
+      <p class="info-desc">Utiliza el formulario para ponerte en contacto con el equipo de UtiliaOnline. Atendemos todas las consultas en orden de llegada.</p>
 
       <div class="info-item">
-        <span class="info-icon">⏱️</span>
+        <div class="info-icon">
+          <Icon name="clock" size={20} />
+        </div>
         <div>
           <strong>Tiempo estimado de respuesta</strong>
           <p>Normalmente respondemos en menos de 24 a 48 horas laborables.</p>
@@ -109,10 +95,22 @@ import Icon from '../components/Icon.astro';
       </div>
 
       <div class="info-item">
-        <span class="info-icon">🔒</span>
+        <div class="info-icon">
+          <Icon name="shield" size={20} />
+        </div>
         <div>
           <strong>Privacidad garantizada</strong>
-          <p>Tu dirección de correo solo se usará para responder a tu mensaje. Nunca enviamos spam.</p>
+          <p>Tu dirección de correo solo se usará para responder a tu mensaje. Nunca compartimos tus datos ni enviamos correos no solicitados.</p>
+        </div>
+      </div>
+
+      <div class="info-item">
+        <div class="info-icon">
+          <Icon name="sparkles" size={20} />
+        </div>
+        <div>
+          <strong>Sugerencias y reportes</strong>
+          <p>Agradecemos tus sugerencias para nuevas herramientas o avisos sobre errores en utilidades existentes.</p>
         </div>
       </div>
     </aside>
@@ -369,16 +367,13 @@ import Icon from '../components/Icon.astro';
   const formSuccess = document.getElementById('form-success')!;
   const formError = document.getElementById('form-error')!;
   const btnSendAnother = document.getElementById('btn-send-another') as HTMLButtonElement;
-  const btnCopyEmail = document.getElementById('btn-copy-email') as HTMLButtonElement;
-  const copyNotice = document.getElementById('copy-email-notice')!;
-  const directEmail = (document.getElementById('direct-email') as HTMLInputElement).value;
 
   // Manejo del envío del formulario mediante FormSubmit AJAX
-  form.addEventListener('submit', async (e) => {
+  form?.addEventListener('submit', async (e) => {
     e.preventDefault();
 
     btnSubmit.disabled = true;
-    btnSubmit.innerHTML = '<span>⏳ Enviando mensaje...</span>';
+    btnSubmit.innerHTML = '<span>Enviando mensaje...</span>';
     formError.classList.add('hidden');
 
     const formData = new FormData(form);
@@ -403,7 +398,7 @@ import Icon from '../components/Icon.astro';
       formError.classList.remove('hidden');
     } finally {
       btnSubmit.disabled = false;
-      btnSubmit.innerHTML = '<span>📨 Enviar mensaje</span>';
+      btnSubmit.innerHTML = '<span>Enviar mensaje</span>';
     }
   });
 
@@ -412,19 +407,6 @@ import Icon from '../components/Icon.astro';
     formSuccess.classList.add('hidden');
     formError.classList.add('hidden');
     form.classList.remove('hidden');
-  });
-
-  // Copiar correo al portapapeles
-  btnCopyEmail?.addEventListener('click', async () => {
-    try {
-      await navigator.clipboard.writeText(directEmail);
-      copyNotice.textContent = '✓ ¡Correo copiado!';
-      setTimeout(() => {
-        copyNotice.textContent = '';
-      }, 2000);
-    } catch {
-      copyNotice.textContent = 'fff20252@gmail.com';
-    }
   });
 </script>
 

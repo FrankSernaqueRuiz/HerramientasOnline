@@ -474,8 +474,8 @@ export const ALL_TOOLS: ToolItem[] = [
   },
   {
     id: 'texto-a-voz',
-    name: 'Texto a Voz (MP3)',
-    desc: 'Sintetiza texto con voces naturales y descarga el archivo MP3 directamente a tu dispositivo.',
+    name: 'Texto a Voz',
+    desc: 'Sintetiza texto con voces del navegador de forma rápida, privada y con controles de tono y velocidad.',
     href: '/texto-a-voz',
     icon: 'volume',
     category: 'texto-utilidades',

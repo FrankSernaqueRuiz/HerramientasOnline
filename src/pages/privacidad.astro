@@ -3,32 +3,33 @@ import Base from '../layouts/Base.astro';
 ---
 <Base 
   title="Política de Privacidad · UtiliaOnline" 
-  description="Conoce la política de privacidad de UtiliaOnline. Explicamos detalladamente el procesamiento local en el navegador, el uso de cookies publicitarias de Google AdSense y tus derechos."
+  description="Conoce la política de privacidad de UtiliaOnline. Explicamos detalladamente el procesamiento local en el navegador, servicios de terceros, analítica, cookies y tus derechos."
 >
   <div class="page-header">
     <div class="breadcrumb"><a href="/">Inicio</a> / <span>Privacidad</span></div>
     <h1>Política de Privacidad de UtiliaOnline</h1>
-    <p class="lead">Transparencia absoluta: conoce cómo protegemos tus datos, cómo operan nuestras herramientas y cómo gestionamos las cookies publicitarias.</p>
+    <p class="lead">Transparencia absoluta: conoce cómo protegemos tus datos, cómo operan nuestras herramientas y cómo gestionamos los servicios de terceros.</p>
   </div>
 
   <section class="panel" style="line-height: 1.7; font-size: 0.95rem;">
     <p><strong>Última actualización:</strong> Octubre 2026</p>
     
-    <p>En <strong>UtiliaOnline</strong> (accesible desde nuestro sitio web), la privacidad de nuestros visitantes es de vital importancia. Esta Política de Privacidad describe qué información recopilamos, cómo la utilizamos y qué medidas adoptamos para garantizar la seguridad y privacidad de tu navegación.</p>
+    <p>En <strong>UtiliaOnline</strong> (accesible desde nuestro sitio web), la privacidad de nuestros visitantes es de máxima prioridad. Esta Política de Privacidad describe qué información tratamos, cómo operan nuestras herramientas y qué medidas aplicamos para garantizar una navegación segura y respetuosa con tus derechos.</p>
 
     <h2>1. Procesamiento Local en tu Navegador (Client-Side)</h2>
-    <p>La filosofía central de UtiliaOnline es la privacidad por diseño. <strong>La gran mayoría de nuestras herramientas funcionan directamente en tu navegador web</strong> mediante JavaScript del lado del cliente:</p>
+    <p>La filosofía central de UtiliaOnline es la privacidad por diseño. <strong>La gran mayoría de nuestras herramientas funcionan íntegramente en tu navegador web</strong> mediante JavaScript del lado del cliente:</p>
     <ul>
-      <li><strong>Archivos e imágenes:</strong> Herramientas como recortar fotos, redimensionar imágenes, remover metadatos EXIF o extraer paletas de color procesan los archivos en la memoria local de tu dispositivo a través de la API Canvas y FileReader del navegador. Tus imágenes <em>nunca se suben a un servidor remoto</em>.</li>
-      <li><strong>Textos y contraseñas:</strong> El generador de contraseñas seguras, contador de palabras, limpiador de texto y formateador Unicode realizan todos sus cálculos y transformaciones de forma local e instantánea.</li>
-      <li><strong>Cálculos financieros y fechas:</strong> Calculadoras de división de cuentas, intereses, fechas de gestación o ciclos de sueño operan íntegramente con lógica matemática en tu navegador.</li>
+      <li><strong>Archivos e imágenes:</strong> Utilidades como recortar fotos para carnet, redimensionar imágenes, remover metadatos EXIF, convertir HEIC o extraer paletas de color procesan los archivos en la memoria local de tu dispositivo mediante la API Canvas, Web Workers y FileReader. Tus fotos e imágenes <em>nunca se suben a ningún servidor externo</em>.</li>
+      <li><strong>Textos, contraseñas y documentos:</strong> El generador de contraseñas, contador de palabras y lectura, limpiador de texto y formateadores realizan sus cálculos y transformaciones de forma local e instantánea en tu memoria RAM.</li>
+      <li><strong>Cálculos financieros, académicos y fechas:</strong> Calculadoras de división de cuentas, notas ponderadas, feriados, fechas de gestación o ciclos de sueño operan íntegramente con lógica matemática en tu navegador.</li>
     </ul>
 
-    <h2>2. Excepciones y Herramientas con Servicios Externos</h2>
-    <p>Para ser 100% transparentes, algunas funcionalidades avanzadas pueden interactuar con servicios o endpoints de red:</p>
+    <h2>2. Servicios de Terceros y Analítica Web</h2>
+    <p>Para garantizar el funcionamiento, diseño y medición de rendimiento del sitio, interactuamos con los siguientes servicios de terceros:</p>
     <ul>
-      <li><strong>Texto a voz y síntesis de audio:</strong> Cuando una herramienta requiere convertir texto a locución mediante servicios externos o descargas de audio sintetizado, el fragmento de texto introducido se transmite de forma cifrada al servicio encargado de la síntesis para producir el flujo de audio. Dicho texto no se vincula a tu identidad personal ni se almacena para fines publicitarios. Siempre que esté disponible, UtiliaOnline prioriza la API nativa de síntesis de voz de tu propio sistema operativo y navegador (Web Speech API).</li>
-      <li><strong>Generación de enlaces y mensajería (WhatsApp):</strong> El generador de enlaces genera URLs directas con el protocolo oficial <code>wa.me</code>. No almacenamos números de teléfono, agendas ni el contenido de los mensajes configurados.</li>
+      <li><strong>Cloudflare Web Analytics:</strong> Empleamos Cloudflare Web Analytics para recopilar métricas técnicas agregadas y anónimas (páginas visitadas, tipo de navegador, sistema operativo y país aproximado). Este servicio está diseñado pensando en la privacidad: <em>no utiliza cookies del lado del cliente, no rastrea a los usuarios entre diferentes sitios web y no recopila datos personales identificables</em>.</li>
+      <li><strong>Tipografías externas (Google Fonts):</strong> Para presentar una tipografía cuidada y legible, el sitio web carga familias de fuentes desde los servidores de Google Fonts (Google LLC). Al solicitar estas fuentes, los servidores de Google pueden registrar datos técnicos de conexión estándar (como tu dirección IP y cabeceras de navegador) indispensables para entregar los archivos de fuentes optimizados para tu dispositivo.</li>
+      <li><strong>Formulario de contacto (FormSubmit):</strong> Las consultas enviadas voluntariamente a través de nuestra página de contacto son procesadas y entregadas a nuestra bandeja de asistencia técnica mediante el servicio de terceros <strong>FormSubmit</strong> (formsubmit.co). FormSubmit actúa como un intermediario técnico seguro para la retransmisión del formulario. Los datos suministrados (nombre, correo electrónico y mensaje) no se comercializan ni se emplean con fines de mercadotecnia.</li>
     </ul>
 
     <h2>3. Cookies Publicitarias y Google AdSense</h2>
@@ -49,16 +50,36 @@ import Base from '../layouts/Base.astro';
     </ul>
     <p>Estos datos permanecen estrictamente en la memoria de tu navegador y puedes borrarlos en cualquier momento limpiando los datos de navegación o caché de tu explorador.</p>
 
-    <h2>5. Archivos de Registro y Métricas Técnicas</h2>
-    <p>Al igual que la mayoría de plataformas web modernas, nuestros servidores de alojamiento pueden registrar automáticamente datos técnicos estándar en archivos de registro (logs), que incluyen: dirección de protocolo de Internet (IP), tipo de navegador, proveedor de servicios de Internet (ISP), páginas de referencia/salida, fecha y hora de la solicitud. Estos registros se utilizan con fines de seguridad informática, mitigación de ataques de denegación de servicio (DDoS) y diagnóstico de errores en el servidor, sin asociarse a personas identificables.</p>
+    <h2>5. Síntesis de Voz y Navegación</h2>
+    <p>Nuestra herramienta de texto a voz se apoya en la <strong>Web Speech API</strong> del navegador. Las voces nativas del sistema operativo procesan el sonido localmente. En caso de seleccionar voces basadas en la nube ofrecidas por proveedores específicos de navegadores (como voces de Google en Chrome), el procesamiento del audio se gestiona de acuerdo con las condiciones y políticas del proveedor de dicho navegador.</p>
 
-    <h2>6. Enlaces a Sitios de Terceros</h2>
+    <h2>6. Conservación y Retención de Datos</h2>
+    <p>Nuestra política con respecto a la conservación de datos es mínima:</p>
+    <ul>
+      <li><strong>Herramientas locales:</strong> Los datos introducidos en las herramientas no se almacenan en servidores. Se destruyen inmediatamente al cerrar la pestaña o recargar el navegador.</li>
+      <li><strong>Mensajes de contacto:</strong> La información recibida a través del formulario de contacto se conserva únicamente durante el tiempo necesario para resolver la consulta o solicitud de soporte planteada (generalmente un máximo de 6 meses tras su conclusión), momento en el cual se elimina de forma segura.</li>
+      <li><strong>Registros de servidor (logs):</strong> Los registros técnicos de seguridad de nuestros proveedores de infraestructura se depuran automáticamente según sus políticas estándar de rotación (habitualmente entre 30 y 90 días).</li>
+    </ul>
+
+    <h2>7. Derechos del Usuario (ARCO)</h2>
+    <p>Conforme a las normativas de protección de datos vigentes (como el RGPD o leyes locales de protección de datos personales), tienes derecho a:</p>
+    <ul>
+      <li>Solicitar confirmación de si tratamos tus datos de contacto.</li>
+      <li>Acceder a los datos personales que tengamos sobre ti derivados de comunicaciones previas.</li>
+      <li>Solicitar la rectificación de datos inexactos o su supresión definitiva cuando ya no sean necesarios para los fines para los que fueron remitidos.</li>
+    </ul>
+    <p>Para ejercer cualquiera de estos derechos, basta con enviarnos una solicitud formal mediante nuestro <a href="/contacto">formulario de contacto</a>.</p>
+
+    <h2>8. Protección de Menores de Edad</h2>
+    <p>Proteger la privacidad de los menores en Internet es esencial. UtiliaOnline no recopila conscientemente información de identificación personal de niños menores de 13 años (o 16 según la jurisdicción aplicable). Nuestras herramientas son utilidades generales de cálculo, productividad y estudio. Si un padre, madre o tutor legal considera que un menor a su cargo ha facilitado datos personales a través de nuestro formulario de contacto, le instamos a contactarnos de inmediato para proceder a la eliminación expedita de dicha información.</p>
+
+    <h2>9. Enlaces a Sitios de Terceros</h2>
     <p>Nuestro portal puede contener enlaces a recursos externos (como WhatsApp, organismos oficiales o fuentes de documentación). Si haces clic en un enlace de terceros, serás dirigido a su respectivo sitio. Te recomendamos revisar las políticas de privacidad específicas de cualquier sitio externo que visites, ya que no ejercemos control sobre sus prácticas o contenidos.</p>
 
-    <h2>7. Modificaciones a esta Política</h2>
+    <h2>10. Modificaciones a esta Política</h2>
     <p>Podemos actualizar nuestra Política de Privacidad periódicamente para reflejar cambios en nuestras herramientas, nuevas directivas legales o actualizaciones en las directrices de Google AdSense. Cualquier actualización será publicada inmediatamente en esta página con la fecha de revisión correspondiente.</p>
 
-    <h2>8. Contacto y Consultas</h2>
-    <p>Si tienes preguntas, dudas o inquietudes sobre esta Política de Privacidad o el tratamiento de información en UtiliaOnline, puedes comunicarte con nuestro equipo a través de nuestra página de <a href="/contacto">Contacto y Soporte</a> o escribiéndonos directamente a nuestro correo de soporte técnico.</p>
+    <h2>11. Contacto y Consultas</h2>
+    <p>Si tienes preguntas, dudas o inquietudes sobre esta Política de Privacidad o el tratamiento de información en UtiliaOnline, puedes comunicarte con nuestro equipo a través de nuestra página de <a href="/contacto">Contacto y Soporte</a>.</p>
   </section>
 </Base>

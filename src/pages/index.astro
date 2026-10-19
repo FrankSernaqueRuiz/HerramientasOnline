@@ -4,264 +4,575 @@ import Icon from '../components/Icon.astro';
 import { CATEGORIES, ALL_TOOLS } from '../data/tools';
 
 const featuredTools = ALL_TOOLS.filter((t) => t.featured);
-const readyCount = ALL_TOOLS.filter((t) => t.status === 'ready').length;
 const totalCount = ALL_TOOLS.length;
+
+const CATEGORY_STRIP_ITEMS = [
+  { id: 'all', name: 'Todas', icon: 'grid', count: totalCount },
+  { id: 'redes-mensajeria', name: 'Redes Sociales', icon: 'message-circle', count: ALL_TOOLS.filter(t => t.category === 'redes-mensajeria').length },
+  { id: 'sorteos-diversion', name: 'Sorteos y Juegos', icon: 'gift', count: ALL_TOOLS.filter(t => t.category === 'sorteos-diversion').length },
+  { id: 'dinero-compras', name: 'Dinero y Finanzas', icon: 'dollar-sign', count: ALL_TOOLS.filter(t => t.category === 'dinero-compras').length },
+  { id: 'fechas-tiempo', name: 'Fechas y Tiempo', icon: 'calendar', count: ALL_TOOLS.filter(t => t.category === 'fechas-tiempo').length },
+  { id: 'estudio-trabajo', name: 'Estudio y Trabajo', icon: 'book-open', count: ALL_TOOLS.filter(t => t.category === 'estudio-trabajo').length },
+  { id: 'hogar-vida', name: 'Hogar y Diario', icon: 'home', count: ALL_TOOLS.filter(t => t.category === 'hogar-vida').length },
+  { id: 'imagenes-multimedia', name: 'Imágenes', icon: 'image', count: ALL_TOOLS.filter(t => t.category === 'imagenes-multimedia').length },
+  { id: 'texto-utilidades', name: 'Texto y Utilidades', icon: 'file-text', count: ALL_TOOLS.filter(t => t.category === 'texto-utilidades').length },
+];
 ---
 
 <Base 
   title="UtiliaOnline · Herramientas Web Rápidas, Seguras y Gratuitas" 
   description="Colección completa de herramientas web: enlaces de WhatsApp, tipografías, finanzas, fechas, sorteos y utilidades. La mayoría de las herramientas funcionan directamente en tu navegador."
 >
-  <div class="hero-section">
-    <h1>UtiliaOnline: Herramientas para el Día a Día</h1>
-    <p class="hero-lead">Utilidades gratuitas, sin registros obligatorios y procesadas de forma ágil y privada en tu navegador para resolver tareas cotidianas.</p>
+  <div class="home-container">
+    <!-- Hero / Presentación limpia -->
+    <header class="home-hero">
+      <h1>Herramientas para el Día a Día</h1>
+      <p class="hero-lead">Utilidades gratuitas, sin registros obligatorios y procesadas de forma ágil y privada en tu navegador.</p>
 
-    <!-- Buscador interactivo rápido -->
-    <div class="search-box">
-      <Icon name="search" size={20} class="search-icon" />
-      <input 
-        type="text" 
-        id="tool-search" 
-        placeholder="Buscar herramienta (ej: WhatsApp, sorteo, propina, fuentes, notas)..." 
-        autocomplete="off"
-      />
-    </div>
-
-    <!-- Filtros de categoría -->
-    <div class="category-pills">
-      <button class="pill active" data-cat="all">Todas ({totalCount})</button>
-      {CATEGORIES.map((cat) => {
-        const count = ALL_TOOLS.filter(t => t.category === cat.id).length;
-        return (
-          <button class="pill" data-cat={cat.id}>
-            {cat.name} ({count})
+      <!-- Buscador interactivo minimalista -->
+      <div class="search-wrap">
+        <div class="search-box">
+          <Icon name="search" size={19} class="search-ico" />
+          <input 
+            type="text" 
+            id="tool-search" 
+            placeholder="Buscar herramienta (ej: WhatsApp, fechas, propinas, notas, APA)..." 
+            autocomplete="off"
+            aria-label="Buscar herramienta"
+          />
+          <button type="button" id="search-clear" class="search-clear-btn" aria-label="Limpiar búsqueda" style="display: none;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
           </button>
-        );
-      })}
-    </div>
-  </div>
-
-  <!-- Sección de Destacadas -->
-  <section class="section-block" id="featured-section">
-    <div class="section-title-wrap">
-      <h2>⭐ Herramientas Destacadas</h2>
-      <p class="section-sub">Las utilidades más prácticas e inmediatas para resolver tareas recurrentes.</p>
-    </div>
-    <div class="grid">
-      {featuredTools.map((t) => (
-        <div class="tool-card-wrap" data-cat={t.category} data-name={t.name.toLowerCase()} data-desc={t.desc.toLowerCase()}>
-          <a class="tool-card is-ready" href={t.href}>
-            <div class="card-top">
-              <div class="tool-icon">
-                <Icon name={t.icon} size={22} />
-              </div>
-            </div>
-            <div class="tool-content">
-              <strong>{t.name}</strong>
-              <span>{t.desc}</span>
-            </div>
-            <div class="tool-action">
-              <span>Abrir herramienta</span>
-              <Icon name="arrow-right" size={16} />
-            </div>
-          </a>
         </div>
-      ))}
-    </div>
-  </section>
+        <div class="search-feedback" id="search-feedback" style="display: none;">
+          <span id="results-count">0</span> herramientas encontradas
+        </div>
+      </div>
+    </header>
 
-  <!-- Secciones por categoría -->
-  {CATEGORIES.map((cat) => {
-    const categoryTools = ALL_TOOLS.filter((t) => t.category === cat.id);
-    return (
-      <section class="section-block category-section" id={`cat-${cat.id}`} data-category={cat.id}>
-        <div class="section-title-wrap">
-          <div class="cat-header">
-            <div class="cat-icon-badge">
-              <Icon name={cat.icon} size={20} />
+    <!-- Botón para reiniciar filtro cuando una categoría específica está activa -->
+    <div class="filter-status-banner" id="filter-banner" style="display: none;">
+      <span>Filtrado por: <strong id="filter-cat-name">Todas</strong></span>
+      <button type="button" class="btn-reset-filter" id="btn-reset-filter">
+        Ver todas las secciones
+      </button>
+    </div>
+
+  <!-- Barra superior de categorías estilo showcase elegante -->
+    <nav class="category-strip-card" aria-label="Categorías de herramientas">
+      <div class="category-strip-track" id="category-track">
+        {CATEGORY_STRIP_ITEMS.map((item) => (
+          <button 
+            type="button" 
+            class={`category-tab-btn ${item.id === 'all' ? 'active' : ''}`}
+            data-cat={item.id}
+            aria-label={`Ver categoría ${item.name}`}
+          >
+            <div class="tab-icon-box">
+              <Icon name={item.icon} size={22} />
             </div>
-            <div class="cat-title-text">
-              <div class="cat-title-row">
-                <h2>{cat.name}</h2>
-                <a href={`/categoria/${cat.id}`} class="cat-view-link">Ver sección &rarr;</a>
-              </div>
-              <p class="section-sub">{cat.desc}</p>
-            </div>
+            <span class="tab-label">{item.name}</span>
+            <span class="tab-count">{item.count}</span>
+          </button>
+        ))}
+      </div>
+    </nav>
+
+    <!-- Sección de Destacadas -->
+    <section class="section-block" id="featured-section">
+      <div class="section-title-wrap">
+        <div class="sec-header-row">
+          <div class="sec-icon-container">
+            <Icon name="star" size={20} />
+          </div>
+          <div>
+            <h2>Herramientas Destacadas</h2>
+            <p class="section-sub">Las utilidades más prácticas e inmediatas para resolver tareas recurrentes.</p>
           </div>
         </div>
+      </div>
 
-        <div class="grid">
-          {categoryTools.map((t) => (
-            <div class="tool-card-wrap" data-cat={t.category} data-name={t.name.toLowerCase()} data-desc={t.desc.toLowerCase()}>
-              <a class="tool-card is-ready" href={t.href}>
-                <div class="card-top">
-                  <div class="tool-icon">
-                    <Icon name={t.icon} size={22} />
+      <div class="grid">
+        {featuredTools.map((t) => (
+          <div class="tool-card-wrap" data-cat={t.category} data-name={t.name.toLowerCase()} data-desc={t.desc.toLowerCase()}>
+            <a class="tool-card is-ready" href={t.href}>
+              <div class="card-top">
+                <div class="tool-icon">
+                  <Icon name={t.icon} size={22} />
+                </div>
+                {t.badge && (
+                  <span class="card-pill-badge">{t.badge}</span>
+                )}
+              </div>
+              <div class="tool-content">
+                <strong>{t.name}</strong>
+                <span>{t.desc}</span>
+              </div>
+              <div class="tool-action">
+                <span>Abrir herramienta</span>
+                <Icon name="arrow-right" size={15} />
+              </div>
+            </a>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- Resumen completo de todas las categorías -->
+    {CATEGORIES.map((cat) => {
+      const categoryTools = ALL_TOOLS.filter((t) => t.category === cat.id);
+      return (
+        <section class="section-block category-section" id={`cat-${cat.id}`} data-category={cat.id}>
+          <div class="section-title-wrap">
+            <div class="cat-header-row">
+              <div class="cat-header-left">
+                <div class="cat-icon-container">
+                  <Icon name={cat.icon} size={22} />
+                </div>
+                <div class="cat-info">
+                  <div class="cat-title-badge-row">
+                    <h2>{cat.name}</h2>
+                    <span class="cat-badge-count">{categoryTools.length}</span>
                   </div>
+                  <p class="section-sub">{cat.desc}</p>
                 </div>
-                <div class="tool-content">
-                  <strong>{t.name}</strong>
-                  <span>{t.desc}</span>
-                </div>
-                <div class="tool-action">
-                  <span>Abrir</span>
-                  <Icon name="arrow-right" size={16} />
-                </div>
+              </div>
+              <a href={`/categoria/${cat.id}`} class="cat-action-link">
+                <span>Ver sección completa</span>
+                <Icon name="arrow-right" size={14} />
               </a>
             </div>
-          ))}
-        </div>
-      </section>
-    );
-  })}
+          </div>
 
-  <section class="seo-section">
-    <h2>Utilidades web ligeras, instantáneas y sin registro</h2>
-    <p>La mayoría de las herramientas funcionan directamente en tu navegador y no piden registro. Si hay publicidad, Google puede usar cookies para mostrar anuncios relevantes; consulta nuestra <a href="/privacidad">política de privacidad</a> para conocer todos los detalles.</p>
-  </section>
+          <div class="grid">
+            {categoryTools.map((t) => (
+              <div class="tool-card-wrap" data-cat={t.category} data-name={t.name.toLowerCase()} data-desc={t.desc.toLowerCase()}>
+                <a class="tool-card is-ready" href={t.href}>
+                  <div class="card-top">
+                    <div class="tool-icon">
+                      <Icon name={t.icon} size={22} />
+                    </div>
+                    {t.badge && (
+                      <span class="card-pill-badge">{t.badge}</span>
+                    )}
+                  </div>
+                  <div class="tool-content">
+                    <strong>{t.name}</strong>
+                    <span>{t.desc}</span>
+                  </div>
+                  <div class="tool-action">
+                    <span>Abrir herramienta</span>
+                    <Icon name="arrow-right" size={15} />
+                  </div>
+                </a>
+              </div>
+            ))}
+          </div>
+        </section>
+      );
+    })}
+
+    <!-- Estado vacío cuando la búsqueda no da resultados -->
+    <div class="empty-search-state" id="empty-state" style="display: none;">
+      <div class="empty-icon-wrap">
+        <Icon name="search" size={32} />
+      </div>
+      <h3>No encontramos herramientas con ese término</h3>
+      <p>Prueba con palabras como "notas", "WhatsApp", "días", "recetas" o "imágenes".</p>
+      <button type="button" class="btn-clear-search" id="btn-empty-clear">Restablecer búsqueda</button>
+    </div>
+
+    <!-- Sección SEO informativa -->
+    <section class="seo-section">
+      <div class="seo-card">
+        <h3>Utilidades web ligeras, privadas y sin necesidad de registro</h3>
+        <p>
+          UtiliaOnline reúne utilidades esenciales de cálculo, edición de texto, finanzas personales y procesamiento de imágenes. 
+          Todas las operaciones se procesan directamente en el navegador del usuario para asegurar la máxima privacidad y rapidez sin demoras.
+        </p>
+      </div>
+    </section>
+
+  </div>
 </Base>
 
 <style>
-  .hero-section {
-    text-align: center;
-    padding-block: 1rem 2.5rem;
+  .home-container {
+    padding-bottom: 2rem;
   }
 
-  .hero-lead {
-    color: var(--muted);
-    font-size: 1.1rem;
-    max-width: 62ch;
-    margin: 0.5rem auto 1.8rem;
-  }
-
-  .search-box {
-    max-width: 620px;
-    margin: 0 auto 1.5rem;
+  /* BARRA DE CATEGORÍAS ELEGANTE (SHOWCASE) */
+  .category-strip-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 2px 6px -1px rgba(0, 0, 0, 0.03);
+    padding: 0.85rem 1rem;
+    margin-bottom: 2.75rem;
     position: relative;
+  }
+
+  .category-strip-track {
     display: flex;
-    align-items: center;
-  }
-
-  .search-box :global(.search-icon) {
-    position: absolute;
-    left: 1rem;
-    color: var(--muted);
-    pointer-events: none;
-  }
-
-  #tool-search {
-    width: 100%;
-    padding: 0.85rem 1rem 0.85rem 2.85rem;
-    border-radius: 9999px;
-    background: var(--surface);
-    border: 1px solid var(--line);
-    font-size: 0.95rem;
-    color: var(--ink);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    transition: border-color 0.15s, box-shadow 0.15s;
-  }
-
-  #tool-search:focus {
-    outline: none;
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(47, 129, 247, 0.2);
-  }
-
-  .category-pills {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+    align-items: stretch;
+    justify-content: flex-start;
     gap: 0.5rem;
-    max-width: 820px;
-    margin: 0 auto;
+    overflow-x: auto;
+    padding: 0.25rem 0.25rem 0.4rem;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    scroll-behavior: smooth;
   }
 
-  .pill {
-    background: var(--surface);
-    border: 1px solid var(--line);
-    color: var(--muted);
-    padding: 0.4rem 0.85rem;
-    border-radius: 9999px;
-    font-size: 0.82rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.15s ease;
+  .category-strip-track::-webkit-scrollbar {
+    display: none;
   }
 
-  .pill:hover {
-    color: var(--ink);
-    border-color: var(--muted);
-  }
-
-  .pill.active {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: var(--accent-ink);
-    font-weight: 600;
-  }
-
-  .section-block {
-    margin-top: 3rem;
-  }
-
-  .section-title-wrap {
-    margin-bottom: 1.25rem;
-  }
-
-  .section-title-wrap h2 {
-    margin: 0 0 0.25rem;
-    font-size: 1.35rem;
-    font-weight: 700;
-  }
-
-  .section-sub {
-    color: var(--muted);
-    font-size: 0.9rem;
-    margin: 0;
-  }
-
-  .cat-header {
+  .category-tab-btn {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 0.85rem;
-  }
-
-  .cat-title-text {
-    flex: 1;
-  }
-
-  .cat-title-row {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 1rem;
-    flex-wrap: wrap;
-  }
-
-  .cat-view-link {
-    font-size: 0.85rem;
+    justify-content: center;
+    gap: 0.45rem;
+    padding: 0.75rem 0.95rem;
+    border-radius: var(--radius-md);
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--muted);
+    font-family: var(--font-display);
+    font-size: 0.82rem;
     font-weight: 600;
-    color: var(--accent);
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    white-space: nowrap;
+    flex: 0 0 auto;
+    min-width: 95px;
+    position: relative;
   }
 
-  .cat-view-link:hover {
-    text-decoration: underline;
-  }
-
-
-  .cat-icon-badge {
-    width: 38px;
-    height: 38px;
-    border-radius: var(--radius-sm);
+  .tab-icon-box {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
     background: var(--surface-card);
     border: 1px solid var(--line);
     display: flex;
     align-items: center;
     justify-content: center;
+    color: var(--muted);
+    transition: all 0.2s ease;
+  }
+
+  .tab-label {
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+    text-align: center;
+  }
+
+  .tab-count {
+    font-size: 0.72rem;
+    font-weight: 500;
+    opacity: 0.7;
+    background: var(--surface-hover);
+    padding: 0.1rem 0.45rem;
+    border-radius: 9999px;
+    border: 1px solid var(--line);
+  }
+
+  .category-tab-btn:hover {
+    color: var(--ink);
+    background: var(--surface-hover);
+    transform: translateY(-2px);
+  }
+
+  .category-tab-btn:hover .tab-icon-box {
     color: var(--accent);
+    border-color: rgba(2, 132, 199, 0.3);
+  }
+
+  /* ESTADO ACTIVO (Inspirado en el diseño elegante de la foto) */
+  .category-tab-btn.active {
+    color: var(--accent);
+    background: var(--surface-card);
+  }
+
+  .category-tab-btn.active .tab-icon-box {
+    color: var(--accent);
+    background: rgba(2, 132, 199, 0.12);
+    border-color: rgba(2, 132, 199, 0.35);
+    box-shadow: 0 4px 12px rgba(2, 132, 199, 0.18);
+  }
+
+  .category-tab-btn.active .tab-count {
+    background: rgba(2, 132, 199, 0.15);
+    color: var(--accent);
+    border-color: rgba(2, 132, 199, 0.3);
+    opacity: 1;
+  }
+
+  .category-tab-btn.active::after {
+    content: '';
+    position: absolute;
+    bottom: -3px;
+    left: 20%;
+    right: 20%;
+    height: 3px;
+    border-radius: 3px;
+    background: var(--accent);
+  }
+
+  /* HERO HEADER */
+  .home-hero {
+    text-align: center;
+    max-width: 760px;
+    margin: 0 auto 3rem;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.35rem 0.85rem;
+    border-radius: 9999px;
+    background: var(--surface-card);
+    border: 1px solid var(--line);
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--accent);
+    margin-bottom: 1rem;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+
+  .home-hero h1 {
+    font-size: clamp(2rem, 4vw, 2.7rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    margin: 0 0 0.8rem;
+    line-height: 1.15;
+    color: var(--ink);
+  }
+
+  .hero-lead {
+    color: var(--muted);
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin: 0 auto 2rem;
+    max-width: 60ch;
+  }
+
+  /* BUSCADOR */
+  .search-wrap {
+    max-width: 640px;
+    margin: 0 auto;
+  }
+
+  .search-box {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .search-box :global(.search-ico) {
+    position: absolute;
+    left: 1.25rem;
+    color: var(--muted);
+    pointer-events: none;
+    transition: color 0.15s;
+  }
+
+  #tool-search {
+    width: 100%;
+    padding: 0.95rem 2.85rem 0.95rem 3.1rem;
+    border-radius: 9999px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    font-size: 0.96rem;
+    color: var(--ink);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+    transition: all 0.2s ease;
+  }
+
+  #tool-search:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 4px rgba(2, 132, 199, 0.15);
+  }
+
+  .search-clear-btn {
+    position: absolute;
+    right: 1.1rem;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--surface-card);
+    border: 1px solid var(--line);
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .search-clear-btn:hover {
+    color: var(--ink);
+    background: var(--surface-hover);
+  }
+
+  .search-feedback {
+    margin-top: 0.65rem;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+
+  /* BANNER DE FILTRADO */
+  .filter-status-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1.25rem;
+    background: var(--surface-card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    margin-bottom: 2rem;
+    font-size: 0.9rem;
+  }
+
+  .btn-reset-filter {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    color: var(--accent);
+    font-size: 0.82rem;
+    font-weight: 600;
+    padding: 0.35rem 0.85rem;
+    border-radius: 9999px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .btn-reset-filter:hover {
+    background: var(--surface-hover);
+  }
+
+  /* SECCIONES Y ENCABEZADOS */
+  .section-block {
+    margin-top: 3.25rem;
+  }
+
+  .section-title-wrap {
+    margin-bottom: 1.5rem;
+  }
+
+  .sec-header-row {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+  }
+
+  .sec-icon-container {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: rgba(2, 132, 199, 0.1);
+    border: 1px solid rgba(2, 132, 199, 0.25);
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
     flex-shrink: 0;
   }
 
+  .sec-header-row h2 {
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin: 0 0 0.25rem;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+  }
+
+  .cat-header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 1rem;
+  }
+
+  .cat-header-left {
+    display: flex;
+    align-items: center;
+    gap: 0.95rem;
+  }
+
+  .cat-icon-container {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: var(--surface-card);
+    border: 1px solid var(--line);
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .cat-title-badge-row {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+  }
+
+  .cat-title-badge-row h2 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin: 0;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+  }
+
+  .cat-badge-count {
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 0.15rem 0.5rem;
+    border-radius: 9999px;
+    background: var(--surface-card);
+    border: 1px solid var(--line);
+    color: var(--muted);
+  }
+
+  .section-sub {
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin: 0.25rem 0 0;
+  }
+
+  .cat-action-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--accent);
+    text-decoration: none;
+    padding: 0.4rem 0.85rem;
+    border-radius: 9999px;
+    background: var(--surface-card);
+    border: 1px solid var(--line);
+    transition: all 0.15s ease;
+  }
+
+  .cat-action-link:hover {
+    background: var(--surface-hover);
+    text-decoration: none;
+    transform: translateX(2px);
+  }
+
+  /* TARJETAS DE HERRAMIENTAS */
   .tool-card-wrap {
     height: 100%;
   }
@@ -273,53 +584,159 @@ const totalCount = ALL_TOOLS.length;
     margin-bottom: 0.75rem;
   }
 
-  .badge-status {
-    font-size: 0.72rem;
-    font-weight: 600;
+  .card-pill-badge {
+    font-size: 0.7rem;
+    font-weight: 700;
     padding: 0.2rem 0.55rem;
     border-radius: 9999px;
     text-transform: uppercase;
-    letter-spacing: 0.03em;
+    letter-spacing: 0.04em;
+    background: rgba(2, 132, 199, 0.12);
+    color: var(--accent);
+    border: 1px solid rgba(2, 132, 199, 0.3);
   }
 
-  .badge-status.ready {
-    background: rgba(46, 160, 67, 0.18);
-    color: #3fb950;
-    border: 1px solid rgba(46, 160, 67, 0.35);
+  /* ESTADO VACÍO */
+  .empty-search-state {
+    text-align: center;
+    padding: 4rem 1.5rem;
+    background: var(--surface);
+    border: 1px dashed var(--line);
+    border-radius: var(--radius-lg);
+    margin-top: 2rem;
   }
 
-  .badge-status.upcoming {
-    background: rgba(139, 148, 158, 0.12);
-    color: var(--muted);
+  .empty-icon-wrap {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: var(--surface-card);
     border: 1px solid var(--line);
-  }
-
-  .tool-card.is-coming {
-    opacity: 0.75;
-    cursor: default;
-  }
-
-  .tool-card.is-coming:hover {
-    transform: none;
-    border-color: var(--line);
-  }
-
-  .tool-card.is-coming .tool-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     color: var(--muted);
+    margin-bottom: 1rem;
+  }
+
+  .empty-search-state h3 {
+    font-size: 1.25rem;
+    margin: 0 0 0.5rem;
+    color: var(--ink);
+  }
+
+  .empty-search-state p {
+    color: var(--muted);
+    font-size: 0.95rem;
+    margin: 0 0 1.5rem;
+  }
+
+  .btn-clear-search {
+    background: var(--accent);
+    color: var(--accent-ink);
+    border: none;
+    padding: 0.6rem 1.25rem;
+    border-radius: 9999px;
+    font-weight: 600;
+    font-size: 0.88rem;
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+
+  .btn-clear-search:hover {
+    opacity: 0.9;
+  }
+
+  /* SECCIÓN SEO */
+  .seo-section {
+    margin-top: 4rem;
+  }
+
+  .seo-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    padding: 1.75rem;
+    color: var(--muted);
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+
+  .seo-card h3 {
+    font-size: 1.05rem;
+    color: var(--ink);
+    margin: 0 0 0.5rem;
+    font-weight: 600;
+  }
+
+  .seo-card p {
+    margin: 0;
+  }
+
+  @media (max-width: 768px) {
+    .category-strip-card {
+      margin-inline: -0.75rem;
+      border-radius: var(--radius-md);
+      padding: 0.5rem 0.35rem;
+      margin-bottom: 2rem;
+    }
+    .category-strip-track {
+      gap: 0.35rem;
+      padding-inline: 0.25rem;
+      -webkit-overflow-scrolling: touch;
+    }
+    .category-tab-btn {
+      flex: 0 0 auto;
+      min-width: 82px;
+      padding: 0.45rem 0.55rem;
+      font-size: 0.76rem;
+    }
+    .tab-icon-box {
+      width: 38px;
+      height: 38px;
+    }
+    .cat-header-row {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.85rem;
+    }
   }
 </style>
 
 <script>
   const searchInput = document.getElementById('tool-search') as HTMLInputElement;
-  const pills = document.querySelectorAll<HTMLButtonElement>('.pill');
+  const searchClear = document.getElementById('search-clear') as HTMLButtonElement;
+  const searchFeedback = document.getElementById('search-feedback') as HTMLElement;
+  const resultsCount = document.getElementById('results-count') as HTMLElement;
+  const emptyState = document.getElementById('empty-state') as HTMLElement;
+  const btnEmptyClear = document.getElementById('btn-empty-clear') as HTMLButtonElement;
+
+  const tabBtns = document.querySelectorAll<HTMLButtonElement>('.category-tab-btn');
   const cards = document.querySelectorAll<HTMLElement>('.tool-card-wrap');
   const catSections = document.querySelectorAll<HTMLElement>('.category-section');
   const featuredSection = document.getElementById('featured-section');
+  const filterBanner = document.getElementById('filter-banner') as HTMLElement;
+  const filterCatName = document.getElementById('filter-cat-name') as HTMLElement;
+  const btnResetFilter = document.getElementById('btn-reset-filter') as HTMLButtonElement;
 
   let currentCategory = 'all';
   let searchQuery = '';
 
-  function filterTools() {
+  const CATEGORY_NAMES: Record<string, string> = {
+    'all': 'Todas las categorías',
+    'redes-mensajeria': 'Redes Sociales',
+    'sorteos-diversion': 'Sorteos y Juegos',
+    'dinero-compras': 'Dinero y Finanzas',
+    'fechas-tiempo': 'Fechas y Tiempo',
+    'estudio-trabajo': 'Estudio y Trabajo',
+    'hogar-vida': 'Hogar y Diario',
+    'imagenes-multimedia': 'Imágenes',
+    'texto-utilidades': 'Texto y Utilidades'
+  };
+
+  function applyFilters() {
+    let totalVisible = 0;
+
     cards.forEach((card) => {
       const cat = card.dataset.cat || '';
       const name = card.dataset.name || '';
@@ -330,21 +747,21 @@ const totalCount = ALL_TOOLS.length;
 
       if (matchesCat && matchesSearch) {
         card.style.display = 'block';
+        totalVisible++;
       } else {
         card.style.display = 'none';
       }
     });
 
-    // Controlar visibilidad de las secciones por categoría
+    // Controlar visibilidad de las secciones de categorías
     catSections.forEach((sec) => {
       const secCat = sec.dataset.category || '';
-      const visibleCards = sec.querySelectorAll<HTMLElement>('.tool-card-wrap:not([style*="display: none"])');
-      
-      const shouldShow = (currentCategory === 'all' || currentCategory === secCat) && visibleCards.length > 0;
+      const visibleInSec = sec.querySelectorAll<HTMLElement>('.tool-card-wrap:not([style*="display: none"])');
+      const shouldShow = (currentCategory === 'all' || currentCategory === secCat) && visibleInSec.length > 0;
       sec.style.display = shouldShow ? 'block' : 'none';
     });
 
-    // Sección destacada se oculta si filtramos por categoría específica o búsqueda
+    // Controlar sección de destacadas
     if (featuredSection) {
       if (currentCategory !== 'all' || searchQuery.length > 0) {
         featuredSection.style.display = 'none';
@@ -352,21 +769,94 @@ const totalCount = ALL_TOOLS.length;
         featuredSection.style.display = 'block';
       }
     }
+
+    // Banner de filtro activo
+    if (filterBanner && filterCatName) {
+      if (currentCategory !== 'all') {
+        filterCatName.textContent = CATEGORY_NAMES[currentCategory] || currentCategory;
+        filterBanner.style.display = 'flex';
+      } else {
+        filterBanner.style.display = 'none';
+      }
+    }
+
+    // Buscador interactivo - feedback y botón de limpiar
+    if (searchClear) {
+      searchClear.style.display = searchQuery.length > 0 ? 'flex' : 'none';
+    }
+
+    if (searchFeedback && resultsCount) {
+      if (searchQuery.length > 0) {
+        resultsCount.textContent = totalVisible.toString();
+        searchFeedback.style.display = 'block';
+      } else {
+        searchFeedback.style.display = 'none';
+      }
+    }
+
+    // Estado vacío
+    if (emptyState) {
+      emptyState.style.display = totalVisible === 0 ? 'block' : 'none';
+    }
   }
 
+  function setCategory(catId: string) {
+    currentCategory = catId;
+    tabBtns.forEach((btn) => {
+      if (btn.dataset.cat === catId) {
+        btn.classList.add('active');
+        btn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      } else {
+        btn.classList.remove('active');
+      }
+    });
+
+    applyFilters();
+
+    // Si seleccionó una categoría específica, hacer scroll suave a la sección
+    if (catId !== 'all') {
+      const targetSec = document.getElementById(`cat-${catId}`);
+      if (targetSec) {
+        targetSec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+  }
+
+  // Event Listeners
   if (searchInput) {
     searchInput.addEventListener('input', (e) => {
       searchQuery = (e.target as HTMLInputElement).value.trim().toLowerCase();
-      filterTools();
+      applyFilters();
     });
   }
 
-  pills.forEach((pill) => {
-    pill.addEventListener('click', () => {
-      pills.forEach((p) => p.classList.remove('active'));
-      pill.classList.add('active');
-      currentCategory = pill.dataset.cat || 'all';
-      filterTools();
+  if (searchClear) {
+    searchClear.addEventListener('click', () => {
+      if (searchInput) searchInput.value = '';
+      searchQuery = '';
+      applyFilters();
+      searchInput?.focus();
+    });
+  }
+
+  if (btnEmptyClear) {
+    btnEmptyClear.addEventListener('click', () => {
+      if (searchInput) searchInput.value = '';
+      searchQuery = '';
+      setCategory('all');
+    });
+  }
+
+  if (btnResetFilter) {
+    btnResetFilter.addEventListener('click', () => {
+      setCategory('all');
+    });
+  }
+
+  tabBtns.forEach((tab) => {
+    tab.addEventListener('click', () => {
+      const cat = tab.dataset.cat || 'all';
+      setCategory(cat);
     });
   });
 </script>
