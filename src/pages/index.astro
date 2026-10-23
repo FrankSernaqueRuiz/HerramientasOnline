@@ -6,18 +6,27 @@ import { CATEGORIES, ALL_TOOLS } from '../data/tools';
 const featuredTools = ALL_TOOLS.filter((t) => t.featured);
 const totalCount = ALL_TOOLS.length;
 
+const SHORT_NAMES: Record<string, string> = {
+  'simuladores': 'Simuladores',
+  'redes': 'Redes',
+  'sorteos': 'Sorteos',
+  'dinero': 'Dinero',
+  'fechas': 'Fechas',
+  'estudio': 'Estudio',
+  'hogar': 'Hogar',
+  'imagenes': 'Imágenes',
+  'texto': 'Texto',
+};
+
 const CATEGORY_STRIP_ITEMS = [
-  { id: 'all', name: 'Todas', icon: 'grid', count: totalCount },
-  { id: 'simuladores', name: 'Simuladores y Finanzas', icon: 'calculator', count: ALL_TOOLS.filter(t => t.category === 'simuladores').length },
-  { id: 'redes', name: 'Redes Sociales', icon: 'message-circle', count: ALL_TOOLS.filter(t => t.category === 'redes').length },
-  { id: 'sorteos', name: 'Sorteos y Juegos', icon: 'gift', count: ALL_TOOLS.filter(t => t.category === 'sorteos').length },
-  { id: 'dinero', name: 'Dinero y Finanzas', icon: 'dollar-sign', count: ALL_TOOLS.filter(t => t.category === 'dinero').length },
-  { id: 'fechas', name: 'Fechas y Tiempo', icon: 'calendar', count: ALL_TOOLS.filter(t => t.category === 'fechas').length },
-  { id: 'estudio', name: 'Estudio y Trabajo', icon: 'book-open', count: ALL_TOOLS.filter(t => t.category === 'estudio').length },
-  { id: 'hogar', name: 'Hogar y Diario', icon: 'home', count: ALL_TOOLS.filter(t => t.category === 'hogar').length },
-  { id: 'imagenes', name: 'Imágenes', icon: 'image', count: ALL_TOOLS.filter(t => t.category === 'imagenes').length },
-  { id: 'texto', name: 'Texto y Utilidades', icon: 'file-text', count: ALL_TOOLS.filter(t => t.category === 'texto').length },
+  { id: 'all', name: 'Todas', icon: 'grid' },
+  ...CATEGORIES.map((cat) => ({
+    id: cat.id,
+    name: SHORT_NAMES[cat.id] || cat.name,
+    icon: cat.icon,
+  })),
 ];
+
 ---
 
 <Base 
@@ -70,10 +79,9 @@ const CATEGORY_STRIP_ITEMS = [
             aria-label={`Ver categoría ${item.name}`}
           >
             <div class="tab-icon-box">
-              <Icon name={item.icon} size={22} />
+              <Icon name={item.icon} size={20} />
             </div>
             <span class="tab-label">{item.name}</span>
-            <span class="tab-count">{item.count}</span>
           </button>
         ))}
       </div>
@@ -202,24 +210,23 @@ const CATEGORY_STRIP_ITEMS = [
     padding-bottom: 2rem;
   }
 
-  /* BARRA DE CATEGORÍAS ELEGANTE (SHOWCASE) */
+  /* BARRA DE CATEGORÍAS — PILL HORIZONTAL */
   .category-strip-card {
     background: var(--surface);
     border: 1px solid var(--line);
     border-radius: var(--radius-lg);
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 2px 6px -1px rgba(0, 0, 0, 0.03);
-    padding: 0.85rem 1rem;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+    padding: 0.6rem 0.85rem;
     margin-bottom: 2.75rem;
     position: relative;
   }
 
   .category-strip-track {
     display: flex;
-    align-items: stretch;
-    justify-content: flex-start;
-    gap: 0.5rem;
+    align-items: center;
+    gap: 0.3rem;
     overflow-x: auto;
-    padding: 0.25rem 0.25rem 0.4rem;
+    padding: 0.15rem 0;
     scrollbar-width: none;
     -ms-overflow-style: none;
     scroll-behavior: smooth;
@@ -231,96 +238,60 @@ const CATEGORY_STRIP_ITEMS = [
 
   .category-tab-btn {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
-    justify-content: center;
-    gap: 0.45rem;
-    padding: 0.75rem 0.95rem;
-    border-radius: var(--radius-md);
+    gap: 0.55rem;
+    padding: 0.55rem 1rem;
+    border-radius: 9999px;
     background: transparent;
     border: 1px solid transparent;
     color: var(--muted);
     font-family: var(--font-display);
-    font-size: 0.82rem;
+    font-size: 0.83rem;
     font-weight: 600;
     cursor: pointer;
-    text-decoration: none;
-    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
     white-space: nowrap;
     flex: 0 0 auto;
-    min-width: 95px;
     position: relative;
+    letter-spacing: -0.01em;
   }
 
   .tab-icon-box {
-    width: 44px;
-    height: 44px;
-    border-radius: 12px;
-    background: var(--surface-card);
-    border: 1px solid var(--line);
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--muted);
-    transition: all 0.2s ease;
+    color: inherit;
+    flex-shrink: 0;
+    transition: all 0.18s ease;
   }
 
   .tab-label {
-    letter-spacing: -0.01em;
-    line-height: 1.2;
-    text-align: center;
-  }
-
-  .tab-count {
-    font-size: 0.72rem;
-    font-weight: 500;
-    opacity: 0.7;
-    background: var(--surface-hover);
-    padding: 0.1rem 0.45rem;
-    border-radius: 9999px;
-    border: 1px solid var(--line);
+    line-height: 1;
   }
 
   .category-tab-btn:hover {
     color: var(--ink);
     background: var(--surface-hover);
-    transform: translateY(-2px);
+    border-color: var(--line);
   }
 
   .category-tab-btn:hover .tab-icon-box {
     color: var(--accent);
-    border-color: rgba(2, 132, 199, 0.3);
   }
 
-  /* ESTADO ACTIVO (Inspirado en el diseño elegante de la foto) */
+  /* ESTADO ACTIVO */
   .category-tab-btn.active {
     color: var(--accent);
-    background: var(--surface-card);
+    background: rgba(2, 132, 199, 0.08);
+    border-color: rgba(2, 132, 199, 0.28);
   }
 
   .category-tab-btn.active .tab-icon-box {
     color: var(--accent);
-    background: rgba(2, 132, 199, 0.12);
-    border-color: rgba(2, 132, 199, 0.35);
-    box-shadow: 0 4px 12px rgba(2, 132, 199, 0.18);
-  }
-
-  .category-tab-btn.active .tab-count {
-    background: rgba(2, 132, 199, 0.15);
-    color: var(--accent);
-    border-color: rgba(2, 132, 199, 0.3);
-    opacity: 1;
-  }
-
-  .category-tab-btn.active::after {
-    content: '';
-    position: absolute;
-    bottom: -3px;
-    left: 20%;
-    right: 20%;
-    height: 3px;
-    border-radius: 3px;
-    background: var(--accent);
   }
 
   /* HERO HEADER */
