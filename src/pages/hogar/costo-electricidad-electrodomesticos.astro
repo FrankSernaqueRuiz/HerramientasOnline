@@ -1,0 +1,236 @@
+﻿---
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+---
+<Base title="Calculadora de Consumo Eléctrico y Costo por Electrodoméstico" description="Calcula el consumo en kWh y cuánto dinero gasta cada aparato eléctrico en tu factura de luz mensual y anual.">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="/">Herramientas</a> / <span>Hogar y vida diaria</span></div>
+    <h1>Cálculo de Luz por Electrodoméstico</h1>
+    <p class="lead">Descubre qué electrodomésticos consumen más energía en tu hogar y calcula el costo exacto en tu recibo de luz.</p>
+  </div>
+
+  <section class="panel">
+    <div class="elec-layout">
+      <!-- Input form -->
+      <div class="elec-form">
+        <div class="field">
+          <label for="appliance-preset">Seleccionar electrodoméstico habitual:</label>
+          <select id="appliance-preset" class="form-input">
+            <option value="2000|Aire Acondicionado (Split)|6">❄️ Aire Acondicionado (2000W, 6h/día)</option>
+            <option value="200|Refrigerador / Nevera|24">🧊 Refrigerador / Nevera (200W activo)</option>
+            <option value="1200|Microondas|0.5">🍿 Horno Microondas (1200W, 30 min/día)</option>
+            <option value="1500|Calentador / Terma de Agua|2">🚿 Terma / Calentador eléctrico (1500W, 2h/día)</option>
+            <option value="500|Lavadora de ropa|1.5">🧺 Lavadora (500W, 1.5h/día)</option>
+            <option value="350|PC de Sobremesa / Gaming|5">🖥️ Computadora PC / Gaming (350W, 5h/día)</option>
+            <option value="65|Laptop / Portátil|8">💻 Laptop de trabajo (65W, 8h/día)</option>
+            <option value="100|Televisor Smart TV|5">📺 Smart TV 55" (100W, 5h/día)</option>
+            <option value="50|Ventilador|8">💨 Ventilador de piso (50W, 8h/día)</option>
+            <option value="1000|Plancha de ropa|0.5">👔 Plancha de ropa (1000W, 30 min/día)</option>
+            <option value="2200|Horno Eléctrico / Freidora|1">🍟 Freidora de aire / Horno (2200W, 1h/día)</option>
+            <option value="10|Foco / Bombilla LED|6">💡 Foco LED (10W, 6h/día)</option>
+            <option value="custom|Personalizado|1">⚙️ Otro aparato (Personalizado)</option>
+          </select>
+        </div>
+
+        <div class="grid-2">
+          <div class="field">
+            <label for="power-watts">Potencia (Watts):</label>
+            <input type="number" id="power-watts" value="2000" min="1" class="form-input" />
+          </div>
+          <div class="field">
+            <label for="hours-day">Horas de uso al día:</label>
+            <input type="number" id="hours-day" value="6" step="0.1" min="0.1" max="24" class="form-input" />
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="field">
+            <label for="days-month">Días de uso al mes:</label>
+            <input type="number" id="days-month" value="30" min="1" max="31" class="form-input" />
+          </div>
+          <div class="field">
+            <label for="kwh-rate">Costo por kWh en tu moneda:</label>
+            <input type="number" id="kwh-rate" value="0.20" step="0.01" min="0.01" class="form-input" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="currency-symbol">Símbolo de moneda:</label>
+          <input type="text" id="currency-symbol" value="$" class="form-input" style="width:70px;" />
+        </div>
+      </div>
+
+      <!-- Results card -->
+      <div class="elec-results">
+        <div class="cost-card-highlight">
+          <span class="lbl">Costo mensual estimado</span>
+          <div class="val" id="cost-month">$ 72.00</div>
+          <div class="kwh-val" id="kwh-month">360.00 kWh / mes</div>
+        </div>
+
+        <div class="sub-stats">
+          <div class="sub-stat-box">
+            <span class="sub-lbl">Gasto diario</span>
+            <div class="sub-val" id="cost-day">$ 2.40</div>
+          </div>
+          <div class="sub-stat-box">
+            <span class="sub-lbl">Gasto anual</span>
+            <div class="sub-val" id="cost-year">$ 864.00</div>
+          </div>
+        </div>
+
+        <div class="tips-box">
+          <h4>💡 Consejo de eficiencia energética</h4>
+          <p id="tip-text">Para aparatos de alto consumo (más de 1000W como aires acondicionados o termas), regular el termostato a temperaturas intermedias (ej. 24°C en aire) reduce el consumo entre un 15% y 25% mensual.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="seo-section">
+    <h2>¿Cómo se calcula el consumo y costo eléctrico de un electrodoméstico?</h2>
+    <p>La factura de la luz se cobra en función de la energía consumida medida en <strong>kilovatios-hora (kWh)</strong>. Para saber cuánto cuesta usar cualquier dispositivo, se multiplica su potencia en Watts por las horas diarias de uso, se divide entre 1,000 para convertirlo a kWh y se multiplica por la tarifa por kWh fijada por la compañía eléctrica de tu país.</p>
+
+    <div class="step-list">
+      <div class="step-card">
+        <span class="step-num">1</span>
+        <div class="step-body">
+          <h4>Selecciona un electrodoméstico o introduce los Watts</h4>
+          <p>Elige de nuestra lista rápida (aire acondicionado, refrigerador, computadora, lavadora, microondas) o revisa la etiqueta técnica de tu aparato.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <span class="step-num">2</span>
+        <div class="step-body">
+          <h4>Indica las horas de uso y el precio por kWh</h4>
+          <p>Especifica cuántas horas está encendido al día y el costo unitario por kWh que figura en tu recibo de luz (ej: CFE en México, Enel/Luz del Sur en Perú, EPM/Codensa en Colombia o Endesa/Iberdrola en España).</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <span class="step-num">3</span>
+        <div class="step-body">
+          <h4>Consulta el gasto diario, mensual y anual</h4>
+          <p>Descubre el impacto monetario exacto de ese aparato en tu presupuesto y recibe sugerencias para optimizar su consumo.</p>
+        </div>
+      </div>
+    </div>
+
+    <h3>Casos de uso para ahorrar en la factura de luz</h3>
+    <div class="guide-grid">
+      <div class="guide-card">
+        <h4>Aire acondicionado y calefacción eléctrica</h4>
+        <p>Monitorea el costo real de dejar el split encendido durante las noches de verano o las estufas en invierno.</p>
+      </div>
+      <div class="guide-card">
+        <h4>Computadoras de escritorio y minería/gaming</h4>
+        <p>Calcula el consumo de equipos informáticos de alto rendimiento que permanecen encendidos 12 o 24 horas continuas.</p>
+      </div>
+      <div class="guide-card">
+        <h4>Electrodomésticos antiguos vs tecnología Inverter</h4>
+        <p>Evalúa si renovar tu nevera o lavadora por un modelo con certificación de eficiencia energética A+++ te ahorrará dinero a mediano plazo.</p>
+      </div>
+    </div>
+
+    <h2>Preguntas frecuentes sobre consumo eléctrico</h2>
+    <div class="faq-wrap">
+      <div class="faq-item">
+        <div class="faq-question">¿Dónde encuentro la potencia en Watts de mi aparato?</div>
+        <div class="faq-answer">
+          <p>En la placa de características técnicas plateada o negra ubicada en la parte trasera o inferior del aparato (expresada en <strong>W</strong> o calculando Voltios x Amperios: <code>V x A = W</code>).</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Los refrigeradores consumen su potencia máxima las 24 horas del día?</div>
+        <div class="faq-answer">
+          <p>No. Un refrigerador está enchufado 24 horas, pero su compresor solo enciende intermitentemente cuando necesita enfriar (aproximadamente entre 6 y 10 horas reales de trabajo al día si la puerta se mantiene cerrada adecuadamente).</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Qué es el consumo fantasma o "vampiro"?</div>
+        <div class="faq-answer">
+          <p>Es la energía que consumen los aparatos en modo reposo (standby), como televisores, cargadores de móvil enchufados sin usar o consolas de videojuegos. Aunque parece poco (5 a 15W), puede representar hasta un 10% del total de tu recibo mensual.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Cómo influyen las tarifas por tramos horarios (punta y valle)?</div>
+        <div class="faq-answer">
+          <p>En muchos países, la electricidad es considerablemente más económica durante la madrugada (horas valle). Usar la lavadora o el termo eléctrico en esos horarios reduce sensiblemente el costo mensual.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .breadcrumb{font-size:.85rem;color:var(--muted);margin-bottom:.5rem}.breadcrumb a{color:var(--muted)}
+  .elec-layout{display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:start}
+  @media(max-width:768px){.elec-layout{grid-template-columns:1fr}}
+
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}
+  .field{margin-bottom:1rem}
+  .field label{display:block;font-weight:600;font-size:.85rem;margin-bottom:.35rem}
+  .form-input{width:100%;padding:.55rem .75rem;background:var(--bg);border:1px solid var(--line);border-radius:var(--radius-sm);color:var(--ink);font:inherit}
+
+  .elec-results{display:flex;flex-direction:column;gap:1.2rem}
+  .cost-card-highlight{background:linear-gradient(135deg, rgba(234,179,8,.12), rgba(249,115,22,.12));border:2px solid #eab308;border-radius:var(--radius);padding:1.5rem;text-align:center}
+  .cost-card-highlight .lbl{font-size:.82rem;text-transform:uppercase;font-weight:700;color:var(--muted);letter-spacing:1px}
+  .cost-card-highlight .val{font-size:3rem;font-weight:900;color:#ca8a04;margin:.4rem 0}
+  .cost-card-highlight .kwh-val{font-size:.95rem;font-weight:600;color:var(--ink)}
+
+  .sub-stats{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}
+  .sub-stat-box{background:var(--surface-card);border:1px solid var(--line);border-radius:var(--radius-sm);padding:1rem;text-align:center}
+  .sub-lbl{font-size:.78rem;text-transform:uppercase;color:var(--muted);font-weight:600}
+  .sub-val{font-size:1.4rem;font-weight:800;color:var(--ink);margin-top:.3rem}
+
+  .tips-box{background:var(--surface-card);border:1px solid var(--line);border-radius:var(--radius-sm);padding:1rem;font-size:.85rem;line-height:1.5}
+  .tips-box h4{margin-bottom:.4rem;font-size:.9rem}
+</style>
+
+<script>
+  const presetSelect = document.getElementById('appliance-preset') as HTMLSelectElement;
+  const powerInp = document.getElementById('power-watts') as HTMLInputElement;
+  const hoursInp = document.getElementById('hours-day') as HTMLInputElement;
+  const daysInp = document.getElementById('days-month') as HTMLInputElement;
+  const rateInp = document.getElementById('kwh-rate') as HTMLInputElement;
+  const currInp = document.getElementById('currency-symbol') as HTMLInputElement;
+
+  const costMonthEl = document.getElementById('cost-month')!;
+  const kwhMonthEl = document.getElementById('kwh-month')!;
+  const costDayEl = document.getElementById('cost-day')!;
+  const costYearEl = document.getElementById('cost-year')!;
+
+  presetSelect.addEventListener('change', () => {
+    const val = presetSelect.value;
+    if (val.startsWith('custom')) return;
+    const [watts, name, hours] = val.split('|');
+    powerInp.value = watts;
+    hoursInp.value = hours;
+    calc();
+  });
+
+  function calc() {
+    const w = parseFloat(powerInp.value) || 0;
+    const h = parseFloat(hoursInp.value) || 0;
+    const days = parseFloat(daysInp.value) || 30;
+    const rate = parseFloat(rateInp.value) || 0.20;
+    const curr = currInp.value || '$';
+
+    // Daily kWh = (Watts * hours) / 1000
+    const kwhDay = (w * h) / 1000;
+    const kwhMonth = kwhDay * days;
+    const costDay = kwhDay * rate;
+    const costMonth = kwhMonth * rate;
+    const costYear = costMonth * 12;
+
+    costMonthEl.textContent = `${curr} ${costMonth.toFixed(2)}`;
+    kwhMonthEl.textContent = `${kwhMonth.toFixed(1)} kWh / mes`;
+    costDayEl.textContent = `${curr} ${costDay.toFixed(2)}`;
+    costYearEl.textContent = `${curr} ${costYear.toFixed(2)}`;
+  }
+
+  [powerInp, hoursInp, daysInp, rateInp, currInp].forEach(el => {
+    el.addEventListener('input', calc);
+  });
+
+  calc();
+</script>

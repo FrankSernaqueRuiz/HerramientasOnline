@@ -1,0 +1,664 @@
+---
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+---
+
+<Base
+  title="Comparador AFP vs ONP 2025 - 2026 Perú · UtiliaOnline"
+  description="Compara lado a lado el Sistema Privado de Pensiones (AFP) y el Sistema Nacional (ONP): descuentos, rentabilidad, pensión máxima de S/ 893, retiros y herencia."
+  keywords="comparador afp onp, que conviene afp o onp, pension maxima onp 893, retiro afp 95.5, rentabilidad fondos afp peru"
+>
+  <div class="tool-container">
+    <div class="tool-header">
+      <div class="breadcrumb">
+        <a href="/">Inicio</a> / <a href="/simuladores">Simuladores</a> / <span>Comparador AFP vs ONP</span>
+      </div>
+      <div class="title-row">
+        <div class="tool-icon-badge">
+          <Icon name="scale" size={28} />
+        </div>
+        <div>
+          <h1>Comparador AFP vs ONP (Perú)</h1>
+          <p class="tool-desc">
+            Compara objetivamente qué sistema te conviene más según tu edad, ingresos y años de aporte. Analiza el tope máximo de ONP (S/ 893) frente al fondo individual de la AFP.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="calc-grid">
+      <!-- Input Panel -->
+      <div class="panel-card input-panel">
+        <div class="panel-head">
+          <Icon name="file-text" size={18} />
+          <h2>Tus Datos para la Simulación</h2>
+        </div>
+
+        <form id="afp-onp-form" class="calc-form" onsubmit="event.preventDefault()">
+          <div class="form-row-2">
+            <div class="form-group">
+              <label for="edad-actual">Tu Edad Actual</label>
+              <input type="number" id="edad-actual" class="form-input" value="30" min="18" max="64" required />
+            </div>
+            <div class="form-group">
+              <label for="edad-jubilacion">Edad de Jubilación</label>
+              <input type="number" id="edad-jubilacion" class="form-input" value="65" min="50" max="70" readonly />
+              <small class="hint-text">Edad legal en Perú: 65 años.</small>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="sueldo-afp-onp">Sueldo Bruto Mensual (S/)</label>
+            <div class="input-prefix-wrap">
+              <span class="prefix">S/</span>
+              <input type="number" id="sueldo-afp-onp" class="form-input" value="3500" min="1025" step="50" required />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="anos-aportados">Años Aportados Previamente</label>
+            <input type="number" id="anos-aportados" class="form-input" value="5" min="0" max="40" />
+            <small class="hint-text">Años que ya vienes aportando a cualquiera de los dos sistemas.</small>
+          </div>
+
+          <div class="form-group">
+            <label for="fondo-afp-select">Tipo de Fondo AFP (Rentabilidad Estimada)</label>
+            <select id="fondo-afp-select" class="form-select">
+              <option value="0.045">Fondo 1 - Conservador / Preservación de Capital (4.5% anual)</option>
+              <option value="0.07" selected>Fondo 2 - Mixto / Balanceado (7.0% anual histórico)</option>
+              <option value="0.095">Fondo 3 - Crecimiento / Renta Variable (9.5% anual)</option>
+            </select>
+          </div>
+        </form>
+      </div>
+
+      <!-- Result Comparison Panel -->
+      <div class="panel-card result-panel">
+        <div class="panel-head">
+          <Icon name="dollar-sign" size={18} />
+          <h2>Proyección a los 65 Años</h2>
+        </div>
+
+        <div class="comparison-cards-grid">
+          <!-- AFP Card -->
+          <div class="comp-col comp-afp">
+            <div class="comp-tag">Sistema Privado (AFP)</div>
+            <div class="comp-metric-label">Fondo Acumulado Proyectado</div>
+            <div class="comp-metric-val text-success" id="res-afp-fondo">S/ 0.00</div>
+            <div class="comp-subtext">Pensión mensual estimada: <strong id="res-afp-pension">S/ 0.00</strong></div>
+            <div class="comp-badge-ret">Opción de retirar el 95.5% (S/ <span id="res-afp-retiro">0</span>)</div>
+          </div>
+
+          <!-- ONP Card -->
+          <div class="comp-col comp-onp">
+            <div class="comp-tag">Sistema Nacional (ONP)</div>
+            <div class="comp-metric-label">Pensión Mensual Vitalicia</div>
+            <div class="comp-metric-val text-warning" id="res-onp-pension">S/ 893.00</div>
+            <div class="comp-subtext" id="res-onp-estado">Tope máximo de ley: S/ 893 / mes</div>
+            <div class="comp-badge-no-ret">No permite retiro de fondos (0%)</div>
+          </div>
+        </div>
+
+        <div class="breakdown-list">
+          <div class="breakdown-item">
+            <span>Descuento mensual en tu boleta:</span>
+            <span>AFP: <strong id="res-desc-afp">S/ 0.00</strong> | ONP: <strong id="res-desc-onp">S/ 0.00</strong></span>
+          </div>
+          <div class="breakdown-item">
+            <span>Años totales aportados proyectados:</span>
+            <strong id="res-anos-totales">0 años</strong>
+          </div>
+          <div class="breakdown-item">
+            <span>Propiedad del dinero:</span>
+            <span>AFP: <strong>Cuenta propia</strong> | ONP: <strong>Fondo común</strong></span>
+          </div>
+          <div class="breakdown-item">
+            <span>¿Es heredable si falleces?</span>
+            <span>AFP: <strong>Sí (100% de herencia)</strong> | ONP: <strong>No</strong></span>
+          </div>
+        </div>
+
+        <div class="action-buttons-row">
+          <button type="button" class="btn-action" id="btn-copy-comp">
+            <Icon name="copy" size={16} />
+            <span>Copiar comparativa</span>
+          </button>
+          <button type="button" class="btn-action" onclick="window.print()">
+            <Icon name="download" size={16} />
+            <span>Imprimir</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Side by Side Detailed Comparison Table -->
+    <div class="panel-card comp-table-card">
+      <div class="panel-head">
+        <Icon name="scale" size={18} />
+        <h2>Comparativa Detallada: AFP vs ONP</h2>
+      </div>
+
+      <div class="comp-matrix-wrap">
+        <table class="comp-matrix">
+          <thead>
+            <tr>
+              <th>Característica</th>
+              <th>AFP (SPP)</th>
+              <th>ONP (SNP)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Descuento Mensual</strong></td>
+              <td>Aprox. 11.5% a 11.8% (10% a tu fondo + 1.4% seguro SIS + comisión)</td>
+              <td>13% fijo directo de tu remuneración bruta</td>
+            </tr>
+            <tr>
+              <td><strong>Destino de tus Aportes</strong></td>
+              <td>Cuenta Individual de Capitalización (CIC) a tu nombre con rentabilidad</td>
+              <td>Fondo común de reparto solidario administrado por el Estado</td>
+            </tr>
+            <tr>
+              <td><strong>Requisito Mínimo de Años</strong></td>
+              <td><strong>Sin mínimo de años.</strong> Lo ahorrado es tuyo y se te entrega sí o sí</td>
+              <td>Requiere mínimo <strong>10 o 15 años</strong> para pensión reducida y <strong>20 años</strong> para completa</td>
+            </tr>
+            <tr>
+              <td><strong>Tope Máximo de Pensión</strong></td>
+              <td><strong>Sin tope.</strong> Depende únicamente del monto que hayas acumulado</td>
+              <td><strong>Tope legal de S/ 893.00</strong> mensuales, sin importar cuánto hayas ganado</td>
+            </tr>
+            <tr>
+              <td><strong>Disponibilidad / Retiro</strong></td>
+              <td>Al cumplir 65 años puedes retirar hasta el <strong>95.5%</strong> de tu fondo en efectivo</td>
+              <td><strong>0% de retiro.</strong> El dinero no se devuelve nunca en un pago único</td>
+            </tr>
+            <tr>
+              <td><strong>Herencia</strong></td>
+              <td>Si no tienes beneficiarios de sobrevivencia, se entrega a tus herederos legales</td>
+              <td>No genera herencia ni masa testamentaria</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Guía y Cómo Usar (Estándar UtiliaOnline) -->
+    <section class="seo-section">
+      <h2>Guía completa: ¿Qué te conviene más en Perú, AFP u ONP?</h2>
+      <p>
+        Al ingresar por primera vez al mercado laboral formal o cambiar de empleo en el Perú, todo trabajador tiene un plazo legal de 10 días para decidir a qué sistema previsional afiliarse: el <strong>Sistema Privado de Pensiones (SPP)</strong>, administrado por las AFPs, o el <strong>Sistema Nacional de Pensiones (SNP)</strong>, administrado por la Oficina de Normalización Previsional (ONP).
+      </p>
+      <p>
+        La diferencia estructural más importante radica en la propiedad del dinero:
+      </p>
+      <ul>
+        <li><strong>En las AFPs:</strong> Tu dinero ingresa a una <strong>Cuenta Individual de Capitalización (CIC)</strong> con tu nombre y DNI. El saldo gana rentabilidad con el tiempo según el tipo de fondo que elijas (Fondo 0, 1, 2 o 3), es heredable a tus familiares y al jubilarte a los 65 años puedes retirar hasta el <strong>95.5%</strong> en efectivo.</li>
+        <li><strong>En la ONP:</strong> Tus aportes van a un <strong>fondo común de reparto solidario</strong>. No tienes una cuenta personal ni rentabilidad. El dinero financia las pensiones de los jubilados actuales y solo recibirás una pensión si cumples con un mínimo obligatorio de 10 años de aportes (pensión reducida) o 20 años (pensión completa), sujeta a un tope legal máximo de <strong>S/ 893.00</strong> mensuales.</li>
+      </ul>
+
+      <h2>¿Cómo usar este comparador paso a paso?</h2>
+      <div class="step-list">
+        <div class="step-card">
+          <span class="step-num">1</span>
+          <div class="step-body">
+            <h4>Ingresa tu edad actual y tu sueldo bruto mensual</h4>
+            <p>Escribe tu remuneración mensual actual y tu edad para calcular la cantidad de años que te faltan hasta la jubilación legal (65 años).</p>
+          </div>
+        </div>
+        <div class="step-card">
+          <span class="step-num">2</span>
+          <div class="step-body">
+            <h4>Especifica tus años de aporte previos si ya cotizaste</h4>
+            <p>Si ya tienes años aportando en el sistema, indícalos para comprobar si alcanzas los requisitos de la ONP o simular el fondo acumulado en tu AFP.</p>
+          </div>
+        </div>
+        <div class="step-card">
+          <span class="step-num">3</span>
+          <div class="step-body">
+            <h4>Selecciona el tipo de fondo AFP y rentabilidad</h4>
+            <p>Elige entre Fondo 1 (Conservador), Fondo 2 (Moderado) o Fondo 3 (Crecimiento) para proyectar tu capital acumulado al cumplir 65 años.</p>
+          </div>
+        </div>
+        <div class="step-card">
+          <span class="step-num">4</span>
+          <div class="step-body">
+            <h4>Compara los resultados y toma una decisión informada</h4>
+            <p>Compara el fondo proyectado, la pensión mensual estimada de cada sistema y la opción de retirar el 95.5% en efectivo en la AFP.</p>
+          </div>
+        </div>
+      </div>
+
+      <h2>Casos prácticos de aplicación</h2>
+      <div class="guide-grid">
+        <div class="guide-card">
+          <h4>Sueldos medios y altos (Más de S/ 2,500)</h4>
+          <p>La AFP es ampliamente superior porque en la ONP tu pensión estará recortada por el tope legal de S/ 893.00, mientras que en la AFP tu pensión no tiene techo alguno.</p>
+        </div>
+        <div class="guide-card">
+          <h4>Ingresos mínimos y aportes intermitentes</h4>
+          <p>Si aportas de forma discontinua y corres el riesgo de no acumular 10 o 20 años de aportes, en la ONP <strong>perderías el 100%</strong> de tu dinero. En la AFP tus ahorros siempre te pertenecen.</p>
+        </div>
+        <div class="guide-card">
+          <h4>¿Qué pasa con el 4.5% restante al retirar el 95.5%?</h4>
+          <p>Por mandato de ley, el 4.5% de tu fondo acumulado en la AFP se transfiere directamente a EsSalud para garantizarte a ti y a tu cónyuge cobertura médica de por vida.</p>
+        </div>
+        <div class="guide-card">
+          <h4>Bono de Reconocimiento</h4>
+          <p>Si aportaste a la ONP antes de trasladarte a una AFP, podrías tener derecho al Bono de Reconocimiento del Estado, el cual se transfiere a tu cuenta individual de la AFP al jubilarte.</p>
+        </div>
+      </div>
+
+      <h2>Preguntas frecuentes (FAQ)</h2>
+      <div class="faq-wrap">
+        <div class="faq-item">
+          <button type="button" class="faq-question">
+            <span>¿Puedo pasarme de la ONP a una AFP en cualquier momento?</span>
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <p>Sí, el traslado de la ONP al Sistema Privado de Pensiones (AFP) es libre e irrestricto. Solo debes afiliarte a la AFP que ganó la licitación vigente o a la que desees. Pasar de la AFP a la ONP, en cambio, requiere un trámite judicial o administrativo estricto de nulidad o libre desafiliación informada.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button type="button" class="faq-question">
+            <span>¿Cuál es la pensión mínima garantizada en la ONP?</span>
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <p>Para quienes logren acreditar 20 años o más de aportaciones, la pensión mínima en el Decreto Ley 19990 es de S/ 500.00 mensuales. Con el régimen de pensión proporcional, quienes acrediten entre 10 y 14 años reciben S/ 250.00, y entre 15 y 19 años reciben S/ 350.00.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button type="button" class="faq-question">
+            <span>¿Qué ocurre con el fondo de la AFP en caso de fallecimiento?</span>
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <p>Si el afiliado fallece, el fondo cubre en primer lugar las pensiones de sobrevivencia para viudez u orfandad. Si no existieran beneficiarios directos, el saldo total acumulado constituye herencia legal y se entrega en su totalidad a los herederos declarados en la sucesión intestada.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</Base>
+
+<style>
+  .tool-container {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 1.5rem 0 3rem;
+  }
+  .breadcrumb {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-bottom: 0.75rem;
+  }
+  .breadcrumb a {
+    color: var(--muted);
+  }
+  .breadcrumb a:hover {
+    color: var(--accent);
+  }
+  .title-row {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+  .tool-icon-badge {
+    width: 58px;
+    height: 58px;
+    border-radius: var(--radius-md);
+    background: linear-gradient(135deg, rgba(56, 189, 248, 0.15), rgba(168, 85, 247, 0.05));
+    border: 1px solid rgba(56, 189, 248, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+  .title-row h1 {
+    font-size: 1.85rem;
+    margin: 0 0 0.35rem 0;
+    letter-spacing: -0.02em;
+  }
+  .tool-desc {
+    color: var(--muted);
+    font-size: 0.95rem;
+    margin: 0;
+    max-width: 75ch;
+  }
+
+  .calc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.15fr;
+    gap: 1.5rem;
+    align-items: start;
+    margin-bottom: 1.5rem;
+  }
+  @media (max-width: 860px) {
+    .calc-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .panel-card {
+    background: var(--surface-card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  }
+  .panel-head {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--line);
+    color: var(--accent);
+  }
+  .panel-head h2 {
+    font-size: 1.15rem;
+    color: var(--ink);
+    margin: 0;
+  }
+
+  .form-group {
+    margin-bottom: 1.1rem;
+  }
+  .form-group label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 0.35rem;
+    color: var(--ink);
+  }
+  .form-input, .form-select {
+    width: 100%;
+    padding: 0.6rem 0.85rem;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    color: var(--ink);
+    font-size: 0.95rem;
+    transition: border-color 0.15s;
+  }
+  .form-input:focus, .form-select:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+  .input-prefix-wrap {
+    display: flex;
+    align-items: center;
+    position: relative;
+  }
+  .input-prefix-wrap .prefix {
+    position: absolute;
+    left: 0.85rem;
+    font-weight: 600;
+    color: var(--muted);
+  }
+  .input-prefix-wrap .form-input {
+    padding-left: 2.2rem;
+  }
+
+  .form-row-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.85rem;
+  }
+  .hint-text {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-top: 0.25rem;
+  }
+
+  /* Comparison Cards */
+  .comparison-cards-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+  }
+  @media (max-width: 540px) {
+    .comparison-cards-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .comp-col {
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    padding: 1.1rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .comp-afp {
+    border-color: rgba(16, 185, 129, 0.4);
+    background: linear-gradient(180deg, rgba(16, 185, 129, 0.06), transparent);
+  }
+  .comp-onp {
+    border-color: rgba(245, 158, 11, 0.4);
+    background: linear-gradient(180deg, rgba(245, 158, 11, 0.06), transparent);
+  }
+  .comp-tag {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--muted);
+    margin-bottom: 0.35rem;
+  }
+  .comp-metric-label {
+    font-size: 0.75rem;
+    color: var(--muted);
+  }
+  .comp-metric-val {
+    font-size: 1.6rem;
+    font-weight: 800;
+    margin: 0.25rem 0;
+    font-family: var(--font-heading, sans-serif);
+  }
+  .comp-subtext {
+    font-size: 0.75rem;
+    color: var(--ink);
+    margin-bottom: 0.5rem;
+  }
+  .comp-badge-ret {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: #10b981;
+    background: rgba(16, 185, 129, 0.1);
+    padding: 0.25rem 0.5rem;
+    border-radius: 9999px;
+  }
+  .comp-badge-no-ret {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: #ef4444;
+    background: rgba(239, 68, 68, 0.1);
+    padding: 0.25rem 0.5rem;
+    border-radius: 9999px;
+  }
+
+  .text-success {
+    color: #10b981;
+  }
+  .text-warning {
+    color: #f59e0b;
+  }
+
+  .breakdown-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    padding: 1rem;
+    margin-bottom: 1.25rem;
+  }
+  .breakdown-item {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+  }
+
+  .action-buttons-row {
+    display: flex;
+    gap: 0.75rem;
+  }
+  .btn-action {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    padding: 0.55rem 0.85rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--line);
+    background: var(--surface-card);
+    color: var(--ink);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn-action:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* Matrix Table */
+  .comp-table-card {
+    margin-top: 1.5rem;
+  }
+  .comp-matrix-wrap {
+    overflow-x: auto;
+  }
+  .comp-matrix {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+  }
+  .comp-matrix th {
+    background: var(--surface-card);
+    padding: 0.65rem 0.85rem;
+    border-bottom: 1px solid var(--line);
+    color: var(--muted);
+    font-weight: 600;
+    text-align: left;
+  }
+  .comp-matrix td {
+    padding: 0.65rem 0.85rem;
+    border-bottom: 1px solid var(--line);
+    color: var(--ink);
+    vertical-align: top;
+    line-height: 1.4;
+  }
+  .comp-matrix tr:hover td {
+    background: rgba(255, 255, 255, 0.02);
+  }
+</style>
+
+<script>
+  const formatCurrency = (val: number) => {
+    return `S/ ${val.toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  };
+
+  const calculateComparativa = () => {
+    const edadActual = parseInt((document.getElementById('edad-actual') as HTMLInputElement).value) || 30;
+    const edadJub = 65;
+    const sueldo = parseFloat((document.getElementById('sueldo-afp-onp') as HTMLInputElement).value) || 0;
+    const anosPrevios = parseInt((document.getElementById('anos-aportados') as HTMLInputElement).value) || 0;
+    const tasaFondo = parseFloat((document.getElementById('fondo-afp-select') as HTMLSelectElement).value) || 0.07;
+
+    const anosFaltantes = Math.max(0, edadJub - edadActual);
+    const anosTotales = anosPrevios + anosFaltantes;
+
+    // Descuentos mensuales
+    const descAFP = sueldo * 0.118; // 10% fondo + 1.4% seguro + 0.4% prom
+    const descONP = sueldo * 0.13;
+
+    // Proyeccion AFP:
+    // Aporte a fondo = 10% del sueldo por 12 meses
+    const aporteAnualFondo = (sueldo * 0.10) * 12;
+    // Tasa mensual efectiva: (1 + tasaFondo)^(1/12) - 1
+    let fondoAcumulado = 0;
+    const mesesFaltantes = anosFaltantes * 12;
+    const aporteMensualFondo = sueldo * 0.10;
+    const tasaMensual = Math.pow(1 + tasaFondo, 1 / 12) - 1;
+
+    for (let m = 1; m <= mesesFaltantes; m++) {
+      fondoAcumulado = (fondoAcumulado + aporteMensualFondo) * (1 + tasaMensual);
+    }
+
+    // Si ya tenia anos previos, estimamos un fondo inicial
+    const fondoPrevioEstimado = (anosPrevios * aporteAnualFondo) * Math.pow(1 + tasaFondo, anosFaltantes);
+    const fondoTotalAFP = fondoAcumulado + fondoPrevioEstimado;
+
+    // Pension estimada AFP (aprox factor capital pension: ~S/ 5.50 por cada S/ 1,000 acumulados)
+    const pensionEstimadaAFP = (fondoTotalAFP / 1000) * 5.50;
+    const retiro955 = fondoTotalAFP * 0.955;
+
+    // Pension ONP:
+    // Maximo legal: S/ 893. Minimo con 20 anos: S/ 500. Proporcional 10-14 anos: S/ 250 - 350. Menos de 10 anos: S/ 0.
+    let pensionONP = 0;
+    let estadoONP = '';
+
+    if (anosTotales >= 20) {
+      // 50% de remuneracion de referencia (tope S/ 893)
+      pensionONP = Math.min(sueldo * 0.50, 893);
+      estadoONP = pensionONP >= 893 ? 'Tope máximo legal alcanzado (S/ 893)' : 'Pensión completa según años de aporte';
+    } else if (anosTotales >= 15) {
+      pensionONP = 350;
+      estadoONP = 'Pensión reducida proporcional (15 a 19 años)';
+    } else if (anosTotales >= 10) {
+      pensionONP = 250;
+      estadoONP = 'Pensión reducida proporcional (10 a 14 años)';
+    } else {
+      pensionONP = 0;
+      estadoONP = 'Menos de 10 años: No alcanza pensión en ONP';
+    }
+
+    document.getElementById('res-afp-fondo')!.textContent = formatCurrency(fondoTotalAFP);
+    document.getElementById('res-afp-pension')!.textContent = formatCurrency(pensionEstimadaAFP);
+    document.getElementById('res-afp-retiro')!.textContent = retiro955.toLocaleString('es-PE', { maximumFractionDigits: 0 });
+
+    document.getElementById('res-onp-pension')!.textContent = formatCurrency(pensionONP);
+    document.getElementById('res-onp-estado')!.textContent = estadoONP;
+
+    document.getElementById('res-desc-afp')!.textContent = formatCurrency(descAFP);
+    document.getElementById('res-desc-onp')!.textContent = formatCurrency(descONP);
+    document.getElementById('res-anos-totales')!.textContent = `${anosTotales} años`;
+  };
+
+  const inputs = document.querySelectorAll('#afp-onp-form input, #afp-onp-form select');
+  inputs.forEach((inp) => {
+    inp.addEventListener('input', calculateComparativa);
+    inp.addEventListener('change', calculateComparativa);
+  });
+
+  const copyBtn = document.getElementById('btn-copy-comp');
+  if (copyBtn) {
+    copyBtn.addEventListener('click', () => {
+      const afpFondo = document.getElementById('res-afp-fondo')?.textContent || '';
+      const onpPen = document.getElementById('res-onp-pension')?.textContent || '';
+      const text = `Comparativa AFP vs ONP (UtiliaOnline):\n- Fondo Proyectado AFP: ${afpFondo}\n- Pensión Proyectada ONP: ${onpPen}\nCalculado en: ${window.location.href}`;
+      navigator.clipboard.writeText(text).then(() => {
+        copyBtn.innerHTML = '<span>¡Copiado!</span>';
+        setTimeout(() => {
+          copyBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>Copiar comparativa</span>';
+        }, 2000);
+      });
+    });
+  }
+
+  calculateComparativa();
+</script>

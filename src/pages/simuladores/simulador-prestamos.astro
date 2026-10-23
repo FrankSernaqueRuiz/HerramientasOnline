@@ -1,0 +1,640 @@
+---
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+---
+
+<Base
+  title="Simulador de Préstamos y Crédito (Sistema Francés y Alemán) · UtiliaOnline"
+  description="Calcula tu cuota mensual de préstamo bancario, personal o vehicular con cronograma completo de amortización mes a mes, seguro de desgravamen y TCEA."
+  keywords="simulador prestamos peru, calcular cuota prestamo, cronograma de pagos prestamo, sistema frances aleman credito, simulador tcea prestamos"
+>
+  <div class="tool-container">
+    <div class="tool-header">
+      <div class="breadcrumb">
+        <a href="/">Inicio</a> / <a href="/simuladores">Simuladores</a> / <span>Simulador de Préstamos</span>
+      </div>
+      <div class="title-row">
+        <div class="tool-icon-badge">
+          <Icon name="dollar-sign" size={28} />
+        </div>
+        <div>
+          <h1>Simulador de Préstamos y Créditos Bancarios</h1>
+          <p class="tool-desc">
+            Simula tu cronograma oficial de pagos con sistema francés (cuota fija) o alemán (cuota decreciente). Incluye seguro de desgravamen e intereses reales.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="calc-grid">
+      <!-- Input Panel -->
+      <div class="panel-card input-panel">
+        <div class="panel-head">
+          <Icon name="file-text" size={18} />
+          <h2>Condiciones del Crédito</h2>
+        </div>
+
+        <form id="loan-form" class="calc-form" onsubmit="event.preventDefault()">
+          <div class="form-group">
+            <label for="monto-prestamo">Monto a Financiar (Préstamo)</label>
+            <div class="input-prefix-wrap">
+              <span class="prefix">S/</span>
+              <input type="number" id="monto-prestamo" class="form-input" value="15000" min="500" step="100" required />
+            </div>
+          </div>
+
+          <div class="form-row-2">
+            <div class="form-group">
+              <label for="tasa-tea">Tasa Efectiva Anual - TEA (%)</label>
+              <input type="number" id="tasa-tea" class="form-input" value="18.5" min="1" max="150" step="0.1" required />
+            </div>
+            <div class="form-group">
+              <label for="plazo-meses">Plazo de Pago (Meses)</label>
+              <select id="plazo-meses" class="form-select">
+                <option value="6">6 meses</option>
+                <option value="12">12 meses (1 año)</option>
+                <option value="18">18 meses</option>
+                <option value="24" selected>24 meses (2 años)</option>
+                <option value="36">36 meses (3 años)</option>
+                <option value="48">48 meses (4 años)</option>
+                <option value="60">60 meses (5 años)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="sistema-amort">Sistema de Amortización</label>
+            <select id="sistema-amort" class="form-select">
+              <option value="frances" selected>Sistema Francés (Cuotas mensuales fijas - Tradicional)</option>
+              <option value="aleman">Sistema Alemán (Amortización fija de capital - Cuota decreciente)</option>
+            </select>
+          </div>
+
+          <div class="form-row-2">
+            <div class="form-group">
+              <label for="seguro-desgravamen">Seguro Desgravamen Mensual (%)</label>
+              <input type="number" id="seguro-desgravamen" class="form-input" value="0.075" min="0" max="2" step="0.005" />
+              <small class="hint-text">Tasa promedio banca peruana: 0.05% a 0.09%.</small>
+            </div>
+            <div class="form-group">
+              <label for="periodo-gracia">Periodo de Gracia (Meses)</label>
+              <input type="number" id="periodo-gracia" class="form-input" value="0" min="0" max="6" />
+              <small class="hint-text">Meses iniciales sin pagar capital.</small>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Result Panel -->
+      <div class="panel-card result-panel">
+        <div class="panel-head">
+          <Icon name="dollar-sign" size={18} />
+          <h2>Resumen del Crédito</h2>
+        </div>
+
+        <div class="result-highlight-card">
+          <span class="result-sub-label" id="label-tipo-cuota">Cuota Mensual Estimada</span>
+          <div class="result-main-value" id="res-cuota-mensual">S/ 0.00</div>
+          <div class="result-date-info">Costo Total del Crédito: <span id="res-costo-total">S/ 0.00</span></div>
+        </div>
+
+        <div class="breakdown-list">
+          <div class="breakdown-item">
+            <span>Capital solicitado:</span>
+            <strong id="res-capital-solicitado">S/ 0.00</strong>
+          </div>
+          <div class="breakdown-item text-danger">
+            <span>Total de intereses a pagar:</span>
+            <strong id="res-total-intereses">S/ 0.00</strong>
+          </div>
+          <div class="breakdown-item">
+            <span>Total seguros de desgravamen:</span>
+            <strong id="res-total-seguros">S/ 0.00</strong>
+          </div>
+          <div class="breakdown-item">
+            <span>Tasa Mensual Efectiva (TEM):</span>
+            <strong id="res-tasa-tem">0.00%</strong>
+          </div>
+        </div>
+
+        <div class="action-buttons-row">
+          <button type="button" class="btn-action" id="btn-export-cronograma">
+            <Icon name="download" size={16} />
+            <span>Descargar CSV</span>
+          </button>
+          <button type="button" class="btn-action" onclick="window.print()">
+            <Icon name="download" size={16} />
+            <span>Imprimir Cronograma</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Full Schedule Table Card -->
+    <div class="panel-card schedule-card">
+      <div class="panel-head">
+        <Icon name="calendar" size={18} />
+        <h2>Cronograma Completo de Pagos (Mes a Mes)</h2>
+      </div>
+
+      <div class="schedule-table-wrap">
+        <table class="schedule-table">
+          <thead>
+            <tr>
+              <th>N°</th>
+              <th>Saldo Inicial</th>
+              <th>Amortización</th>
+              <th>Interés</th>
+              <th>Seguro</th>
+              <th>Cuota Mensual</th>
+              <th>Saldo Final</th>
+            </tr>
+          </thead>
+          <tbody id="schedule-body">
+            <!-- Rendered by JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Guía y Cómo Usar (Estándar UtiliaOnline) -->
+    <section class="seo-section">
+      <h2>Guía completa: ¿Cómo calcular las cuotas de un préstamo y qué sistema elegir?</h2>
+      <p>
+        Al solicitar un crédito bancario, préstamo vehicular, hipotecario o personal en el Perú y Latinoamérica, las entidades financieras utilizan métodos matemáticos de amortización para calcular el valor exacto de tus cuotas mensuales.
+      </p>
+      <p>
+        Los dos sistemas de amortización más utilizados en el sistema bancario son:
+      </p>
+      <ul>
+        <li><strong>Sistema Francés (Cuotas Constantes):</strong> Es el más utilizado por los bancos comerciales. Todas tus cuotas mensuales son del mismo valor (salvo variaciones menores de seguro). Al principio pagas más intereses que capital, y hacia el final pagas principalmente capital.</li>
+        <li><strong>Sistema Alemán (Amortización Constante):</strong> Amortizas la misma cantidad de capital cada mes, lo que hace que los intereses disminuyan mes tras mes. Tu primera cuota es la más alta y la última es la más baja. Ahorras más intereses totales que en el sistema francés.</li>
+      </ul>
+
+      <h2>¿Cómo usar este simulador paso a paso?</h2>
+      <div class="step-list">
+        <div class="step-card">
+          <span class="step-num">1</span>
+          <div class="step-body">
+            <h4>Ingresa el monto del préstamo y el plazo</h4>
+            <p>Escribe el capital total que deseas financiar y la cantidad de meses en que lo pagarás (por ejemplo, 12, 24, 36 o 60 meses).</p>
+          </div>
+        </div>
+        <div class="step-card">
+          <span class="step-num">2</span>
+          <div class="step-body">
+            <h4>Indica la Tasa Efectiva Anual (TEA) y Seguro</h4>
+            <p>Ingresa la TEA que te ofrece la entidad financiera y el porcentaje mensual de seguro de desgravamen (habitualmente entre 0.05% y 0.10% sobre el saldo deudor).</p>
+          </div>
+        </div>
+        <div class="step-card">
+          <span class="step-num">3</span>
+          <div class="step-body">
+            <h4>Elige el sistema de amortización</h4>
+            <p>Compara instantáneamente el Sistema Francés (cuota fija mensual) vs Sistema Alemán (cuota decreciente) para evaluar tu liquidez mes a mes.</p>
+          </div>
+        </div>
+        <div class="step-card">
+          <span class="step-num">4</span>
+          <div class="step-body">
+            <h4>Revisa el cronograma y descarga en CSV</h4>
+            <p>Visualiza el cuadro detallado mes a mes con el desglose de amortización, interés y saldo deudor. Puedes descargar el cronograma en CSV o imprimirlo.</p>
+          </div>
+        </div>
+      </div>
+
+      <h2>Casos prácticos de aplicación</h2>
+      <div class="guide-grid">
+        <div class="guide-card">
+          <h4>Diferencia entre TEA y TCEA</h4>
+          <p>La TEA solo contempla la tasa de interés del dinero. La <strong>TCEA (Tasa del Costo Efectivo Anual)</strong> incluye intereses más seguros obligatorios (desgravamen), comisiones y gastos operativos del banco.</p>
+        </div>
+        <div class="guide-card">
+          <h4>Prepago de cuotas: ¿reducir plazo o cuota?</h4>
+          <p>Si amortizas capital anticipadamente, <strong>reducir el plazo</strong> ahorra significativamente mucho más intereses totales que reducir el importe de la cuota mensual.</p>
+        </div>
+        <div class="guide-card">
+          <h4>Seguro de desgravamen obligatorio</h4>
+          <p>Cubre el saldo pendiente de la deuda en caso de fallecimiento o invalidez del titular. Se calcula multiplicando el porcentaje mensual por el saldo restante de la deuda.</p>
+        </div>
+        <div class="guide-card">
+          <h4>Impacto del plazo en el costo total</h4>
+          <p>Extender el plazo de un préstamo de 2 a 5 años reduce la cuota mensual, pero puede llegar a triplicar el dinero que pagas únicamente en intereses.</p>
+        </div>
+      </div>
+
+      <h2>Preguntas frecuentes (FAQ)</h2>
+      <div class="faq-wrap">
+        <div class="faq-item">
+          <button type="button" class="faq-question">
+            <span>¿Puedo pagar mi crédito antes de tiempo sin penalidades?</span>
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <p>Sí. Según el Reglamento de Gestión de Conducta de Mercado del Sistema Financiero emitido por la SBS, los usuarios tienen derecho irrestricto a realizar pagos anticipados o prepagos totales sin ninguna penalidad ni comisión adicional.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button type="button" class="faq-question">
+            <span>¿Cómo se convierte la TEA a tasa mensual (TEM)?</span>
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <p>No se divide entre 12. Al tratarse de tasas compuestas, se aplica la fórmula financiera exponencial: <code>TEM = (1 + TEA)^(1/12) - 1</code>. Nuestro simulador realiza esta conversión matemática exacta de forma automática.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button type="button" class="faq-question">
+            <span>¿Puedo contratar el seguro de desgravamen con otra aseguradora?</span>
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <p>Sí. No estás obligado a aceptar la póliza colectiva del banco prestamista. Puedes endosar una póliza de seguro de vida individual contratada con la compañía de seguros de tu preferencia que cumpla con los requisitos mínimos del crédito.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</Base>
+
+<style>
+  .tool-container {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 1.5rem 0 3rem;
+  }
+  .breadcrumb {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-bottom: 0.75rem;
+  }
+  .breadcrumb a {
+    color: var(--muted);
+  }
+  .breadcrumb a:hover {
+    color: var(--accent);
+  }
+  .title-row {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+  .tool-icon-badge {
+    width: 58px;
+    height: 58px;
+    border-radius: var(--radius-md);
+    background: linear-gradient(135deg, rgba(56, 189, 248, 0.15), rgba(16, 185, 129, 0.05));
+    border: 1px solid rgba(56, 189, 248, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+  .title-row h1 {
+    font-size: 1.85rem;
+    margin: 0 0 0.35rem 0;
+    letter-spacing: -0.02em;
+  }
+  .tool-desc {
+    color: var(--muted);
+    font-size: 0.95rem;
+    margin: 0;
+    max-width: 75ch;
+  }
+
+  .calc-grid {
+    display: grid;
+    grid-template-columns: 1.15fr 0.95fr;
+    gap: 1.5rem;
+    align-items: start;
+    margin-bottom: 1.5rem;
+  }
+  @media (max-width: 860px) {
+    .calc-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .panel-card {
+    background: var(--surface-card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  }
+  .panel-head {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--line);
+    color: var(--accent);
+  }
+  .panel-head h2 {
+    font-size: 1.15rem;
+    color: var(--ink);
+    margin: 0;
+  }
+
+  .form-group {
+    margin-bottom: 1.1rem;
+  }
+  .form-group label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 0.35rem;
+    color: var(--ink);
+  }
+  .form-input, .form-select {
+    width: 100%;
+    padding: 0.6rem 0.85rem;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    color: var(--ink);
+    font-size: 0.95rem;
+    transition: border-color 0.15s;
+  }
+  .form-input:focus, .form-select:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+  .input-prefix-wrap {
+    display: flex;
+    align-items: center;
+    position: relative;
+  }
+  .input-prefix-wrap .prefix {
+    position: absolute;
+    left: 0.85rem;
+    font-weight: 600;
+    color: var(--muted);
+  }
+  .input-prefix-wrap .form-input {
+    padding-left: 2.2rem;
+  }
+
+  .form-row-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.85rem;
+  }
+  .hint-text {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-top: 0.25rem;
+  }
+
+  /* Result Panel */
+  .result-highlight-card {
+    background: linear-gradient(135deg, rgba(56, 189, 248, 0.12), rgba(16, 185, 129, 0.08));
+    border: 1px solid rgba(56, 189, 248, 0.35);
+    border-radius: var(--radius-sm);
+    padding: 1.25rem;
+    text-align: center;
+    margin-bottom: 1.25rem;
+  }
+  .result-sub-label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .result-main-value {
+    font-size: 2.25rem;
+    font-weight: 800;
+    color: var(--accent);
+    margin: 0.25rem 0;
+    font-family: var(--font-heading, sans-serif);
+  }
+  .result-date-info {
+    font-size: 0.82rem;
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  .breakdown-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    padding: 1rem;
+    margin-bottom: 1.25rem;
+  }
+  .breakdown-item {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.88rem;
+  }
+  .text-danger {
+    color: #ef4444;
+  }
+
+  .action-buttons-row {
+    display: flex;
+    gap: 0.75rem;
+  }
+  .btn-action {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    padding: 0.55rem 0.85rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--line);
+    background: var(--surface-card);
+    color: var(--ink);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn-action:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* Schedule Table */
+  .schedule-card {
+    margin-top: 1rem;
+  }
+  .schedule-table-wrap {
+    max-height: 400px;
+    overflow-y: auto;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+  }
+  .schedule-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.82rem;
+    text-align: right;
+  }
+  .schedule-table th {
+    background: var(--surface-card);
+    padding: 0.65rem 0.85rem;
+    border-bottom: 1px solid var(--line);
+    color: var(--muted);
+    font-weight: 600;
+    position: sticky;
+    top: 0;
+  }
+  .schedule-table td {
+    padding: 0.5rem 0.85rem;
+    border-bottom: 1px solid var(--line);
+    color: var(--ink);
+  }
+  .schedule-table th:first-child,
+  .schedule-table td:first-child {
+    text-align: center;
+    font-weight: 600;
+  }
+  .schedule-table tr:hover td {
+    background: rgba(255, 255, 255, 0.02);
+  }
+</style>
+
+<script>
+  let rowsData: any[] = [];
+
+  const formatCurrency = (val: number) => {
+    return `S/ ${val.toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  };
+
+  const calculateLoan = () => {
+    const monto = parseFloat((document.getElementById('monto-prestamo') as HTMLInputElement).value) || 0;
+    const tea = (parseFloat((document.getElementById('tasa-tea') as HTMLInputElement).value) || 0) / 100;
+    const n = parseInt((document.getElementById('plazo-meses') as HTMLSelectElement).value) || 12;
+    const sistema = (document.getElementById('sistema-amort') as HTMLSelectElement).value;
+    const tasaDesgravamen = (parseFloat((document.getElementById('seguro-desgravamen') as HTMLInputElement).value) || 0) / 100;
+    const gracia = parseInt((document.getElementById('periodo-gracia') as HTMLInputElement).value) || 0;
+
+    // TEM = (1 + TEA)^(1/12) - 1
+    const tem = Math.pow(1 + tea, 1 / 12) - 1;
+    document.getElementById('res-tasa-tem')!.textContent = `${(tem * 100).toFixed(4)}% mensual`;
+
+    let saldo = monto;
+    let totalIntereses = 0;
+    let totalSeguros = 0;
+    rowsData = [];
+
+    const nEfectivo = Math.max(1, n - gracia);
+
+    // En francés sin gracia: Cuota = Saldo * [tem * (1+tem)^n] / [(1+tem)^n - 1]
+    let cuotaFrancesBase = 0;
+    if (sistema === 'frances') {
+      cuotaFrancesBase = monto * (tem * Math.pow(1 + tem, nEfectivo)) / (Math.pow(1 + tem, nEfectivo) - 1);
+    }
+    const amortizacionAlemana = monto / nEfectivo;
+
+    const tbody = document.getElementById('schedule-body');
+    if (tbody) tbody.innerHTML = '';
+
+    for (let mes = 1; mes <= n; mes++) {
+      const saldoInicial = saldo;
+      const interesMes = saldo * tem;
+      const seguroMes = saldo * tasaDesgravamen;
+      let amortizacionMes = 0;
+      let cuotaMes = 0;
+
+      if (mes <= gracia) {
+        // Gracia parcial: solo se pagan intereses y seguros
+        amortizacionMes = 0;
+        cuotaMes = interesMes + seguroMes;
+      } else {
+        if (sistema === 'frances') {
+          amortizacionMes = cuotaFrancesBase - interesMes;
+          cuotaMes = cuotaFrancesBase + seguroMes;
+        } else {
+          amortizacionMes = amortizacionAlemana;
+          cuotaMes = amortizacionMes + interesMes + seguroMes;
+        }
+      }
+
+      saldo = Math.max(0, saldo - amortizacionMes);
+      totalIntereses += interesMes;
+      totalSeguros += seguroMes;
+
+      rowsData.push({
+        mes,
+        saldoInicial,
+        amortizacionMes,
+        interesMes,
+        seguroMes,
+        cuotaMes,
+        saldo
+      });
+
+      if (tbody) {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${mes}</td>
+          <td>${formatCurrency(saldoInicial)}</td>
+          <td>${formatCurrency(amortizacionMes)}</td>
+          <td class="text-danger">${formatCurrency(interesMes)}</td>
+          <td>${formatCurrency(seguroMes)}</td>
+          <td><strong>${formatCurrency(cuotaMes)}</strong></td>
+          <td>${formatCurrency(saldo)}</td>
+        `;
+        tbody.appendChild(tr);
+      }
+    }
+
+    const costoTotal = monto + totalIntereses + totalSeguros;
+    const primeraCuota = rowsData.length > 0 ? rowsData[0].cuotaMes : 0;
+    const ultimaCuota = rowsData.length > 0 ? rowsData[rowsData.length - 1].cuotaMes : 0;
+
+    const valCuotaEl = document.getElementById('res-cuota-mensual');
+    const labelCuotaEl = document.getElementById('label-tipo-cuota');
+    if (valCuotaEl) {
+      if (sistema === 'frances' && gracia === 0) {
+        valCuotaEl.textContent = formatCurrency(primeraCuota);
+        if (labelCuotaEl) labelCuotaEl.textContent = 'Cuota Mensual Fija';
+      } else {
+        valCuotaEl.textContent = `${formatCurrency(primeraCuota)} → ${formatCurrency(ultimaCuota)}`;
+        if (labelCuotaEl) labelCuotaEl.textContent = 'Rango de Cuotas (Inicial → Final)';
+      }
+    }
+
+    document.getElementById('res-capital-solicitado')!.textContent = formatCurrency(monto);
+    document.getElementById('res-total-intereses')!.textContent = formatCurrency(totalIntereses);
+    document.getElementById('res-total-seguros')!.textContent = formatCurrency(totalSeguros);
+    document.getElementById('res-costo-total')!.textContent = formatCurrency(costoTotal);
+  };
+
+  const inputs = document.querySelectorAll('#loan-form input, #loan-form select');
+  inputs.forEach((inp) => {
+    inp.addEventListener('input', calculateLoan);
+    inp.addEventListener('change', calculateLoan);
+  });
+
+  // Export CSV
+  const exportBtn = document.getElementById('btn-export-cronograma');
+  if (exportBtn) {
+    exportBtn.addEventListener('click', () => {
+      let csvContent = 'data:text/csv;charset=utf-8,';
+      csvContent += 'Mes,Saldo Inicial,Amortizacion,Interes,Seguro,Cuota Total,Saldo Final\r\n';
+      rowsData.forEach((r) => {
+        csvContent += `${r.mes},${r.saldoInicial.toFixed(2)},${r.amortizacionMes.toFixed(2)},${r.interesMes.toFixed(2)},${r.seguroMes.toFixed(2)},${r.cuotaMes.toFixed(2)},${r.saldo.toFixed(2)}\r\n`;
+      });
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement('a');
+      link.setAttribute('href', encodedUri);
+      link.setAttribute('download', 'cronograma_prestamo_utilia.csv');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    });
+  }
+
+  calculateLoan();
+</script>

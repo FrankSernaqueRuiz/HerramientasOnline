@@ -2,6 +2,7 @@
 import '../styles/global.css';
 import AdSlot from '../components/AdSlot.astro';
 import Icon from '../components/Icon.astro';
+import LanguageSelector from '../components/LanguageSelector.astro';
 import { CATEGORIES, ALL_TOOLS } from '../data/tools';
 
 interface Props {
@@ -84,7 +85,7 @@ const breadcrumbSchema = currentTool && currentCategory ? {
       '@type': 'ListItem',
       position: 2,
       name: currentCategory.name,
-      item: `${siteUrl}/categoria/${currentCategory.id}`
+      item: `${siteUrl}/${currentCategory.id}`
     },
     {
       '@type': 'ListItem',
@@ -116,14 +117,15 @@ const autoKeywords = (() => {
 })();
 
 const SHORT_NAMES: Record<string, string> = {
-  'redes-mensajeria': 'Redes',
-  'sorteos-diversion': 'Sorteos',
-  'dinero-compras': 'Dinero',
-  'fechas-tiempo': 'Fechas',
-  'estudio-trabajo': 'Estudio',
-  'hogar-vida': 'Hogar',
-  'imagenes-multimedia': 'Imágenes',
-  'texto-utilidades': 'Texto'
+  'simuladores': 'Simuladores',
+  'redes': 'Redes',
+  'sorteos': 'Sorteos',
+  'dinero': 'Dinero',
+  'fechas': 'Fechas',
+  'estudio': 'Estudio',
+  'hogar': 'Hogar',
+  'imagenes': 'Imágenes',
+  'texto': 'Texto'
 };
 ---
 
@@ -177,11 +179,11 @@ const SHORT_NAMES: Record<string, string> = {
   <body>
     <header class="site">
       <div class="header-inner">
-        <a class="brand" href="/" aria-label="UtiliaOnline - Inicio">
+        <a class="brand notranslate" href="/" aria-label="UtiliaOnline - Inicio" translate="no">
           <span class="brand-badge" aria-hidden="true">
             <Icon name="zap" size={16} />
           </span>
-          <span class="brand-name">Utilia<span class="brand-accent">Online</span></span>
+          <span class="brand-name notranslate" translate="no">Utilia<span class="brand-accent">Online</span></span>
         </a>
 
         <!-- Desktop Navigation with Dropdowns -->
@@ -191,7 +193,7 @@ const SHORT_NAMES: Record<string, string> = {
             const shortName = SHORT_NAMES[cat.id] || cat.name;
             return (
               <div class="nav-dropdown-group">
-                <a href={`/categoria/${cat.id}`} class="nav-category-trigger">
+                <a href={`/${cat.id}`} class="nav-category-trigger">
                   <span>{shortName}</span>
                   <Icon name="chevron-down" size={13} class="dropdown-chevron" />
                 </a>
@@ -199,7 +201,7 @@ const SHORT_NAMES: Record<string, string> = {
                 <div class="nav-dropdown-menu">
                   <div class="dropdown-header">
                     <span class="dropdown-title">{cat.name}</span>
-                    <a href={`/categoria/${cat.id}`} class="dropdown-view-all">Ver sección &rarr;</a>
+                    <a href={`/${cat.id}`} class="dropdown-view-all">Ver sección &rarr;</a>
                   </div>
                   <div class="dropdown-items">
                     {catTools.map((tool) => (
@@ -217,12 +219,15 @@ const SHORT_NAMES: Record<string, string> = {
           })}
         </nav>
 
-        <!-- Mobile Menu Toggle Button -->
-        <button type="button" class="mobile-toggle" id="btn-mobile-toggle" aria-label="Abrir menú">
-          <span class="burger-line"></span>
-          <span class="burger-line"></span>
-          <span class="burger-line"></span>
-        </button>
+        <!-- Header Actions: Language Selector & Mobile Toggle -->
+        <div class="header-actions">
+          <LanguageSelector />
+          <button type="button" class="mobile-toggle" id="btn-mobile-toggle" aria-label="Abrir menú">
+            <span class="burger-line"></span>
+            <span class="burger-line"></span>
+            <span class="burger-line"></span>
+          </button>
+        </div>
       </div>
 
       <!-- Mobile Dropdown Accordion Menu -->
@@ -232,7 +237,7 @@ const SHORT_NAMES: Record<string, string> = {
             const catTools = ALL_TOOLS.filter((t) => t.category === cat.id);
             return (
               <div class="mobile-cat-group">
-                <a href={`/categoria/${cat.id}`} class="mobile-cat-title">
+                <a href={`/${cat.id}`} class="mobile-cat-title">
                   <Icon name={cat.icon} size={17} />
                   <span>{cat.name}</span>
                   <span class="mobile-badge-count">{catTools.length}</span>
@@ -297,6 +302,12 @@ const SHORT_NAMES: Record<string, string> = {
     justify-content: space-between;
     align-items: center;
     gap: 1rem;
+  }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
   }
 
   .brand {

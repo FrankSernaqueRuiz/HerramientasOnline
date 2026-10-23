@@ -1,0 +1,132 @@
+﻿---
+import Base from '../../layouts/Base.astro';
+---
+<Base title="Calculadora de Meta de Ahorro – Semanal y Mensual" description="Calcula cuánto debes ahorrar semanal o mensualmente para alcanzar tu objetivo financiero a tiempo.">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="/">Herramientas</a> / <span>Dinero y compras</span></div>
+    <h1>Calculadora de Meta de Ahorro</h1>
+    <p class="lead">Define cuánto necesitas juntar y en cuánto tiempo, y obtén la cuota semanal y mensual exacta.</p>
+  </div>
+  <section class="panel">
+    <div class="ma-grid">
+      <div>
+        <div class="field"><label>Meta total ($):</label><input type="number" id="ma-goal" min="0" value="5000"/></div>
+        <div class="field"><label>Ya tengo ahorrado ($):</label><input type="number" id="ma-saved" min="0" value="500"/></div>
+        <div class="field"><label>Plazo en meses:</label><input type="number" id="ma-months" min="1" max="360" value="12"/></div>
+      </div>
+      <div class="result-panel">
+        <div class="res big"><span class="lbl">Te falta ahorrar</span><span class="val accent" id="r-remaining">$4,500</span></div>
+        <div class="res"><span class="lbl">Ahorro mensual necesario</span><span class="val" id="r-monthly">$0</span></div>
+        <div class="res"><span class="lbl">Ahorro semanal necesario</span><span class="val" id="r-weekly">$0</span></div>
+        <div class="res"><span class="lbl">Ahorro diario necesario</span><span class="val" id="r-daily">$0</span></div>
+        <div class="progress-info">
+          <div class="progress-bar"><div class="progress-fill" id="r-bar"></div></div>
+          <span id="r-pct">0%</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="seo-section">
+    <h2>¿Cómo funciona la calculadora de meta de ahorro?</h2>
+    <p>Ahorrar con éxito requiere metas cuantificables y plazos realistas. Esta calculadora divide un objetivo financiero global en cuotas periódicas (mensuales, semanales y diarias), permitiéndote visualizar el progreso porcentual y ajustar tus hábitos de gasto sin frustraciones.</p>
+
+    <div class="step-list">
+      <div class="step-card">
+        <span class="step-num">1</span>
+        <div class="step-body">
+          <h4>Define el monto total de tu objetivo</h4>
+          <p>Indica cuánto dinero necesitas reunir (ej: $3,000 para un viaje o $10,000 para el enganche de un auto).</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <span class="step-num">2</span>
+        <div class="step-body">
+          <h4>Ingresa tu ahorro actual y el plazo deseado</h4>
+          <p>Especifica el dinero que ya tienes acumulado y la cantidad de meses en que deseas alcanzar la meta.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <span class="step-num">3</span>
+        <div class="step-body">
+          <h4>Revisa tu plan de aportaciones y barra de progreso</h4>
+          <p>Obtén al instante la cuota exacta que debes reservar cada mes, semana o día para llegar a tiempo a tu objetivo.</p>
+        </div>
+      </div>
+    </div>
+
+    <h3>Casos de uso para finanzas personales</h3>
+    <div class="guide-grid">
+      <div class="guide-card">
+        <h4>Fondo de emergencias (3 a 6 meses de gastos)</h4>
+        <p>Planifica la creación de tu colchón de tranquilidad financiera para imprevistos médicos, reparaciones o cesantía.</p>
+      </div>
+      <div class="guide-card">
+        <h4>Vacaciones y viajes soñados</h4>
+        <p>Calcula cuánto apartar de cada quincena para financiar boletos de avión, hospedaje y tours sin endeudarte con tarjetas.</p>
+      </div>
+      <div class="guide-card">
+        <h4>Enganche de vivienda o compra de vehículo</h4>
+        <p>Establece un plan a mediano plazo (12 a 36 meses) para alcanzar la cuota inicial de tu futuro departamento o coche.</p>
+      </div>
+    </div>
+
+    <h2>Preguntas frecuentes sobre metas de ahorro</h2>
+    <div class="faq-wrap">
+      <div class="faq-item">
+        <div class="faq-question">¿Qué método es más fácil: ahorrar mensual o semanalmente?</div>
+        <div class="faq-answer">
+          <p>Dividir el ahorro en aportaciones semanales suele ser psicológicamente más fácil de cumplir, ya que metas pequeñas (ej: $25 a la semana) parecen mucho más alcanzables que un único pago de $100 a fin de mes.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Qué porcentaje de mis ingresos debería destinar al ahorro?</div>
+        <div class="faq-answer">
+          <p>La regla clásica 50/30/20 recomienda destinar el 20% de tus ingresos netos al ahorro e inversión, el 50% a necesidades básicas y el 30% a estilo de vida. Si estás comenzando, incluso un 5% o 10% constante marca una gran diferencia.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Dónde debería guardar el dinero de mi meta de ahorro?</div>
+        <div class="faq-answer">
+          <p>Para metas de corto plazo (menos de 2 años), lo ideal es mantener el dinero en cuentas de ahorro de alto rendimiento (cuentas remuneradas o fondos monetarios) para proteger el poder adquisitivo frente a la inflación con liquidez inmediata.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Qué hacer si un mes no logro completar la cuota programada?</div>
+        <div class="faq-answer">
+          <p>Puedes recalcular la meta en cualquier momento ampliando el plazo en 1 o 2 meses, o compensar en los meses en que recibas ingresos extraordinarios como aguinaldos o bonos.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>
+<style>
+  .breadcrumb{font-size:.85rem;color:var(--muted);margin-bottom:.5rem}.breadcrumb a{color:var(--muted)}
+  .ma-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem}@media(max-width:768px){.ma-grid{grid-template-columns:1fr}}
+  .field{margin-bottom:1rem}.field label{display:block;font-weight:600;font-size:.88rem;margin-bottom:.4rem}.field input{width:100%}
+  .result-panel{background:var(--surface-card);border:1px solid var(--line);border-radius:var(--radius-sm);padding:1.5rem;display:flex;flex-direction:column;gap:.85rem}
+  .res{display:flex;justify-content:space-between;align-items:center}
+  .res.big{flex-direction:column;text-align:center;padding-bottom:.75rem;border-bottom:1px solid var(--line)}
+  .lbl{font-size:.85rem;color:var(--muted)}.res.big .lbl{text-transform:uppercase;font-weight:700;font-size:.78rem}
+  .val{font-weight:700;font-size:1.05rem}.accent{color:var(--accent);font-size:2rem;font-weight:800}
+  .progress-info{display:flex;align-items:center;gap:.75rem;margin-top:.5rem}
+  .progress-bar{flex:1;height:8px;background:var(--bg);border-radius:9999px;overflow:hidden}
+  .progress-fill{height:100%;background:var(--accent);border-radius:9999px;transition:width .3s}
+</style>
+<script>
+  const goal=document.getElementById('ma-goal') as HTMLInputElement;
+  const saved=document.getElementById('ma-saved') as HTMLInputElement;
+  const months=document.getElementById('ma-months') as HTMLInputElement;
+  const rRem=document.getElementById('r-remaining')!;const rMon=document.getElementById('r-monthly')!;
+  const rWk=document.getElementById('r-weekly')!;const rDay=document.getElementById('r-daily')!;
+  const rBar=document.getElementById('r-bar')!;const rPct=document.getElementById('r-pct')!;
+  function calc(){
+    const g=parseFloat(goal.value)||0;const s=parseFloat(saved.value)||0;const m=parseFloat(months.value)||1;
+    const rem=Math.max(0,g-s);const monthly=rem/m;const weekly=monthly/4.33;const daily=monthly/30;
+    const pct=g?(s/g*100):0;
+    rRem.textContent=`$${rem.toLocaleString('en',{minimumFractionDigits:2})}`;
+    rMon.textContent=`$${monthly.toFixed(2)}`;rWk.textContent=`$${weekly.toFixed(2)}`;rDay.textContent=`$${daily.toFixed(2)}`;
+    rBar.style.width=`${Math.min(100,pct)}%`;rPct.textContent=`${pct.toFixed(1)}%`;
+  }
+  [goal,saved,months].forEach(el=>el.addEventListener('input',calc));calc();
+</script>

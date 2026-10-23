@@ -1,0 +1,582 @@
+---
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+---
+
+<Base
+  title="Calculadora de Gratificaciones 2025 - 2026 Perú · UtiliaOnline"
+  description="Calcula tu gratificación de Fiestas Patrias (julio) o Navidad (diciembre) con bonificación extraordinaria del 9% (EsSalud) o 6.75% (EPS) libre de descuentos."
+  keywords="calculadora gratificaciones, calcular gratificacion julio diciembre, ley 27735, bonificacion extraordinaria 9 essalud, gratificacion mype"
+>
+  <div class="tool-container">
+    <div class="tool-header">
+      <div class="breadcrumb">
+        <a href="/">Inicio</a> / <a href="/simuladores">Simuladores</a> / <span>Calculadora de Gratificaciones</span>
+      </div>
+      <div class="title-row">
+        <div class="tool-icon-badge">
+          <Icon name="gift" size={28} />
+        </div>
+        <div>
+          <h1>Calculadora de Gratificaciones (Julio y Diciembre)</h1>
+          <p class="tool-desc">
+            Calcula el monto neto que recibirás por ley (Ley 27735 y Ley 30334). ¡Las gratificaciones en Perú están 100% libres de aportes de AFP/ONP y reciben bonificación extraordinaria!
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="calc-grid">
+      <!-- Input Panel -->
+      <div class="panel-card input-panel">
+        <div class="panel-head">
+          <Icon name="file-text" size={18} />
+          <h2>Datos Laborales</h2>
+        </div>
+
+        <form id="gratif-form" class="calc-form" onsubmit="event.preventDefault()">
+          <div class="form-group">
+            <label for="periodo-gratif">Periodo de Gratificación</label>
+            <select id="periodo-gratif" class="form-select">
+              <option value="julio">Fiestas Patrias (Julio - laborado Ene a Jun)</option>
+              <option value="diciembre">Navidad (Diciembre - laborado Jul a Dic)</option>
+              <option value="trunca">Gratificación Trunca (Cese laboral)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="regimen-gratif">Régimen Laboral</label>
+            <select id="regimen-gratif" class="form-select">
+              <option value="general">Régimen Laboral General (1 sueldo íntegro)</option>
+              <option value="pequena">Pequeña Empresa REMYPE (50% de sueldo)</option>
+              <option value="micro">Microempresa REMYPE (Sin gratificación legal)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="seguro-salud">Cobertura de Salud (Bonificación Extraordinaria)</label>
+            <select id="seguro-salud" class="form-select">
+              <option value="0.09">EsSalud (+9% de bonificación extraordinaria)</option>
+              <option value="0.0675">EPS - Entidad Prestadora de Salud (+6.75%)</option>
+            </select>
+            <small class="hint-text">Ley 30334: El aporte de salud del empleador se entrega directamente al trabajador.</small>
+          </div>
+
+          <div class="form-group">
+            <label for="sueldo-gratif">Sueldo Básico Mensual (S/)</label>
+            <div class="input-prefix-wrap">
+              <span class="prefix">S/</span>
+              <input type="number" id="sueldo-gratif" class="form-input" value="3000" min="0" step="0.01" required />
+            </div>
+          </div>
+
+          <div class="form-check-group">
+            <label class="checkbox-label">
+              <input type="checkbox" id="asig-fam-gratif" />
+              <span>¿Percibe Asignación Familiar? (+ S/ 102.50 = 10% RMV)</span>
+            </label>
+          </div>
+
+          <div class="form-group">
+            <label for="prom-variables-gratif">Promedio Mensual de Horas Extras o Comisiones (S/)</label>
+            <div class="input-prefix-wrap">
+              <span class="prefix">S/</span>
+              <input type="number" id="prom-variables-gratif" class="form-input" value="0" min="0" step="0.01" />
+            </div>
+            <small class="hint-text">Aplica si se percibió en al menos 3 meses durante el semestre.</small>
+          </div>
+
+          <div class="form-row-2">
+            <div class="form-group">
+              <label for="meses-gratif">Meses Calendario Completos</label>
+              <input type="number" id="meses-gratif" class="form-input" value="6" min="1" max="6" />
+            </div>
+            <div class="form-group">
+              <label for="dias-gratif">Días (Solo para Trunca)</label>
+              <input type="number" id="dias-gratif" class="form-input" value="0" min="0" max="29" />
+              <small class="hint-text">Ordinaria requiere mes calendario completo.</small>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Result Panel -->
+      <div class="panel-card result-panel">
+        <div class="panel-head">
+          <Icon name="dollar-sign" size={18} />
+          <h2>Total Neto a Cobrar</h2>
+        </div>
+
+        <div class="result-highlight-card">
+          <span class="result-sub-label">Gratificación Neta en Mano</span>
+          <div class="result-main-value" id="res-gratif-total">S/ 0.00</div>
+          <div class="result-date-info" id="res-gratif-fecha">Fecha límite legal: 15 de Julio</div>
+        </div>
+
+        <div class="breakdown-list">
+          <div class="breakdown-item">
+            <span>Remuneración computable:</span>
+            <strong id="res-gratif-comp">S/ 0.00</strong>
+          </div>
+          <div class="breakdown-subitems">
+            <div class="breakdown-subitem">
+              <span>• Sueldo básico:</span>
+              <span id="res-gratif-sueldo">S/ 0.00</span>
+            </div>
+            <div class="breakdown-subitem">
+              <span>• Asignación familiar:</span>
+              <span id="res-gratif-asig">S/ 0.00</span>
+            </div>
+            <div class="breakdown-subitem">
+              <span>• Promedio variables:</span>
+              <span id="res-gratif-var">S/ 0.00</span>
+            </div>
+          </div>
+
+          <div class="breakdown-item">
+            <span>Gratificación ordinaria:</span>
+            <strong id="res-gratif-base">S/ 0.00</strong>
+          </div>
+          <div class="breakdown-item text-success">
+            <span id="label-bonif-extra">Bonificación extraordinaria (+9%):</span>
+            <strong id="res-gratif-bonif">+ S/ 0.00</strong>
+          </div>
+          <div class="breakdown-item">
+            <span>Descuentos legales (AFP/ONP):</span>
+            <strong class="text-free">¡S/ 0.00 (Exonerado por Ley)!</strong>
+          </div>
+        </div>
+
+        <div class="action-buttons-row">
+          <button type="button" class="btn-action" id="btn-copy-gratif">
+            <Icon name="copy" size={16} />
+            <span>Copiar desglose</span>
+          </button>
+          <button type="button" class="btn-action" onclick="window.print()">
+            <Icon name="download" size={16} />
+            <span>Imprimir</span>
+          </button>
+        </div>
+
+        <div class="legal-notice">
+          <strong>Beneficio Ley 30334:</strong> La gratificación no está sujeta a aportes previsionales (ni 13% de ONP ni ~11.8% de AFP). Además, el 9% que la empresa pagaría a EsSalud se te abona íntegramente como bonificación extraordinaria en tu boleta.
+        </div>
+      </div>
+    </div>
+
+    <!-- Guía y Cómo Usar (Estándar UtiliaOnline) -->
+    <section class="seo-section">
+      <h2>Guía completa: ¿Cómo se calculan las Gratificaciones en Perú?</h2>
+      <p>
+        En el Perú, la <strong>Ley N° 27735</strong> y su reglamento establecen el derecho de los trabajadores de la actividad privada a percibir dos gratificaciones ordinarias al año: una por <strong>Fiestas Patrias</strong> (que se abona en la primera quincena de julio) y otra por <strong>Navidad</strong> (que se abona en la primera quincena de diciembre).
+      </p>
+      <p>
+        Asimismo, en virtud de la <strong>Ley N° 30334</strong>, las gratificaciones legales están permanentemente <strong>desgravadas de aportes a fondos de pensiones</strong> (no sufren el descuento del 13% de ONP ni el ~11.8% de AFP). Además, el aporte del 9% que el empleador pagaría a EsSalud se entrega directamente al trabajador bajo el concepto de <strong>Bonificación Extraordinaria</strong> (o 6.75% si el trabajador está afiliado a una EPS).
+      </p>
+
+      <h2>¿Cómo usar esta calculadora paso a paso?</h2>
+      <div class="step-list">
+        <div class="step-card">
+          <span class="step-num">1</span>
+          <div class="step-body">
+            <h4>Elige el periodo y régimen de la empresa</h4>
+            <p>Selecciona si estás calculando la gratificación de Fiestas Patrias (julio), Navidad (diciembre) o una gratificación trunca por cese laboral, y si perteneces al Régimen General o Pequeña Empresa REMYPE.</p>
+          </div>
+        </div>
+        <div class="step-card">
+          <span class="step-num">2</span>
+          <div class="step-body">
+            <h4>Indica tu seguro de salud (EsSalud o EPS)</h4>
+            <p>Si estás asegurado en EsSalud recibirás un 9% adicional inafecto. Si tienes seguro privado EPS contratado por tu empresa, te corresponderá una bonificación del 6.75%.</p>
+          </div>
+        </div>
+        <div class="step-card">
+          <span class="step-num">3</span>
+          <div class="step-body">
+            <h4>Escribe tu sueldo básico y asignación familiar</h4>
+            <p>Ingresa tu salario mensual actual. Si percibes asignación familiar por tener hijos menores o dependientes cursando estudios, activa la casilla correspondiente para sumar los S/ 102.50 de ley.</p>
+          </div>
+        </div>
+        <div class="step-card">
+          <span class="step-num">4</span>
+          <div class="step-body">
+            <h4>Ingresa los meses completos trabajados</h4>
+            <p>Para la gratificación completa del semestre se requieren 6 meses calendario laborados (enero a junio para julio, o julio a diciembre para Navidad). Si trabajaste menos tiempo, se pagará un sexto por cada mes completo.</p>
+          </div>
+        </div>
+      </div>
+
+      <h3>Casos prácticos de cálculo</h3>
+      <div class="guide-grid">
+        <div class="guide-card">
+          <h4>Sueldo de S/ 2,500 en EsSalud (Semestre completo)</h4>
+          <p>Un trabajador con remuneración computable de S/ 2,500 percibirá S/ 2,500 de gratificación ordinaria + S/ 225.00 de bonificación extraordinaria (9% EsSalud). Su ingreso neto total será de <strong>S/ 2,725.00</strong> libres de descuentos.</p>
+        </div>
+        <div class="guide-card">
+          <h4>Trabajador de Pequeña Empresa REMYPE</h4>
+          <p>Los trabajadores de pequeñas empresas inscritas en el REMYPE tienen derecho a media gratificación (50% de un sueldo ordinario) más su bonificación extraordinaria de salud del 9% o 6.75%.</p>
+        </div>
+        <div class="guide-card">
+          <h4>Ingreso a la empresa a mitad de semestre</h4>
+          <p>Si ingresaste a laborar el 1 de marzo, al 30 de junio habrás acumulado 4 meses completos. Recibirás 4/6 de tu sueldo computable más el 9% extraordinario correspondiente a esa fracción.</p>
+        </div>
+      </div>
+
+      <h2>Preguntas frecuentes sobre las Gratificaciones</h2>
+      <div class="faq-wrap">
+        <div class="faq-item">
+          <div class="faq-question">¿Cuál es el último día para que el empleador deposite la gratificación?</div>
+          <div class="faq-answer">
+            <p>La fecha límite legal e improrrogable es el <strong>15 de julio</strong> para Fiestas Patrias y el <strong>15 de diciembre</strong> para Navidad. No existe prórroga y su incumplimiento genera intereses moratorios y multas graves de SUNAFIL.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-question">¿Me descuentan AFP u ONP de mi gratificación?</div>
+          <div class="faq-answer">
+            <p><strong>No.</strong> Gracias a la Ley 30334, las gratificaciones no sufren ningún tipo de descuento de pensiones (ONP o AFP). El único tributo que podría gravarla es la retención del Impuesto a la Renta de 5ta categoría si tus ingresos anuales proyectados superan las 7 UIT.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-question">¿Qué requisito mínimo se necesita para cobrar gratificación?</div>
+          <div class="faq-answer">
+            <p>El trabajador debe encontrarse laborando en la oportunidad en que corresponda percibir el beneficio o estar en uso de descanso vacacional, licencia con goce de haber o descanso médico. Además, se requiere contar como mínimo con <strong>un mes calendario completo</strong> de servicios dentro del semestre correspondiente.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-question">¿Los trabajadores bajo contrato part-time o a tiempo parcial reciben gratificación?</div>
+          <div class="faq-answer">
+            <p><strong>Sí.</strong> La Ley 27735 no exige una jornada mínima diaria de 4 horas para tener derecho a la gratificación. Por tanto, los trabajadores a tiempo parcial (part-time) del régimen general sí tienen derecho a percibir gratificación en proporción a su sueldo.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</Base>
+
+<style>
+  .tool-container {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 1.5rem 0 3rem;
+  }
+  .breadcrumb {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-bottom: 0.75rem;
+  }
+  .breadcrumb a {
+    color: var(--muted);
+  }
+  .breadcrumb a:hover {
+    color: var(--accent);
+  }
+  .title-row {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+  .tool-icon-badge {
+    width: 58px;
+    height: 58px;
+    border-radius: var(--radius-md);
+    background: linear-gradient(135deg, rgba(244, 63, 94, 0.15), rgba(236, 72, 153, 0.05));
+    border: 1px solid rgba(244, 63, 94, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #f43f5e;
+    flex-shrink: 0;
+  }
+  .title-row h1 {
+    font-size: 1.85rem;
+    margin: 0 0 0.35rem 0;
+    letter-spacing: -0.02em;
+  }
+  .tool-desc {
+    color: var(--muted);
+    font-size: 0.95rem;
+    margin: 0;
+    max-width: 75ch;
+  }
+
+  .calc-grid {
+    display: grid;
+    grid-template-columns: 1.15fr 0.95fr;
+    gap: 1.5rem;
+    align-items: start;
+  }
+  @media (max-width: 860px) {
+    .calc-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .panel-card {
+    background: var(--surface-card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  }
+  .panel-head {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--line);
+    color: var(--accent);
+  }
+  .panel-head h2 {
+    font-size: 1.15rem;
+    color: var(--ink);
+    margin: 0;
+  }
+
+  .form-group {
+    margin-bottom: 1.1rem;
+  }
+  .form-group label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 0.35rem;
+    color: var(--ink);
+  }
+  .form-input, .form-select {
+    width: 100%;
+    padding: 0.6rem 0.85rem;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    color: var(--ink);
+    font-size: 0.95rem;
+    transition: border-color 0.15s;
+  }
+  .form-input:focus, .form-select:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+  .input-prefix-wrap {
+    display: flex;
+    align-items: center;
+    position: relative;
+  }
+  .input-prefix-wrap .prefix {
+    position: absolute;
+    left: 0.85rem;
+    font-weight: 600;
+    color: var(--muted);
+  }
+  .input-prefix-wrap .form-input {
+    padding-left: 2.2rem;
+  }
+
+  .form-row-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.85rem;
+  }
+  .hint-text {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-top: 0.25rem;
+  }
+  .form-check-group {
+    margin: 0.85rem 0 1.1rem;
+  }
+  .checkbox-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: var(--ink);
+    cursor: pointer;
+  }
+
+  /* Result Panel */
+  .result-highlight-card {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.12), rgba(56, 189, 248, 0.08));
+    border: 1px solid rgba(16, 185, 129, 0.35);
+    border-radius: var(--radius-sm);
+    padding: 1.25rem;
+    text-align: center;
+    margin-bottom: 1.25rem;
+  }
+  .result-sub-label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .result-main-value {
+    font-size: 2.25rem;
+    font-weight: 800;
+    color: #10b981;
+    margin: 0.25rem 0;
+    font-family: var(--font-heading, sans-serif);
+  }
+  .result-date-info {
+    font-size: 0.82rem;
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  .breakdown-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    padding: 1rem;
+    margin-bottom: 1.25rem;
+  }
+  .breakdown-item {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.88rem;
+  }
+  .breakdown-subitems {
+    padding-left: 0.75rem;
+    margin: 0.25rem 0;
+    border-left: 2px solid var(--line);
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  .breakdown-subitem {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+  .text-success {
+    color: #10b981;
+  }
+  .text-free {
+    color: #38bdf8;
+    font-weight: 600;
+  }
+
+  .action-buttons-row {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+  }
+  .btn-action {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    padding: 0.55rem 0.85rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--line);
+    background: var(--surface-card);
+    color: var(--ink);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn-action:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .legal-notice {
+    font-size: 0.75rem;
+    color: var(--muted);
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px dashed var(--line);
+    padding: 0.75rem;
+    border-radius: var(--radius-sm);
+    line-height: 1.45;
+  }
+</style>
+
+<script>
+  const formatCurrency = (val: number) => {
+    return `S/ ${val.toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  };
+
+  const calculateGratif = () => {
+    const periodo = (document.getElementById('periodo-gratif') as HTMLSelectElement).value;
+    const regimen = (document.getElementById('regimen-gratif') as HTMLSelectElement).value;
+    const bonifRate = parseFloat((document.getElementById('seguro-salud') as HTMLSelectElement).value) || 0.09;
+    const sueldo = parseFloat((document.getElementById('sueldo-gratif') as HTMLInputElement).value) || 0;
+    const tieneAsig = (document.getElementById('asig-fam-gratif') as HTMLInputElement).checked;
+    const variables = parseFloat((document.getElementById('prom-variables-gratif') as HTMLInputElement).value) || 0;
+    const meses = parseInt((document.getElementById('meses-gratif') as HTMLInputElement).value) || 0;
+    const dias = parseInt((document.getElementById('dias-gratif') as HTMLInputElement).value) || 0;
+
+    if (regimen === 'micro') {
+      document.getElementById('res-gratif-total')!.textContent = 'S/ 0.00';
+      document.getElementById('res-gratif-comp')!.textContent = 'S/ 0.00';
+      document.getElementById('res-gratif-base')!.textContent = 'S/ 0.00';
+      document.getElementById('res-gratif-bonif')!.textContent = '+ S/ 0.00';
+      document.getElementById('res-gratif-fecha')!.textContent = 'Microempresa: no corresponde gratificación por ley';
+      return;
+    }
+
+    const asigMonto = tieneAsig ? 102.50 : 0;
+    const computable = sueldo + asigMonto + variables;
+    const factorRegimen = regimen === 'pequena' ? 0.5 : 1.0;
+
+    // Gratif Ordinaria = (computable / 6) * meses * factorRegimen + (computable / 180) * dias * factorRegimen
+    const baseMeses = (computable / 6) * meses * factorRegimen;
+    const baseDias = (computable / 180) * dias * factorRegimen;
+    const gratifBase = baseMeses + baseDias;
+
+    // Bonificación Extraordinaria Ley 30334
+    const bonifExtra = gratifBase * bonifRate;
+    const totalNeto = gratifBase + bonifExtra;
+
+    document.getElementById('res-gratif-total')!.textContent = formatCurrency(totalNeto);
+    document.getElementById('res-gratif-comp')!.textContent = formatCurrency(computable);
+    document.getElementById('res-gratif-sueldo')!.textContent = formatCurrency(sueldo);
+    document.getElementById('res-gratif-asig')!.textContent = formatCurrency(asigMonto);
+    document.getElementById('res-gratif-var')!.textContent = formatCurrency(variables);
+    document.getElementById('res-gratif-base')!.textContent = formatCurrency(gratifBase);
+    document.getElementById('res-gratif-bonif')!.textContent = `+ ${formatCurrency(bonifExtra)}`;
+
+    const labelBonif = document.getElementById('label-bonif-extra');
+    if (labelBonif) {
+      labelBonif.textContent = `Bonificación extraordinaria (+${(bonifRate * 100).toFixed(bonifRate === 0.09 ? 0 : 2)}%):`;
+    }
+
+    const fechaEl = document.getElementById('res-gratif-fecha');
+    if (fechaEl) {
+      if (periodo === 'julio') fechaEl.textContent = 'Fecha límite legal: 15 de Julio';
+      else if (periodo === 'diciembre') fechaEl.textContent = 'Fecha límite legal: 15 de Diciembre';
+      else fechaEl.textContent = 'Abono dentro de las 48h posteriores al cese';
+    }
+  };
+
+  const inputs = document.querySelectorAll('#gratif-form input, #gratif-form select');
+  inputs.forEach((inp) => {
+    inp.addEventListener('input', calculateGratif);
+    inp.addEventListener('change', calculateGratif);
+  });
+
+  const copyBtn = document.getElementById('btn-copy-gratif');
+  if (copyBtn) {
+    copyBtn.addEventListener('click', () => {
+      const total = document.getElementById('res-gratif-total')?.textContent || '';
+      const comp = document.getElementById('res-gratif-comp')?.textContent || '';
+      const text = `Cálculo de Gratificación (UtiliaOnline):\n- Remuneración Computable: ${comp}\n- Total Neto a Percibir: ${total}\nCalculado en: ${window.location.href}`;
+      navigator.clipboard.writeText(text).then(() => {
+        copyBtn.innerHTML = '<span>¡Copiado!</span>';
+        setTimeout(() => {
+          copyBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>Copiar desglose</span>';
+        }, 2000);
+      });
+    });
+  }
+
+  calculateGratif();
+</script>

@@ -1,0 +1,227 @@
+﻿---
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+---
+<Base title="Calculadora de Gasto de Combustible y Costo de Viaje en Auto" description="Calcula el consumo en litros de gasolina o diésel, peajes y cuánto debe pagar cada pasajero para dividir los gastos de tu viaje por carretera.">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="/">Herramientas</a> / <span>Hogar y vida diaria</span></div>
+    <h1>Calculadora de Combustible de Viaje</h1>
+    <p class="lead">Planifica tu ruta por carretera calculando los litros exactos necesarios, gasto total con peajes y la división equitativa por acompañante.</p>
+  </div>
+
+  <section class="panel">
+    <div class="fuel-layout">
+      <div class="fuel-form">
+        <div class="grid-2">
+          <div class="field">
+            <label for="trip-distance">Distancia (km):</label>
+            <input type="number" id="trip-distance" value="350" min="1" class="form-input" />
+          </div>
+          <div class="field">
+            <label for="trip-type">Tipo de trayecto:</label>
+            <select id="trip-type" class="form-input">
+              <option value="1">Solo ida</option>
+              <option value="2" selected>Ida y vuelta (x2)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="field">
+            <label for="consumption-rate">Consumo de tu auto (L/100 km):</label>
+            <input type="number" id="consumption-rate" value="7.2" step="0.1" min="1" class="form-input" />
+          </div>
+          <div class="field">
+            <label for="fuel-price">Precio del combustible por Litro:</label>
+            <input type="number" id="fuel-price" value="1.65" step="0.01" min="0.1" class="form-input" />
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="field">
+            <label for="tolls-cost">Peajes / Peaje total:</label>
+            <input type="number" id="tolls-cost" value="15" step="1" min="0" class="form-input" />
+          </div>
+          <div class="field">
+            <label for="passengers-count">Total personas en el auto:</label>
+            <input type="number" id="passengers-count" value="4" min="1" max="10" class="form-input" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="currency-symbol">Moneda / Símbolo:</label>
+          <input type="text" id="currency-symbol" value="$" class="form-input" style="width:70px;" />
+        </div>
+      </div>
+
+      <div class="fuel-results">
+        <div class="highlight-fuel-card">
+          <span class="lbl">Costo por persona</span>
+          <div class="val" id="cost-per-person">€ 24.57</div>
+          <div class="sub-split" id="split-desc">Dividido entre 4 personas</div>
+        </div>
+
+        <div class="fuel-details-grid">
+          <div class="detail-box">
+            <span class="lbl">Distancia total</span>
+            <div class="val-sm" id="total-dist-disp">700 km</div>
+          </div>
+          <div class="detail-box">
+            <span class="lbl">Litros necesarios</span>
+            <div class="val-sm" id="liters-disp">50.4 L</div>
+          </div>
+          <div class="detail-box">
+            <span class="lbl">Gasto en gasolina</span>
+            <div class="val-sm" id="fuel-cost-disp">€ 83.16</div>
+          </div>
+          <div class="detail-box">
+            <span class="lbl">Costo total del viaje</span>
+            <div class="val-sm" id="total-trip-cost-disp">€ 98.16</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="seo-section">
+    <h2>¿Cómo calcular el gasto exacto de gasolina o diésel para un viaje en auto?</h2>
+    <p>Organizar una escapada de fin de semana o un viaje por carretera (road trip) requiere estimar con certeza los costes de carburante y peajes. Esta calculadora computa el consumo total en litros, el presupuesto global del trayecto y la <strong>división equitativa por pasajero</strong> para repartir los gastos del coche de forma justa y transparente.</p>
+
+    <div class="step-list">
+      <div class="step-card">
+        <span class="step-num">1</span>
+        <div class="step-body">
+          <h4>Introduce la distancia y el tipo de trayecto</h4>
+          <p>Indica los kilómetros totales del recorrido y marca si se trata de solo ida o de un viaje completo de ida y vuelta.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <span class="step-num">2</span>
+        <div class="step-body">
+          <h4>Configura el consumo y precio del carburante</h4>
+          <p>Escribe el rendimiento promedio de tu coche en litros por cada 100 km (L/100 km) y el precio actual del litro en la gasolinera.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <span class="step-num">3</span>
+        <div class="step-body">
+          <h4>Añade peajes y número de viajeros</h4>
+          <p>Suma el costo estimado de casetas/peajes y la cantidad de personas a bordo para obtener la cuota exacta por cabeza.</p>
+        </div>
+      </div>
+    </div>
+
+    <h3>Casos de uso para viajes y traslados</h3>
+    <div class="guide-grid">
+      <div class="guide-card">
+        <h4>Viajes compartidos (Carpooling) y vacaciones</h4>
+        <p>Divide los gastos de combustible y autopistas entre amigos de manera matemática sin discusiones al llegar a destino.</p>
+      </div>
+      <div class="guide-card">
+        <h4>Traslados diarios al trabajo o universidad</h4>
+        <p>Calcula una cuota justa semanal o mensual para los compañeros que comparten auto todos los días para ir a la oficina.</p>
+      </div>
+      <div class="guide-card">
+        <h4>Reembolso de gastos de kilometraje laboral</h4>
+        <p>Estima el coste de combustible para justificar viáticos o rendir cuentas de desplazamientos comerciales a tu empresa.</p>
+      </div>
+    </div>
+
+    <h2>Preguntas frecuentes sobre cálculo de combustible</h2>
+    <div class="faq-wrap">
+      <div class="faq-item">
+        <div class="faq-question">¿Cómo sé cuál es el consumo (L/100 km) de mi vehículo?</div>
+        <div class="faq-answer">
+          <p>Puedes consultarlo en la pantalla del ordenador de a bordo de tu auto. En promedio, un coche utilitario a gasolina gasta entre 6.0 y 7.5 L/100 km en carretera, un vehículo diésel entre 4.5 y 5.5 L/100 km, y una camioneta SUV grande entre 8.5 y 11 L/100 km.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Influye el equipaje o el aire acondicionado en el gasto real?</div>
+        <div class="faq-answer">
+          <p>Sí. Llevar el maletero lleno con 4 pasajeros y el aire acondicionado encendido puede incrementar el consumo de combustible entre un 8% y un 15% respecto a los datos oficiales del fabricante.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Cómo convierto de kilómetros por galón (km/gal) a L/100 km?</div>
+        <div class="faq-answer">
+          <p>Si tu país utiliza galones estadounidenses (como Perú o Colombia), divide <code>235.21</code> entre tus km/galón. Por ejemplo, un auto que rinde 40 km/gal tiene un consumo de aproximadamente <code>5.9 L/100 km</code>.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Debe pagar el conductor la misma cuota que los demás?</div>
+        <div class="faq-answer">
+          <p>En muchos grupos de amigos es habitual que el conductor aporte el vehículo y el desgaste mecánico (aceite, neumáticos, depreciación), y los pasajeros asuman el combustible y peajes, o bien se divida el total a partes estrictamente iguales.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .breadcrumb{font-size:.85rem;color:var(--muted);margin-bottom:.5rem}.breadcrumb a{color:var(--muted)}
+  .fuel-layout{display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:start}
+  @media(max-width:768px){.fuel-layout{grid-template-columns:1fr}}
+
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}
+  .field{margin-bottom:1rem}
+  .field label{display:block;font-weight:600;font-size:.84rem;margin-bottom:.35rem}
+  .form-input{width:100%;padding:.55rem .75rem;background:var(--bg);border:1px solid var(--line);border-radius:var(--radius-sm);color:var(--ink);font:inherit}
+
+  .fuel-results{display:flex;flex-direction:column;gap:1.2rem}
+  .highlight-fuel-card{background:linear-gradient(135deg, rgba(34,197,94,.12), rgba(16,185,129,.12));border:2px solid #22c55e;border-radius:var(--radius);padding:1.5rem;text-align:center}
+  .highlight-fuel-card .lbl{font-size:.82rem;text-transform:uppercase;font-weight:700;color:var(--muted);letter-spacing:1px}
+  .highlight-fuel-card .val{font-size:3rem;font-weight:900;color:#16a34a;margin:.4rem 0}
+  .highlight-fuel-card .sub-split{font-size:.95rem;font-weight:600;color:var(--ink)}
+
+  .fuel-details-grid{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}
+  .detail-box{background:var(--surface-card);border:1px solid var(--line);border-radius:var(--radius-sm);padding:1rem;text-align:center}
+  .detail-box .lbl{font-size:.76rem;text-transform:uppercase;color:var(--muted);font-weight:600}
+  .detail-box .val-sm{font-size:1.3rem;font-weight:800;color:var(--ink);margin-top:.3rem}
+</style>
+
+<script>
+  const distInp = document.getElementById('trip-distance') as HTMLInputElement;
+  const tripType = document.getElementById('trip-type') as HTMLSelectElement;
+  const consInp = document.getElementById('consumption-rate') as HTMLInputElement;
+  const priceInp = document.getElementById('fuel-price') as HTMLInputElement;
+  const tollsInp = document.getElementById('tolls-cost') as HTMLInputElement;
+  const passInp = document.getElementById('passengers-count') as HTMLInputElement;
+  const currInp = document.getElementById('currency-symbol') as HTMLInputElement;
+
+  const costPersonEl = document.getElementById('cost-per-person')!;
+  const splitDescEl = document.getElementById('split-desc')!;
+  const distDisp = document.getElementById('total-dist-disp')!;
+  const litersDisp = document.getElementById('liters-disp')!;
+  const fuelCostDisp = document.getElementById('fuel-cost-disp')!;
+  const totalTripCostDisp = document.getElementById('total-trip-cost-disp')!;
+
+  function calc() {
+    const d = parseFloat(distInp.value) || 0;
+    const mult = parseInt(tripType.value, 10) || 1;
+    const totalDist = d * mult;
+
+    const rate = parseFloat(consInp.value) || 0; // L / 100km
+    const price = parseFloat(priceInp.value) || 0;
+    const tolls = parseFloat(tollsInp.value) || 0;
+    const pass = parseInt(passInp.value, 10) || 1;
+    const curr = currInp.value || '$';
+
+    const litersNeeded = (totalDist / 100) * rate;
+    const fuelCost = litersNeeded * price;
+    const totalTripCost = fuelCost + tolls;
+    const perPerson = totalTripCost / pass;
+
+    costPersonEl.textContent = `${curr} ${perPerson.toFixed(2)}`;
+    splitDescEl.textContent = `Dividido entre ${pass} ${pass === 1 ? 'persona' : 'personas'}`;
+    distDisp.textContent = `${totalDist} km`;
+    litersDisp.textContent = `${litersNeeded.toFixed(1)} L`;
+    fuelCostDisp.textContent = `${curr} ${fuelCost.toFixed(2)}`;
+    totalTripCostDisp.textContent = `${curr} ${totalTripCost.toFixed(2)}`;
+  }
+
+  [distInp, tripType, consInp, priceInp, tollsInp, passInp, currInp].forEach(el => {
+    el.addEventListener('input', calc);
+  });
+
+  calc();
+</script>

@@ -1,0 +1,613 @@
+---
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+---
+
+<Base
+  title="Calculadora de Intereses de CTS y Depósitos a Plazo · UtiliaOnline"
+  description="Simula el rendimiento y crecimiento de tu CTS o depósito a plazo fijo con interés compuesto, abonos semestrales y comparativa de tasas TEA entre cajas y bancos."
+  keywords="intereses cts, calcular intereses deposito cts, trea cts cajas bancos peru, simulador interes compuesto cts, fsd fondo seguro depositos"
+>
+  <div class="tool-container">
+    <div class="tool-header">
+      <div class="breadcrumb">
+        <a href="/">Inicio</a> / <a href="/simuladores">Simuladores</a> / <span>Intereses de CTS</span>
+      </div>
+      <div class="title-row">
+        <div class="tool-icon-badge">
+          <Icon name="trending-up" size={28} />
+        </div>
+        <div>
+          <h1>Simulador de Rendimiento e Intereses de CTS</h1>
+          <p class="tool-desc">
+            Calcula cuánto dinero ganarás en intereses por tu fondo de CTS o depósito a plazo fijo con abonos periódicos semestrales (mayo y noviembre) y compara tasas TEA de cajas y bancos en Perú.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="calc-grid">
+      <!-- Input Panel -->
+      <div class="panel-card input-panel">
+        <div class="panel-head">
+          <Icon name="file-text" size={18} />
+          <h2>Parámetros de Inversión</h2>
+        </div>
+
+        <form id="int-form" class="calc-form" onsubmit="event.preventDefault()">
+          <div class="form-group">
+            <label for="saldo-inicial">Saldo Inicial Acumulado en tu Cuenta (S/)</label>
+            <div class="input-prefix-wrap">
+              <span class="prefix">S/</span>
+              <input type="number" id="saldo-inicial" class="form-input" value="12000" min="0" step="100" required />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="abono-semestral">Abono Semestral Estimado de CTS (S/)</label>
+            <div class="input-prefix-wrap">
+              <span class="prefix">S/</span>
+              <input type="number" id="abono-semestral" class="form-input" value="1800" min="0" step="50" />
+            </div>
+            <small class="hint-text">Monto promedio que la empresa te deposita en mayo y noviembre.</small>
+          </div>
+
+          <div class="form-row-2">
+            <div class="form-group">
+              <label for="tea-tasa">Tasa TEA / TREA Anual (%)</label>
+              <input type="number" id="tea-tasa" class="form-input" value="6.5" min="0.1" max="25" step="0.1" />
+            </div>
+            <div class="form-group">
+              <label for="plazo-anos">Plazo de Proyección</label>
+              <select id="plazo-anos" class="form-select">
+                <option value="1">1 año</option>
+                <option value="2">2 años</option>
+                <option value="3">3 años</option>
+                <option value="5" selected>5 años</option>
+                <option value="7">7 años</option>
+                <option value="10">10 años</option>
+                <option value="15">15 años</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Quick TEA Presets -->
+          <div class="form-group">
+            <label>Tasas Referenciales del Mercado Peruano:</label>
+            <div class="preset-badges">
+              <button type="button" class="preset-btn" data-rate="4.2">Bancos Grandes (~4.2%)</button>
+              <button type="button" class="preset-btn active" data-rate="6.5">Cajas Municipales (~6.5%)</button>
+              <button type="button" class="preset-btn" data-rate="7.5">Financieras Top (~7.5%)</button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Result Panel -->
+      <div class="panel-card result-panel">
+        <div class="panel-head">
+          <Icon name="dollar-sign" size={18} />
+          <h2>Proyección de Crecimiento</h2>
+        </div>
+
+        <div class="result-highlight-card">
+          <span class="result-sub-label">Saldo Proyectado al Finalizar el Plazo</span>
+          <div class="result-main-value" id="res-saldo-final">S/ 0.00</div>
+          <div class="result-date-info">Intereses ganados netos: <span id="res-intereses-ganados" class="text-success">+ S/ 0.00</span></div>
+        </div>
+
+        <div class="breakdown-list">
+          <div class="breakdown-item">
+            <span>Saldo inicial aportado:</span>
+            <strong id="res-ini-val">S/ 0.00</strong>
+          </div>
+          <div class="breakdown-item">
+            <span>Total nuevos abonos de CTS depositados:</span>
+            <strong id="res-abonos-totales">S/ 0.00</strong>
+          </div>
+          <div class="breakdown-item">
+            <span>Total capital aportado:</span>
+            <strong id="res-capital-total">S/ 0.00</strong>
+          </div>
+          <div class="breakdown-item text-success">
+            <span>Ganancia pura por interés compuesto:</span>
+            <strong id="res-interes-total">+ S/ 0.00</strong>
+          </div>
+        </div>
+
+        <!-- Yearly Table -->
+        <div class="table-wrap">
+          <table class="progression-table">
+            <thead>
+              <tr>
+                <th>Año</th>
+                <th>Depósitos Acum.</th>
+                <th>Interés Anual</th>
+                <th>Saldo Final</th>
+              </tr>
+            </thead>
+            <tbody id="table-proyeccion-body">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+
+        <div class="action-buttons-row">
+          <button type="button" class="btn-action" id="btn-copy-int">
+            <Icon name="copy" size={16} />
+            <span>Copiar proyección</span>
+          </button>
+          <button type="button" class="btn-action" onclick="window.print()">
+            <Icon name="download" size={16} />
+            <span>Imprimir</span>
+          </button>
+        </div>
+
+        <div class="legal-notice">
+          <strong>Fondo de Seguro de Depósitos (FSD):</strong> Tanto los bancos como las cajas municipales supervisadas por la SBS cuentan con el respaldo del FSD, que protege tus ahorros y depósitos de CTS hasta por más de <strong>S/ 120,000</strong> por persona e institución financiera en caso de insolvencia.
+        </div>
+      </div>
+    </div>
+
+    <!-- Guía y Cómo Usar (Estándar UtiliaOnline) -->
+    <section class="seo-section">
+      <h2>Guía completa: ¿Cómo hacer crecer tu CTS y elegir la mejor tasa en Perú?</h2>
+      <p>
+        La cuenta de <strong>Compensación por Tiempo de Servicios (CTS)</strong> suele ofrecer una de las tasas de interés pasivas más altas del sistema financiero peruano (TREA - Tasa de Rendimiento Efectivo Anual), debido a que el dinero permanece inmovilizado como seguro de desempleo salvo disposiciones extraordinarias del Congreso.
+      </p>
+      <p>
+        Como trabajador dependiente, tú tienes el <strong>derecho legal exclusivo de elegir</strong> en qué entidad financiera (Banco, Caja Municipal, Caja Rural o Financiera) y en qué moneda (Soles o Dólares) deseas que tu empleador deposite tu beneficio. Además, puedes solicitar el traslado de tu cuenta CTS en cualquier momento del año sin penalización alguna.
+      </p>
+
+      <h2>¿Cómo usar este simulador paso a paso?</h2>
+      <div class="step-list">
+        <div class="step-card">
+          <span class="step-num">1</span>
+          <div class="step-body">
+            <h4>Ingresa tu saldo acumulado actual</h4>
+            <p>Escribe el saldo que tienes hoy en tu cuenta de CTS. Si estás empezando en un nuevo empleo, puedes dejarlo en 0.</p>
+          </div>
+        </div>
+        <div class="step-card">
+          <span class="step-num">2</span>
+          <div class="step-body">
+            <h4>Ingresa el abono semestral estimado</h4>
+            <p>Coloca el monto aproximado que tu empresa te deposita en mayo y en noviembre (aproximadamente medio sueldo neto en cada fecha).</p>
+          </div>
+        </div>
+        <div class="step-card">
+          <span class="step-num">3</span>
+          <div class="step-body">
+            <h4>Elige la entidad o ingresa la TREA anual</h4>
+            <p>Selecciona una de las entidades preconfiguradas del mercado (Cajas Municipales, Financieras o Grandes Bancos) o ingresa la tasa efectiva de tu banco.</p>
+          </div>
+        </div>
+        <div class="step-card">
+          <span class="step-num">4</span>
+          <div class="step-body">
+            <h4>Analiza la tabla de progresión y copia el reporte</h4>
+            <p>Observa año por año cómo el interés compuesto incrementa tu capital sin esfuerzo y compara la ganancia total acumulada.</p>
+          </div>
+        </div>
+      </div>
+
+      <h2>Casos prácticos de aplicación</h2>
+      <div class="guide-grid">
+        <div class="guide-card">
+          <h4>Bancos vs Cajas Municipales</h4>
+          <p>Los bancos tradicionales suelen pagar entre 1.0% y 3.5% de TREA, mientras que las Cajas Municipales y Financieras pagan habitualmente entre 5.5% y 7.5% por el mismo depósito.</p>
+        </div>
+        <div class="guide-card">
+          <h4>Poder del interés compuesto semestral</h4>
+          <p>Al capitalizarse los intereses cada 6 meses con cada nuevo depósito, los intereses ganados en semestres anteriores generan nuevos intereses, acelerando exponencialmente tu patrimonio.</p>
+        </div>
+        <div class="guide-card">
+          <h4>¿Es seguro tener mi CTS en una Caja Municipal?</h4>
+          <p>Sí, siempre que esté supervisada por la SBS. Todas las Cajas autorizadas están cubiertas por el Fondo de Seguro de Depósitos (FSD), protegiendo tu dinero hasta por más de S/ 120,000.</p>
+        </div>
+        <div class="guide-card">
+          <h4>¿Conviene tener la CTS en soles o dólares?</h4>
+          <p>Históricamente las tasas en soles han sido significativamente más atractivas que en dólares (7% vs 1.5%), superando ampliamente la devaluación promedio en periodos estables.</p>
+        </div>
+      </div>
+
+      <h2>Preguntas frecuentes (FAQ)</h2>
+      <div class="faq-wrap">
+        <div class="faq-item">
+          <button type="button" class="faq-question">
+            <span>¿Cómo puedo trasladar mi CTS a una entidad que pague mejor tasa?</span>
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <p>Envía una carta formal a tu empleador indicando la nueva entidad financiera elegida y adjuntando una constancia de apertura o carta de la nueva entidad. Por ley, el empleador tiene un plazo máximo de 8 días hábiles para cursar la orden de traslado al banco anterior.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button type="button" class="faq-question">
+            <span>¿Los intereses de la CTS pagan impuesto a la renta?</span>
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <p>No. En el Perú, las rentas generadas por intereses de depósitos en el sistema financiero (incluidas las cuentas de CTS y depósitos a plazo) de personas naturales están totalmente exoneradas del Impuesto a la Renta.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button type="button" class="faq-question">
+            <span>¿Qué pasa con los intereses si retiro parte de mi fondo?</span>
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <p>Los intereses devengados hasta la fecha del retiro se conservan íntegramente en tu cuenta. A partir del retiro, los futuros intereses se calcularán únicamente sobre el saldo restante depositado.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</Base>
+
+<style>
+  .tool-container {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 1.5rem 0 3rem;
+  }
+  .breadcrumb {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-bottom: 0.75rem;
+  }
+  .breadcrumb a {
+    color: var(--muted);
+  }
+  .breadcrumb a:hover {
+    color: var(--accent);
+  }
+  .title-row {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+  .tool-icon-badge {
+    width: 58px;
+    height: 58px;
+    border-radius: var(--radius-md);
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(56, 189, 248, 0.05));
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #10b981;
+    flex-shrink: 0;
+  }
+  .title-row h1 {
+    font-size: 1.85rem;
+    margin: 0 0 0.35rem 0;
+    letter-spacing: -0.02em;
+  }
+  .tool-desc {
+    color: var(--muted);
+    font-size: 0.95rem;
+    margin: 0;
+    max-width: 75ch;
+  }
+
+  .calc-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 1.5rem;
+    align-items: start;
+  }
+  @media (max-width: 860px) {
+    .calc-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .panel-card {
+    background: var(--surface-card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  }
+  .panel-head {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--line);
+    color: var(--accent);
+  }
+  .panel-head h2 {
+    font-size: 1.15rem;
+    color: var(--ink);
+    margin: 0;
+  }
+
+  .form-group {
+    margin-bottom: 1.1rem;
+  }
+  .form-group label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 0.35rem;
+    color: var(--ink);
+  }
+  .form-input, .form-select {
+    width: 100%;
+    padding: 0.6rem 0.85rem;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    color: var(--ink);
+    font-size: 0.95rem;
+    transition: border-color 0.15s;
+  }
+  .form-input:focus, .form-select:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+  .input-prefix-wrap {
+    display: flex;
+    align-items: center;
+    position: relative;
+  }
+  .input-prefix-wrap .prefix {
+    position: absolute;
+    left: 0.85rem;
+    font-weight: 600;
+    color: var(--muted);
+  }
+  .input-prefix-wrap .form-input {
+    padding-left: 2.2rem;
+  }
+
+  .form-row-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.85rem;
+  }
+  .hint-text {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-top: 0.25rem;
+  }
+
+  .preset-badges {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: 0.35rem;
+  }
+  .preset-btn {
+    padding: 0.35rem 0.65rem;
+    border-radius: 9999px;
+    border: 1px solid var(--line);
+    background: var(--bg);
+    color: var(--muted);
+    font-size: 0.78rem;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .preset-btn:hover {
+    border-color: var(--accent);
+    color: var(--ink);
+  }
+  .preset-btn.active {
+    background: rgba(56, 189, 248, 0.12);
+    border-color: var(--accent);
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  /* Result Panel */
+  .result-highlight-card {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.12), rgba(56, 189, 248, 0.08));
+    border: 1px solid rgba(16, 185, 129, 0.35);
+    border-radius: var(--radius-sm);
+    padding: 1.25rem;
+    text-align: center;
+    margin-bottom: 1.25rem;
+  }
+  .result-sub-label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .result-main-value {
+    font-size: 2.25rem;
+    font-weight: 800;
+    color: #10b981;
+    margin: 0.25rem 0;
+    font-family: var(--font-heading, sans-serif);
+  }
+  .result-date-info {
+    font-size: 0.82rem;
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  .breakdown-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    padding: 1rem;
+    margin-bottom: 1.25rem;
+  }
+  .breakdown-item {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.88rem;
+  }
+  .text-success {
+    color: #10b981;
+  }
+
+  .table-wrap {
+    max-height: 220px;
+    overflow-y: auto;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    margin-bottom: 1.25rem;
+  }
+  .progression-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.82rem;
+    text-align: right;
+  }
+  .progression-table th {
+    background: var(--surface-card);
+    padding: 0.55rem 0.75rem;
+    border-bottom: 1px solid var(--line);
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .progression-table td {
+    padding: 0.45rem 0.75rem;
+    border-bottom: 1px solid var(--line);
+    color: var(--ink);
+  }
+  .progression-table th:first-child,
+  .progression-table td:first-child {
+    text-align: left;
+  }
+
+  .action-buttons-row {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+  }
+  .btn-action {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    padding: 0.55rem 0.85rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--line);
+    background: var(--surface-card);
+    color: var(--ink);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn-action:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .legal-notice {
+    font-size: 0.75rem;
+    color: var(--muted);
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px dashed var(--line);
+    padding: 0.75rem;
+    border-radius: var(--radius-sm);
+    line-height: 1.45;
+  }
+</style>
+
+<script>
+  const formatCurrency = (val: number) => {
+    return `S/ ${val.toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  };
+
+  const calculateInteres = () => {
+    const saldoInicial = parseFloat((document.getElementById('saldo-inicial') as HTMLInputElement).value) || 0;
+    const abonoSemestral = parseFloat((document.getElementById('abono-semestral') as HTMLInputElement).value) || 0;
+    const tea = (parseFloat((document.getElementById('tea-tasa') as HTMLInputElement).value) || 0) / 100;
+    const anos = parseInt((document.getElementById('plazo-anos') as HTMLSelectElement).value) || 5;
+
+    // Tasa semestral efectiva: (1 + TEA)^(1/2) - 1
+    const tasaSemestral = Math.pow(1 + tea, 0.5) - 1;
+
+    let saldo = saldoInicial;
+    let totalAbonos = 0;
+    const tbody = document.getElementById('table-proyeccion-body');
+    if (tbody) tbody.innerHTML = '';
+
+    for (let yr = 1; yr <= anos; yr++) {
+      let saldoInicioAno = saldo;
+
+      // Semestre 1 (Mayo)
+      saldo = saldo * (1 + tasaSemestral) + abonoSemestral;
+      totalAbonos += abonoSemestral;
+
+      // Semestre 2 (Noviembre)
+      saldo = saldo * (1 + tasaSemestral) + abonoSemestral;
+      totalAbonos += abonoSemestral;
+
+      const interesAno = (saldo - saldoInicioAno) - (abonoSemestral * 2);
+
+      if (tbody) {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>Año ${yr}</td>
+          <td>${formatCurrency(saldoInicial + totalAbonos)}</td>
+          <td class="text-success">+ ${formatCurrency(interesAno)}</td>
+          <td><strong>${formatCurrency(saldo)}</strong></td>
+        `;
+        tbody.appendChild(tr);
+      }
+    }
+
+    const capitalTotal = saldoInicial + totalAbonos;
+    const totalIntereses = Math.max(0, saldo - capitalTotal);
+
+    document.getElementById('res-saldo-final')!.textContent = formatCurrency(saldo);
+    document.getElementById('res-intereses-ganados')!.textContent = `+ ${formatCurrency(totalIntereses)}`;
+    document.getElementById('res-ini-val')!.textContent = formatCurrency(saldoInicial);
+    document.getElementById('res-abonos-totales')!.textContent = formatCurrency(totalAbonos);
+    document.getElementById('res-capital-total')!.textContent = formatCurrency(capitalTotal);
+    document.getElementById('res-interes-total')!.textContent = `+ ${formatCurrency(totalIntereses)}`;
+  };
+
+  // Preset buttons
+  const presetBtns = document.querySelectorAll('.preset-btn');
+  presetBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      presetBtns.forEach((b) => b.classList.remove('active'));
+      btn.classList.add('active');
+      const rate = (btn as HTMLElement).dataset.rate;
+      if (rate) {
+        (document.getElementById('tea-tasa') as HTMLInputElement).value = rate;
+        calculateInteres();
+      }
+    });
+  });
+
+  const inputs = document.querySelectorAll('#int-form input, #int-form select');
+  inputs.forEach((inp) => {
+    inp.addEventListener('input', calculateInteres);
+    inp.addEventListener('change', calculateInteres);
+  });
+
+  const copyBtn = document.getElementById('btn-copy-int');
+  if (copyBtn) {
+    copyBtn.addEventListener('click', () => {
+      const final = document.getElementById('res-saldo-final')?.textContent || '';
+      const int = document.getElementById('res-interes-total')?.textContent || '';
+      const text = `Proyección CTS (UtiliaOnline):\n- Saldo Proyectado: ${final}\n- Intereses Ganados: ${int}\nCalculado en: ${window.location.href}`;
+      navigator.clipboard.writeText(text).then(() => {
+        copyBtn.innerHTML = '<span>¡Copiado!</span>';
+        setTimeout(() => {
+          copyBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>Copiar proyección</span>';
+        }, 2000);
+      });
+    });
+  }
+
+  calculateInteres();
+</script>

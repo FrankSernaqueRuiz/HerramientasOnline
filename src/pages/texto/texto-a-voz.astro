@@ -1,0 +1,362 @@
+﻿---
+import Base from '../../layouts/Base.astro';
+---
+<Base
+  title="Texto a Voz Online – Lector de Voz Natural en tu Navegador"
+  description="Convierte cualquier texto a voz hablada con entonación natural directamente en tu navegador mediante la Web Speech API. Privado, sin límites de caracteres y sin servidores externos."
+>
+  <div class="page-header">
+    <div class="breadcrumb"><a href="/">Inicio</a> / <span>Texto y utilidades</span></div>
+    <h1>Texto a Voz en el Navegador</h1>
+    <p class="lead">Sintetizador de voz natural y privado. Escucha artículos, libros, guiones o apuntes sin que tu texto salga de tu dispositivo.</p>
+  </div>
+
+  <section class="panel">
+    <div class="editor-header">
+      <label for="tts-text" class="field-title">Escribe o pega el texto para escuchar:</label>
+      <span id="char-counter" class="char-count">0 caracteres · 0 palabras</span>
+    </div>
+
+    <textarea 
+      id="tts-text" 
+      rows="6" 
+      placeholder="Escribe o pega aquí el texto que deseas escuchar en voz alta…"
+    >Bienvenido a UtiliaOnline. Ahora puedes convertir cualquier texto en voz hablada con acento natural directamente desde tu navegador, con total privacidad y sin enviar información a ningún servidor externo.</textarea>
+
+    <div class="controls-grid">
+      <div class="field">
+        <label for="tts-voice">Voz y acento disponible:</label>
+        <select id="tts-voice" class="form-input">
+          <option value="" disabled selected>Cargando voces del sistema...</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="tts-rate">Velocidad de locución (<span id="rate-val">1.0x</span>):</label>
+        <input type="range" id="tts-rate" min="0.5" max="2" step="0.1" value="1" class="slider" />
+      </div>
+
+      <div class="field">
+        <label for="tts-pitch">Tono de voz (<span id="pitch-val">1.0</span>):</label>
+        <input type="range" id="tts-pitch" min="0.5" max="1.5" step="0.1" value="1" class="slider" />
+      </div>
+    </div>
+
+    <div class="actions">
+      <button id="btn-play" class="primary">Reproducir</button>
+      <button id="btn-pause">Pausar</button>
+      <button id="btn-stop">Detener</button>
+      <button id="btn-clear">Limpiar texto</button>
+    </div>
+
+    <div id="status-bar" class="status-box" style="display: none;">
+      <span id="status-indicator" class="pulse-dot"></span>
+      <span id="status-text">Listo para reproducir.</span>
+    </div>
+  </section>
+
+  <!-- Sección de contenido educativo y preguntas frecuentes -->
+  <section class="seo-section">
+    <h2>¿Cómo funciona la síntesis de voz en el navegador?</h2>
+    <p>Nuestra herramienta de texto a voz utiliza la <strong>Web Speech API (SpeechSynthesis)</strong>, un estándar moderno implementado directamente en los navegadores principales (Google Chrome, Mozilla Firefox, Apple Safari y Microsoft Edge). La utilidad interactúa con los motores de síntesis disponibles en tu equipo (Windows, macOS, Android, iOS o Linux) para reproducir el texto en audio en tiempo real.</p>
+
+    <p>En la gran mayoría de las voces instaladas localmente en tu sistema operativo, el procesamiento se realiza directamente en tu dispositivo. No obstante, ten en cuenta que en navegadores como Google Chrome, ciertas voces catalogadas como "Google" o de red pueden requerir conexión a los servicios del proveedor del navegador para sintetizar el habla con mayor fidelidad.</p>
+
+    <h3>Casos de uso cotidianos</h3>
+    <div class="guide-grid">
+      <div class="guide-card">
+        <h4>Estudio y memorización auditiva</h4>
+        <p>Pega resúmenes, apuntes universitarios o lecturas académicas para repasarlos mientras descansas la vista o realizas otras tareas del hogar.</p>
+      </div>
+      <div class="guide-card">
+        <h4>Corrección de redacción y ritmo</h4>
+        <p>Escuchar tus propios correos, artículos o novelas en voz alta es el mejor método para detectar frases redundantes, errores ortográficos y puntuación poco fluida.</p>
+      </div>
+      <div class="guide-card">
+        <h4>Accesibilidad y descanso visual</h4>
+        <p>Una alternativa indispensable para personas con baja visión, dislexia o para usuarios que experimentan fatiga ocular tras largas jornadas frente al monitor.</p>
+      </div>
+    </div>
+
+    <h2>Preguntas frecuentes sobre Texto a Voz</h2>
+    <div class="faq-wrap">
+      <div class="faq-item">
+        <div class="faq-question">¿Por qué este método es más seguro y privado?</div>
+        <div class="faq-answer">
+          <p>Porque prioriza las capacidades nativas de tu propio navegador y sistema operativo, sin requerir cuentas de usuario ni almacenar tus textos en bases de datos externas de terceros. Si seleccionas voces del sistema operativo, el procesamiento ocurre de forma local en tu equipo; si eliges voces en la nube provistas por tu navegador (como algunas voces de Google en Chrome), la síntesis es gestionada por el proveedor de tu navegador.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿De dónde provienen las voces disponibles?</div>
+        <div class="faq-answer">
+          <p>El selector de voces muestra las voces instaladas en tu dispositivo (voces neuronales de Microsoft en Windows, voces Siri/Apple en Mac e iPhone, y voces de Google en Android/Chrome). Puedes añadir más voces y acentos desde la configuración de accesibilidad e idioma de tu sistema operativo.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Existe un límite en la cantidad de palabras que puedo escuchar?</div>
+        <div class="faq-answer">
+          <p>No hay límite de caracteres. Puedes pegar capítulos enteros de libros o artículos largos sin preocuparte por tarifas por carácter ni bloqueos por exceso de solicitudes.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Cómo puedo guardar o descargar la locución en audio?</div>
+        <div class="faq-answer">
+          <p>La síntesis nativa del navegador reproduce el audio en tiempo real directamente en tus altavoces. Para grabarlo como archivo MP3 o WAV en tu equipo, puedes utilizar la herramienta nativa de grabación de pantalla/audio de tu sistema (como la grabadora de voz de Windows o QuickTime en macOS).</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Funciona en teléfonos móviles?</div>
+        <div class="faq-answer">
+          <p>Sí, es totalmente compatible con Safari en iPhone/iPad y Chrome en dispositivos Android, aprovechando los paquetes de voces de alta calidad que tu teléfono ya tiene configurados.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .breadcrumb { font-size: 0.85rem; color: var(--muted); margin-bottom: 0.5rem; }
+  .breadcrumb a { color: var(--muted); }
+
+  .editor-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+  }
+  .field-title {
+    font-size: 0.92rem;
+    font-weight: 600;
+  }
+  .char-count {
+    font-size: 0.78rem;
+    color: var(--muted);
+  }
+
+  .controls-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.25rem;
+    margin-top: 1.2rem;
+    margin-bottom: 1.5rem;
+  }
+  .field label {
+    display: block;
+    margin-bottom: 0.4rem;
+    font-size: 0.88rem;
+    font-weight: 600;
+  }
+  .form-input {
+    width: 100%;
+    padding: 0.65rem;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    color: var(--ink);
+    font: inherit;
+  }
+  .slider {
+    width: 100%;
+    accent-color: var(--accent);
+  }
+
+  .status-box {
+    margin-top: 1.25rem;
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius-sm);
+    background: var(--surface-card);
+    border: 1px solid var(--line);
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .pulse-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--accent);
+    display: inline-block;
+  }
+  .pulse-dot.speaking {
+    background: #22c55e;
+    box-shadow: 0 0 8px #22c55e;
+    animation: pulse 1s infinite alternate;
+  }
+  @keyframes pulse {
+    0% { transform: scale(0.9); opacity: 0.7; }
+    100% { transform: scale(1.2); opacity: 1; }
+  }
+</style>
+
+<script>
+  const textInput = document.getElementById('tts-text') as HTMLTextAreaElement;
+  const voiceSelect = document.getElementById('tts-voice') as HTMLSelectElement;
+  const rateInput = document.getElementById('tts-rate') as HTMLInputElement;
+  const pitchInput = document.getElementById('tts-pitch') as HTMLInputElement;
+  const rateVal = document.getElementById('rate-val')!;
+  const pitchVal = document.getElementById('pitch-val')!;
+  const charCounter = document.getElementById('char-counter')!;
+
+  const btnPlay = document.getElementById('btn-play') as HTMLButtonElement;
+  const btnPause = document.getElementById('btn-pause') as HTMLButtonElement;
+  const btnStop = document.getElementById('btn-stop') as HTMLButtonElement;
+  const btnClear = document.getElementById('btn-clear') as HTMLButtonElement;
+
+  const statusBar = document.getElementById('status-bar')!;
+  const statusIndicator = document.getElementById('status-indicator')!;
+  const statusText = document.getElementById('status-text')!;
+
+  let voices: SpeechSynthesisVoice[] = [];
+  let currentUtterance: SpeechSynthesisUtterance | null = null;
+
+  function updateCounters() {
+    const text = textInput.value;
+    const chars = text.length;
+    const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+    charCounter.textContent = `${chars} caracteres · ${words} palabras`;
+  }
+
+  function setStatus(msg: string, isSpeaking = false) {
+    statusBar.style.display = 'flex';
+    statusText.textContent = msg;
+    if (isSpeaking) {
+      statusIndicator.classList.add('speaking');
+    } else {
+      statusIndicator.classList.remove('speaking');
+    }
+  }
+
+  function loadVoices() {
+    if (!('speechSynthesis' in window)) {
+      voiceSelect.innerHTML = '<option disabled selected>Tu navegador no soporta síntesis de voz</option>';
+      setStatus('Tu navegador no es compatible con la API de voz.', false);
+      return;
+    }
+
+    voices = window.speechSynthesis.getVoices();
+    if (voices.length === 0) return;
+
+    voiceSelect.innerHTML = '';
+
+    // Agrupar y priorizar voces en español
+    const spanishVoices = voices.filter(v => v.lang.startsWith('es'));
+    const otherVoices = voices.filter(v => !v.lang.startsWith('es'));
+
+    if (spanishVoices.length > 0) {
+      const optGroupEs = document.createElement('optgroup');
+      optGroupEs.label = 'Voces en Español';
+      spanishVoices.forEach(v => {
+        const opt = document.createElement('option');
+        opt.value = v.name;
+        opt.textContent = `${v.name} (${v.lang})`;
+        if (v.default || v.lang === 'es-ES' || v.lang === 'es-MX' || v.lang === 'es-US') {
+          opt.selected = true;
+        }
+        optGroupEs.appendChild(opt);
+      });
+      voiceSelect.appendChild(optGroupEs);
+    }
+
+    if (otherVoices.length > 0) {
+      const optGroupOther = document.createElement('optgroup');
+      optGroupOther.label = 'Otros Idiomas';
+      otherVoices.forEach(v => {
+        const opt = document.createElement('option');
+        opt.value = v.name;
+        opt.textContent = `${v.name} (${v.lang})`;
+        optGroupOther.appendChild(opt);
+      });
+      voiceSelect.appendChild(optGroupOther);
+    }
+  }
+
+  function play() {
+    if (!('speechSynthesis' in window)) {
+      alert('Tu navegador no admite la función de síntesis de voz.');
+      return;
+    }
+
+    const text = textInput.value.trim();
+    if (!text) {
+      alert('Por favor, escribe o pega algún texto para reproducir.');
+      return;
+    }
+
+    if (window.speechSynthesis.paused) {
+      window.speechSynthesis.resume();
+      setStatus('Locución reanudada.', true);
+      return;
+    }
+
+    window.speechSynthesis.cancel();
+
+    currentUtterance = new SpeechSynthesisUtterance(text);
+    const selectedVoiceName = voiceSelect.value;
+    const selectedVoice = voices.find(v => v.name === selectedVoiceName);
+    if (selectedVoice) {
+      currentUtterance.voice = selectedVoice;
+    }
+
+    currentUtterance.rate = parseFloat(rateInput.value);
+    currentUtterance.pitch = parseFloat(pitchInput.value);
+
+    currentUtterance.onstart = () => {
+      setStatus(`Reproduciendo locución (${selectedVoice ? selectedVoice.name : 'Voz estándar'})...`, true);
+    };
+
+    currentUtterance.onend = () => {
+      setStatus('Lectura completada.', false);
+    };
+
+    currentUtterance.onerror = (e) => {
+      if (e.error !== 'canceled' && e.error !== 'interrupted') {
+        setStatus(`Error de reproducción: ${e.error}`, false);
+      }
+    };
+
+    window.speechSynthesis.speak(currentUtterance);
+  }
+
+  function pause() {
+    if (window.speechSynthesis.speaking && !window.speechSynthesis.paused) {
+      window.speechSynthesis.pause();
+      setStatus('Locución en pausa.', false);
+    }
+  }
+
+  function stop() {
+    if (window.speechSynthesis) {
+      window.speechSynthesis.cancel();
+      setStatus('Locución detenida.', false);
+    }
+  }
+
+  rateInput.addEventListener('input', () => {
+    rateVal.textContent = `${parseFloat(rateInput.value).toFixed(1)}x`;
+  });
+
+  pitchInput.addEventListener('input', () => {
+    pitchVal.textContent = parseFloat(pitchInput.value).toFixed(1);
+  });
+
+  textInput.addEventListener('input', updateCounters);
+  btnPlay.addEventListener('click', play);
+  btnPause.addEventListener('click', pause);
+  btnStop.addEventListener('click', stop);
+
+  btnClear.addEventListener('click', () => {
+    stop();
+    textInput.value = '';
+    updateCounters();
+    setStatus('Texto limpio.', false);
+  });
+
+  // Cargar voces en browsers modernos
+  if ('speechSynthesis' in window) {
+    loadVoices();
+    window.speechSynthesis.onvoiceschanged = loadVoices;
+  }
+
+  updateCounters();
+</script>

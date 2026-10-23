@@ -1,0 +1,275 @@
+﻿---
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+---
+<Base title="Convertidor HEIC a JPG o PNG Online – Fotos de iPhone Gratis" description="Convierte fotos en formato HEIC de iPhone a JPG o PNG directamente en tu navegador, de forma rápida y privada sin subir tus fotos a internet.">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="/">Herramientas</a> / <span>Imágenes y multimedia</span></div>
+    <h1>Convertidor HEIC a JPG / PNG</h1>
+    <p class="lead">¿Tu iPhone toma fotos en formato .heic que no abren en Windows o Android? Conviértelas a formato JPG o PNG universal al instante.</p>
+  </div>
+
+  <section class="panel">
+    <div class="drop-zone" id="drop-zone">
+      <input type="file" id="file-input" accept=".heic,.heif,image/heic,image/heif,image/*" style="display:none;" />
+      <div class="drop-content">
+        <span class="drop-icon">🔄</span>
+        <p class="drop-text">Arrastra tu archivo <strong>.HEIC</strong> aquí o <button type="button" class="btn btn-secondary btn-sm" id="btn-browse">Subir archivo</button></p>
+        <span class="drop-hint">Conversión local segura en tu navegador. Tus fotos nunca salen de tu dispositivo móvil o computadora.</span>
+      </div>
+    </div>
+
+    <div class="conversion-workspace" id="workspace" style="display:none;">
+      <div class="conv-card">
+        <div class="conv-settings">
+          <div class="field">
+            <label for="target-format">Convertir a formato:</label>
+            <select id="target-format" class="form-input">
+              <option value="image/jpeg" selected>JPG (Recomendado, máxima compatibilidad)</option>
+              <option value="image/png">PNG (Sin pérdida de compresión)</option>
+            </select>
+          </div>
+
+          <div class="field" id="quality-field">
+            <label for="quality-slider">Calidad JPG: <strong id="quality-val">90%</strong></label>
+            <input type="range" id="quality-slider" min="50" max="100" value="90" class="slider" />
+          </div>
+
+          <button type="button" class="btn btn-primary btn-block" id="btn-convert">Iniciar conversión</button>
+        </div>
+
+        <div class="conv-status-box" id="status-box">
+          <div class="file-info" id="file-info">
+            <!-- File name and size -->
+          </div>
+          <div class="progress-indicator" id="progress-indicator" style="display:none;">
+            <div class="spinner"></div>
+            <span>Decodificando y convirtiendo foto...</span>
+          </div>
+          <div id="result-download" style="display:none; margin-top:1rem;">
+            <!-- Download button -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="seo-section">
+    <h2>¿Qué es el formato HEIC de iPhone y cómo convertirlo a JPG o PNG?</h2>
+    <p>Desde iOS 11, los teléfonos iPhone y dispositivos Apple guardan por defecto las fotografías en formato <strong>HEIC (High Efficiency Image Container)</strong>. Aunque este formato reduce el peso del archivo a la mitad manteniendo gran calidad, tiene una enorme desventaja: <strong>muchos ordenadores Windows, televisores, impresoras y páginas web no pueden abrirlo ni visualizarlo</strong>. Nuestra herramienta decodifica el contenedor HEIC directamente en tu navegador y lo transforma a JPG o PNG universal.</p>
+
+    <div class="step-list">
+      <div class="step-card">
+        <span class="step-num">1</span>
+        <div class="step-body">
+          <h4>Arrastra o selecciona tus fotos .HEIC o .HEIF</h4>
+          <p>Carga las fotos tomadas con tu iPhone o iPad directamente desde tu galería o explorador de archivos.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <span class="step-num">2</span>
+        <div class="step-body">
+          <h4>Elige el formato de salida (JPG o PNG) y la calidad</h4>
+          <p>Selecciona JPG estándar para un peso ligero o PNG para máxima fidelidad visual, y regula el deslizador de compresión.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <span class="step-num">3</span>
+        <div class="step-body">
+          <h4>Convierte y descarga al instante</h4>
+          <p>Pulsa "Iniciar conversión" para obtener tu imagen universal lista para ver en Windows, enviar por correo o subir a cualquier portal.</p>
+        </div>
+      </div>
+    </div>
+
+    <h3>Casos de uso para fotos de Apple</h3>
+    <div class="guide-grid">
+      <div class="guide-card">
+        <h4>Trámites web en Windows y trámites oficiales</h4>
+        <p>Convierte fotos de documentos de identidad o recibos tomadas con el iPhone para subirlas a portales que solo admiten JPG o PNG.</p>
+      </div>
+      <div class="guide-card">
+        <h4>Compartir recuerdos con usuarios de Android y PC</h4>
+        <p>Asegúrate de que tus amigos y familiares puedan ver tus fotos de viajes en sus ordenadores sin tener que instalar códecs de pago.</p>
+      </div>
+      <div class="guide-card">
+        <h4>Edición en programas de diseño antiguos</h4>
+        <p>Importa tus fotos a versiones clásicas de Photoshop, Illustrator o programas de oficina que no reconocen archivos HEIC nativos.</p>
+      </div>
+    </div>
+
+    <h2>Preguntas frecuentes sobre archivos HEIC</h2>
+    <div class="faq-wrap">
+      <div class="faq-item">
+        <div class="faq-question">¿Por qué mi ordenador Windows no abre las fotos de mi iPhone?</div>
+        <div class="faq-answer">
+          <p>Windows no incluye de fábrica el códec para decodificar HEIC/HEVC y en la tienda de Microsoft suele requerir un pago. Con nuestro conversor gratuito puedes transformar tus fotos a JPG en segundos sin pagar ni instalar nada.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Se pierde calidad al convertir de HEIC a JPG?</div>
+        <div class="faq-answer">
+          <p>Si mantienes el deslizador de calidad entre el 90% y 100%, la diferencia visual es completamente imperceptible para el ojo humano, manteniendo los colores vivos y la nitidez original.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Mis fotos se envían a algún servidor de internet?</div>
+        <div class="faq-answer">
+          <p>No. La conversión se realiza 100% en local en tu dispositivo utilizando la librería WebAssembly/JavaScript <code>heic2any</code>. Tu privacidad está absolutamente garantizada.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Cómo puedo hacer que mi iPhone tome fotos en JPG directamente?</div>
+        <div class="faq-answer">
+          <p>En tu iPhone ve a <strong>Ajustes > Cámara > Formatos</strong> y marca la opción <strong>"El más compatible"</strong> en lugar de "Alta eficiencia". A partir de ese momento, tus nuevas fotos se guardarán automáticamente en JPG.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<!-- Load heic2any client library dynamically -->
+<script is:inline src="https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js"></script>
+
+<style>
+  .breadcrumb{font-size:.85rem;color:var(--muted);margin-bottom:.5rem}.breadcrumb a{color:var(--muted)}
+  .drop-zone{border:2px dashed var(--line);border-radius:var(--radius);padding:3rem 1.5rem;text-align:center;background:var(--surface-card);transition:all .2s;cursor:pointer}
+  .drop-zone.dragover{border-color:var(--accent);background:rgba(37,99,235,.05)}
+  .drop-icon{font-size:2.8rem;display:block;margin-bottom:.75rem}
+  .drop-text{font-size:1.05rem;color:var(--ink);margin-bottom:.5rem}
+  .drop-hint{font-size:.82rem;color:var(--muted)}
+
+  .conversion-workspace{margin-top:2rem}
+  .conv-card{display:grid;grid-template-columns:300px 1fr;gap:2rem;align-items:start;background:var(--surface-card);border:1px solid var(--line);border-radius:var(--radius-sm);padding:1.5rem}
+  @media(max-width:768px){.conv-card{grid-template-columns:1fr}}
+
+  .field{margin-bottom:1.2rem}
+  .field label{display:block;font-weight:600;font-size:.84rem;margin-bottom:.35rem}
+  .form-input{width:100%;padding:.55rem .75rem;background:var(--bg);border:1px solid var(--line);border-radius:var(--radius-sm);color:var(--ink);font:inherit}
+  .slider{width:100%;accent-color:var(--accent)}
+  .btn-block{width:100%;padding:.7rem;font-size:.95rem;font-weight:700}
+
+  .conv-status-box{background:var(--bg);border:1px solid var(--line);border-radius:var(--radius-sm);padding:1.2rem;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:200px;text-align:center}
+  .file-info{font-size:.9rem;font-weight:600;margin-bottom:1rem;color:var(--ink)}
+
+  .progress-indicator{display:flex;flex-direction:column;align-items:center;gap:.75rem;color:var(--accent);font-weight:600;font-size:.9rem}
+  .spinner{width:36px;height:36px;border:3px solid var(--line);border-top-color:var(--accent);border-radius:50%;animation:spin 1s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+</style>
+
+<script>
+  declare const heic2any: any;
+
+  let currentFile: File | null = null;
+
+  const dropZone = document.getElementById('drop-zone')!;
+  const fileInput = document.getElementById('file-input') as HTMLInputElement;
+  const btnBrowse = document.getElementById('btn-browse')!;
+  const workspace = document.getElementById('workspace')!;
+  const targetFormat = document.getElementById('target-format') as HTMLSelectElement;
+  const qualitySlider = document.getElementById('quality-slider') as HTMLInputElement;
+  const qualityVal = document.getElementById('quality-val')!;
+  const qualityField = document.getElementById('quality-field')!;
+  const btnConvert = document.getElementById('btn-convert')!;
+
+  const fileInfo = document.getElementById('file-info')!;
+  const progressIndicator = document.getElementById('progress-indicator')!;
+  const resultDownload = document.getElementById('result-download')!;
+
+  btnBrowse.addEventListener('click', (e) => {
+    e.stopPropagation();
+    fileInput.click();
+  });
+  dropZone.addEventListener('click', () => fileInput.click());
+
+  fileInput.addEventListener('change', () => {
+    if (fileInput.files?.length) setFile(fileInput.files[0]);
+  });
+
+  dropZone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    dropZone.classList.add('dragover');
+  });
+
+  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+
+  dropZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropZone.classList.remove('dragover');
+    if (e.dataTransfer?.files.length) setFile(e.dataTransfer.files[0]);
+  });
+
+  function setFile(file: File) {
+    currentFile = file;
+    const kb = (file.size / 1024).toFixed(1);
+    fileInfo.innerHTML = `📄 Archivo seleccionado: <strong>${file.name}</strong> (${kb} KB)`;
+    workspace.style.display = 'block';
+    resultDownload.style.display = 'none';
+  }
+
+  qualitySlider.addEventListener('input', () => {
+    qualityVal.textContent = `${qualitySlider.value}%`;
+  });
+
+  targetFormat.addEventListener('change', () => {
+    qualityField.style.display = targetFormat.value === 'image/jpeg' ? 'block' : 'none';
+  });
+
+  btnConvert.addEventListener('click', async () => {
+    if (!currentFile) return;
+
+    progressIndicator.style.display = 'flex';
+    resultDownload.style.display = 'none';
+    btnConvert.setAttribute('disabled', 'true');
+
+    const format = targetFormat.value;
+    const quality = parseInt(qualitySlider.value, 10) / 100;
+    const isJpeg = format === 'image/jpeg';
+    const ext = isJpeg ? 'jpg' : 'png';
+    const baseName = currentFile.name.replace(/\.[^/.]+$/, "");
+
+    try {
+      let outputBlob: Blob;
+
+      if (typeof heic2any !== 'undefined') {
+        const converted = await heic2any({
+          blob: currentFile,
+          toType: format,
+          quality: isJpeg ? quality : undefined
+        });
+        outputBlob = Array.isArray(converted) ? converted[0] : converted;
+      } else {
+        // Fallback using Canvas for standard image formats if already supported
+        const img = new Image();
+        const url = URL.createObjectURL(currentFile);
+        await new Promise((resolve, reject) => {
+          img.onload = resolve;
+          img.onerror = reject;
+          img.src = url;
+        });
+        const canvas = document.createElement('canvas');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext('2d')!;
+        ctx.drawImage(img, 0, 0);
+        outputBlob = await new Promise((resolve) => canvas.toBlob(b => resolve(b!), format, quality));
+      }
+
+      const downloadUrl = URL.createObjectURL(outputBlob);
+      const outputKb = (outputBlob.size / 1024).toFixed(1);
+
+      resultDownload.innerHTML = `
+        <div style="margin-bottom: 1rem; color: #16a34a; font-weight:700;">✓ ¡Conversión completada con éxito! (${outputKb} KB)</div>
+        <a href="${downloadUrl}" download="${baseName}.${ext}" class="btn btn-primary" style="text-decoration:none; display:inline-block; padding:.65rem 1.5rem;">
+          💾 Descargar ${baseName}.${ext}
+        </a>
+      `;
+      resultDownload.style.display = 'block';
+    } catch (err) {
+      alert('Hubo un error al decodificar el archivo HEIC. Asegúrate de que sea una foto HEIC válida de iPhone.');
+    } finally {
+      progressIndicator.style.display = 'none';
+      btnConvert.removeAttribute('disabled');
+    }
+  });
+</script>

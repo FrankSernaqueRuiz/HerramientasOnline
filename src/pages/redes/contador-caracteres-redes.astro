@@ -1,0 +1,368 @@
+﻿---
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+---
+
+<Base
+  title="Contador de Caracteres por Red Social (X, Instagram, TikTok, LinkedIn)"
+  description="Calcula en tiempo real cuánto te falta o te sobra para publicaciones y bios en X/Twitter, Instagram, TikTok, Facebook, LinkedIn y YouTube."
+>
+  <div class="page-header">
+    <div class="breadcrumb">
+      <a href="/">Herramientas</a> / <span>Redes sociales</span>
+    </div>
+    <h1>Contador de Caracteres por Red Social</h1>
+    <p class="lead">Escribe o pega tu texto y visualiza al instante los límites permitidos, advertencias de corte y caracteres restantes por plataforma.</p>
+  </div>
+
+  <section class="panel">
+    <div class="counter-header">
+      <div class="stats-overview">
+        <div class="stat-bubble">
+          <span class="stat-num" id="stat-chars">0</span>
+          <span class="stat-lbl">Caracteres</span>
+        </div>
+        <div class="stat-bubble">
+          <span class="stat-num" id="stat-words">0</span>
+          <span class="stat-lbl">Palabras</span>
+        </div>
+        <div class="stat-bubble">
+          <span class="stat-num" id="stat-lines">0</span>
+          <span class="stat-lbl">Líneas</span>
+        </div>
+        <div class="stat-bubble">
+          <span class="stat-num" id="stat-hashtags">0</span>
+          <span class="stat-lbl">Hashtags (#)</span>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button id="btn-copy-text" class="btn-sm" type="button">
+          <Icon name="copy" size={15} /> Copiar texto
+        </button>
+        <button id="btn-clear-text" class="btn-sm" type="button">
+          <Icon name="trash" size={15} /> Borrar
+        </button>
+      </div>
+    </div>
+
+    <div class="field-wrap">
+      <textarea 
+        id="social-text-input" 
+        rows="6" 
+        placeholder="Escribe o pega aquí el contenido de tu publicación para evaluar todas las redes..."
+      ></textarea>
+    </div>
+
+    <div class="platforms-grid" id="platforms-container">
+      <!-- Tarjetas de redes sociales con barras de progreso -->
+    </div>
+  </section>
+
+  <section class="seo-section">
+    <h2>Límites recomendados y mejores prácticas para redes sociales</h2>
+    <p>Cada plataforma digital maneja reglas técnicas específicas y algoritmos de distribución que premian la síntesis y la retención del lector. Superar los límites establecidos provocará el rechazo automático de la publicación, mientras que escribir de más puede provocar que el mensaje se corte detrás del botón "Ver más", reduciendo drásticamente el porcentaje de interacción y clics.</p>
+
+    <div class="guide-grid">
+      <div class="guide-card">
+        <h4>Estructura de pirámide invertida</h4>
+        <p>Coloca la tesis, el dato revelador o la pregunta de impacto en los primeros 120 caracteres. Si el usuario se engancha en la vista previa, desplegará el resto del contenido con gusto.</p>
+      </div>
+      <div class="guide-card">
+        <h4>Optimización de Hashtags (#)</h4>
+        <p>Los algoritmos contemporáneos valoran la especificidad. Se recomienda integrar entre 3 y 5 etiquetas directamente relacionadas con la temática para no canibalizar el alcance.</p>
+      </div>
+      <div class="guide-card">
+        <h4>Llamadas a la acción (CTA)</h4>
+        <p>Reserva las últimas líneas para solicitar comentarios, guardar la publicación o visitar el enlace de tu biografía antes de agotar el cupo de caracteres.</p>
+      </div>
+    </div>
+
+    <h3>Resumen de límites por plataforma en 2026</h3>
+    <ul>
+      <li><strong>X / Twitter:</strong> 280 caracteres para cuentas básicas. La brevedad maximiza respuestas directas y retuits inmediatos.</li>
+      <li><strong>Instagram:</strong> Permite hasta 2,200 caracteres por publicación, pero el corte visual se produce tras las primeras 125 letras. Las biografías cuentan con un estricto tope de 150 caracteres.</li>
+      <li><strong>TikTok:</strong> Admite descripciones de hasta 4,000 caracteres, aunque en pantalla solo se aprecian con claridad los primeros 150 caracteres durante la reproducción del video.</li>
+      <li><strong>LinkedIn:</strong> Admite 3,000 caracteres en posts ordinarios. Las publicaciones que condensan la idea principal en 3 líneas cortas obtienen mayor permanencia en el feed profesional.</li>
+      <li><strong>YouTube:</strong> Hasta 100 caracteres en títulos de video (lo ideal para pantallas móviles es mantenerse por debajo de 70 caracteres) y 5,000 en la caja de descripción.</li>
+      <li><strong>Threads:</strong> Límite oficial de 500 caracteres por hilo o actualización directa.</li>
+    </ul>
+
+    <h2>Preguntas frecuentes sobre el contador de caracteres</h2>
+    <div class="faq-wrap">
+      <div class="faq-item">
+        <div class="faq-question">¿Los emojis y los espacios cuentan como caracteres?</div>
+        <div class="faq-answer">
+          <p>Sí. Cada espacio en blanco cuenta exactamente como 1 carácter. Por su parte, los emojis son caracteres Unicode que, según su complejidad o modificadores de tono de piel, pueden ocupar entre 1 y 2 o más posiciones en la memoria de conteo. Esta herramienta los cuantifica con precisión para evitar sorpresas al publicar.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Por qué es fundamental no exceder la zona visible antes del "Ver más"?</div>
+        <div class="faq-answer">
+          <p>Porque la inmensa mayoría de los usuarios navega a gran velocidad desde dispositivos móviles. Si el gancho no queda expuesto en las primeras líneas visibles sin necesidad de interacción adicional, el usuario simplemente continuará haciendo scroll, perjudicando las métricas de tu perfil.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Cuántos caracteres se recomiendan para una biografía efectiva?</div>
+        <div class="faq-answer">
+          <p>En Instagram dispones de 150 caracteres y en TikTok de 80. La recomendación es usar una fórmula de tres elementos: a quién ayudas, qué solución aportas y un enlace o llamada a la acción clara.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Se almacenan los textos o copys que analizo en esta página?</div>
+        <div class="faq-answer">
+          <p>No. Esta herramienta procesa el recuento de caracteres, palabras y líneas en tiempo real directamente en la memoria de tu navegador mediante JavaScript. Tus textos nunca se envían a ningún servidor externo.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .breadcrumb {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-bottom: 0.5rem;
+  }
+  .breadcrumb a {
+    color: var(--muted);
+  }
+  .counter-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+  }
+  .stats-overview {
+    display: flex;
+    gap: 0.85rem;
+    flex-wrap: wrap;
+  }
+  .stat-bubble {
+    background: var(--surface-card);
+    border: 1px solid var(--line);
+    padding: 0.4rem 0.85rem;
+    border-radius: var(--radius-sm);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 75px;
+  }
+  .stat-num {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--accent);
+  }
+  .stat-lbl {
+    font-size: 0.72rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+  .header-actions {
+    display: flex;
+    gap: 0.5rem;
+  }
+  .btn-sm {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    color: var(--ink);
+    border-radius: var(--radius-sm);
+    padding: 0.45rem 0.75rem;
+    font-size: 0.82rem;
+    font-weight: 500;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+  .btn-sm:hover {
+    background: var(--surface-hover);
+  }
+  .field-wrap textarea {
+    font-size: 1rem;
+    line-height: 1.5;
+    margin-bottom: 1.5rem;
+  }
+  .platforms-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1rem;
+  }
+  :global(.platform-card) {
+    background: var(--surface-card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    padding: 1.1rem;
+    transition: transform 0.15s, border-color 0.15s;
+  }
+  :global(.platform-card.is-over) {
+    border-color: #f85149;
+    background: rgba(248, 81, 73, 0.05);
+  }
+  :global(.platform-card-header) {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+  }
+  :global(.platform-title) {
+    font-weight: 700;
+    font-size: 0.95rem;
+  }
+  :global(.platform-badge) {
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 0.15rem 0.5rem;
+    border-radius: 9999px;
+  }
+  :global(.platform-badge.ok) {
+    background: rgba(63, 185, 80, 0.15);
+    color: #3fb950;
+  }
+  :global(.platform-badge.over) {
+    background: rgba(248, 81, 73, 0.15);
+    color: #f85149;
+  }
+  :global(.progress-bar-wrap) {
+    height: 6px;
+    background: var(--bg);
+    border-radius: 9999px;
+    overflow: hidden;
+    margin-bottom: 0.65rem;
+  }
+  :global(.progress-bar-fill) {
+    height: 100%;
+    background: var(--accent);
+    transition: width 0.15s ease, background 0.15s ease;
+  }
+  :global(.progress-bar-fill.warning) {
+    background: #d29922;
+  }
+  :global(.progress-bar-fill.danger) {
+    background: #f85149;
+  }
+  :global(.platform-details) {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+  :global(.platform-details strong) {
+    color: var(--ink);
+  }
+</style>
+
+<script>
+  interface NetworkLimit {
+    id: string;
+    name: string;
+    target: string;
+    limit: number;
+    recommended?: number;
+  }
+
+  const platforms: NetworkLimit[] = [
+    { id: 'x-tweet', name: 'X / Twitter', target: 'Post estándar', limit: 280 },
+    { id: 'ig-caption', name: 'Instagram', target: 'Descripción post', limit: 2200, recommended: 125 },
+    { id: 'ig-bio', name: 'Instagram', target: 'Biografía perfil', limit: 150 },
+    { id: 'tiktok-desc', name: 'TikTok', target: 'Descripción video', limit: 4000, recommended: 150 },
+    { id: 'tiktok-bio', name: 'TikTok', target: 'Biografía perfil', limit: 80 },
+    { id: 'linkedin-post', name: 'LinkedIn', target: 'Publicación', limit: 3000, recommended: 600 },
+    { id: 'fb-post', name: 'Facebook', target: 'Estado / Post', limit: 63206, recommended: 250 },
+    { id: 'yt-title', name: 'YouTube', target: 'Título de video', limit: 100, recommended: 70 },
+    { id: 'yt-desc', name: 'YouTube', target: 'Descripción video', limit: 5000 },
+    { id: 'threads-post', name: 'Threads', target: 'Post estándar', limit: 500 }
+  ];
+
+  const textInput = document.getElementById('social-text-input') as HTMLTextAreaElement;
+  const container = document.getElementById('platforms-container') as HTMLDivElement;
+  const statChars = document.getElementById('stat-chars') as HTMLSpanElement;
+  const statWords = document.getElementById('stat-words') as HTMLSpanElement;
+  const statLines = document.getElementById('stat-lines') as HTMLSpanElement;
+  const statHashtags = document.getElementById('stat-hashtags') as HTMLSpanElement;
+  const btnCopy = document.getElementById('btn-copy-text') as HTMLButtonElement;
+  const btnClear = document.getElementById('btn-clear-text') as HTMLButtonElement;
+
+  function countStats(text: string) {
+    const chars = text.length;
+    const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+    const lines = text ? text.split(/\r\n|\r|\n/).length : 0;
+    const hashtags = (text.match(/#[a-zA-Z0-9_]+/g) || []).length;
+
+    statChars.textContent = chars.toLocaleString();
+    statWords.textContent = words.toLocaleString();
+    statLines.textContent = lines.toLocaleString();
+    statHashtags.textContent = hashtags.toString();
+  }
+
+  function renderPlatforms() {
+    const text = textInput.value;
+    const chars = text.length;
+    countStats(text);
+
+    container.innerHTML = '';
+
+    platforms.forEach((p) => {
+      const remaining = p.limit - chars;
+      const isOver = remaining < 0;
+      const pct = Math.min(100, Math.round((chars / p.limit) * 100));
+
+      let fillClass = '';
+      if (pct >= 100 || isOver) {
+        fillClass = 'danger';
+      } else if (pct > 80) {
+        fillClass = 'warning';
+      }
+
+      const card = document.createElement('div');
+      card.className = `platform-card ${isOver ? 'is-over' : ''}`;
+
+      card.innerHTML = `
+        <div class="platform-card-header">
+          <div>
+            <div class="platform-title">${p.name}</div>
+            <div style="font-size: 0.75rem; color: var(--muted);">${p.target}</div>
+          </div>
+          <span class="platform-badge ${isOver ? 'over' : 'ok'}">
+            ${isOver ? `Excede por ${Math.abs(remaining)}` : `${remaining} restantes`}
+          </span>
+        </div>
+
+        <div class="progress-bar-wrap">
+          <div class="progress-bar-fill ${fillClass}" style="width: ${pct}%"></div>
+        </div>
+
+        <div class="platform-details">
+          <span>Uso: <strong>${chars}</strong> / ${p.limit}</span>
+          <span>${pct}%</span>
+        </div>
+      `;
+
+      container.appendChild(card);
+    });
+  }
+
+  textInput.addEventListener('input', renderPlatforms);
+
+  btnCopy.addEventListener('click', async () => {
+    if (!textInput.value) return;
+    try {
+      await navigator.clipboard.writeText(textInput.value);
+      btnCopy.textContent = '✓ Copiado';
+      setTimeout(() => {
+        btnCopy.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg> Copiar texto`;
+      }, 2000);
+    } catch {
+      alert('No se pudo copiar');
+    }
+  });
+
+  btnClear.addEventListener('click', () => {
+    textInput.value = '';
+    renderPlatforms();
+  });
+
+  renderPlatforms();
+</script>

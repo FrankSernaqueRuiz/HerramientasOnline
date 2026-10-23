@@ -1,0 +1,720 @@
+---
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+---
+
+<Base
+  title="Calculadora de CTS 2025 - 2026 en Perú · UtiliaOnline"
+  description="Calcula tu Compensación por Tiempo de Servicios (CTS) para el depósito de mayo o noviembre con desglose detallado de gratificación, faltas y régimen laboral."
+  keywords="calculadora cts, calcular cts peru, cts mayo noviembre, formula cts, remuneracion computable cts, ley mype cts"
+>
+  <div class="tool-container">
+    <div class="tool-header">
+      <div class="breadcrumb">
+        <a href="/">Inicio</a> / <a href="/simuladores">Simuladores</a> / <span>Calculadora de CTS</span>
+      </div>
+      <div class="title-row">
+        <div class="tool-icon-badge">
+          <Icon name="calculator" size={28} />
+        </div>
+        <div>
+          <h1>Calculadora de CTS (Perú y Comparativa)</h1>
+          <p class="tool-desc">
+            Calcula el monto exacto de tu Compensación por Tiempo de Servicios conforme al D.Leg. 650. Incluye 1/6 de gratificación, asignación familiar y régimen MYPE.
+          </p>
+        </div>
+      </div>
+      
+      <!-- Country Tabs -->
+      <div class="country-tabs" role="tablist">
+        <button type="button" class="country-btn active" data-country="pe">
+          <span class="flag">🇵🇪</span> Perú (D.Leg. 650)
+        </button>
+        <button type="button" class="country-btn" data-country="co">
+          <span class="flag">🇨🇴</span> Colombia (Cesantías)
+        </button>
+      </div>
+    </div>
+
+    <div class="calc-grid">
+      <!-- Input Panel -->
+      <div class="panel-card input-panel">
+        <div class="panel-head">
+          <Icon name="file-text" size={18} />
+          <h2>Datos para el Cálculo</h2>
+        </div>
+
+        <form id="cts-form" class="calc-form" onsubmit="event.preventDefault()">
+          <!-- Peru Section -->
+          <div id="section-pe">
+            <div class="form-group">
+              <label for="regimen-pe">Régimen Laboral</label>
+              <select id="regimen-pe" class="form-select">
+                <option value="general">Régimen General (100% de CTS legal)</option>
+                <option value="pequena">Pequeña Empresa REMYPE (50% de CTS)</option>
+                <option value="micro">Microempresa REMYPE (Sin derecho a CTS)</option>
+              </select>
+              <small class="hint-text">En Microempresa por ley no corresponde depósito de CTS.</small>
+            </div>
+
+            <div class="form-group">
+              <label for="periodo-pe">Periodo a Depositar</label>
+              <select id="periodo-pe" class="form-select">
+                <option value="mayo">Depósito de Mayo (Noviembre - Abril)</option>
+                <option value="noviembre">Depósito de Noviembre (Mayo - Octubre)</option>
+                <option value="trunco">Cese / CTS Trunca (Fechas personalizadas)</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="sueldo-pe">Sueldo Básico Mensual (S/)</label>
+              <div class="input-prefix-wrap">
+                <span class="prefix">S/</span>
+                <input type="number" id="sueldo-pe" class="form-input" value="2500" min="0" step="0.01" required />
+              </div>
+            </div>
+
+            <div class="form-check-group">
+              <label class="checkbox-label">
+                <input type="checkbox" id="asig-fam-pe" />
+                <span>¿Percibe Asignación Familiar? (+ S/ 102.50 = 10% RMV)</span>
+              </label>
+            </div>
+
+            <div class="form-row-2">
+              <div class="form-group">
+                <label for="gratif-pe">Última Gratificación (S/)</label>
+                <div class="input-prefix-wrap">
+                  <span class="prefix">S/</span>
+                  <input type="number" id="gratif-pe" class="form-input" value="2500" min="0" step="0.01" />
+                </div>
+                <small class="hint-text">Se computa 1/6 (un sexto) de este valor.</small>
+              </div>
+
+              <div class="form-group">
+                <label for="prom-variables-pe">Horas Extras / Comisiones (S/)</label>
+                <div class="input-prefix-wrap">
+                  <span class="prefix">S/</span>
+                  <input type="number" id="prom-variables-pe" class="form-input" value="0" min="0" step="0.01" />
+                </div>
+                <small class="hint-text">Promedio mensual si se percibió mín. 3 meses.</small>
+              </div>
+            </div>
+
+            <div class="form-row-2">
+              <div class="form-group">
+                <label for="meses-pe">Meses Laborados en Semestre</label>
+                <input type="number" id="meses-pe" class="form-input" value="6" min="1" max="6" />
+              </div>
+              <div class="form-group">
+                <label for="dias-pe">Días Adicionales (Fracción)</label>
+                <input type="number" id="dias-pe" class="form-input" value="0" min="0" max="29" />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="faltas-pe">Días de Inasistencias Injustificadas</label>
+              <input type="number" id="faltas-pe" class="form-input" value="0" min="0" max="180" />
+              <small class="hint-text">Se descuentan 1/30 del doceavo por cada falta.</small>
+            </div>
+          </div>
+
+          <!-- Colombia Section -->
+          <div id="section-co" style="display: none;">
+            <div class="form-group">
+              <label for="salario-co">Salario Mensual ($ COP)</label>
+              <div class="input-prefix-wrap">
+                <span class="prefix">$</span>
+                <input type="number" id="salario-co" class="form-input" value="2000000" min="0" step="100" />
+              </div>
+            </div>
+            <div class="form-check-group">
+              <label class="checkbox-label">
+                <input type="checkbox" id="aux-transporte-co" checked />
+                <span>¿Incluye Auxilio de Transporte? (Hasta 2 SMMLV)</span>
+              </label>
+            </div>
+            <div class="form-group">
+              <label for="dias-co">Días Laborados en el Año (máx. 360)</label>
+              <input type="number" id="dias-co" class="form-input" value="360" min="1" max="360" />
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Result Panel -->
+      <div class="panel-card result-panel">
+        <div class="panel-head">
+          <Icon name="dollar-sign" size={18} />
+          <h2>Resultado de la CTS</h2>
+        </div>
+
+        <div class="result-highlight-card">
+          <span class="result-sub-label" id="result-badge-label">CTS Semestral a Depositar</span>
+          <div class="result-main-value" id="res-total">S/ 0.00</div>
+          <div class="result-date-info" id="res-fecha-limite">Fecha límite de depósito: 15 de mayo</div>
+        </div>
+
+        <div class="breakdown-list">
+          <div class="breakdown-item">
+            <span>Remuneración computable base:</span>
+            <strong id="res-computable">S/ 0.00</strong>
+          </div>
+          <div class="breakdown-subitems" id="pe-breakdown-details">
+            <div class="breakdown-subitem">
+              <span>• Sueldo básico:</span>
+              <span id="res-sueldo">S/ 0.00</span>
+            </div>
+            <div class="breakdown-subitem">
+              <span>• Asignación familiar:</span>
+              <span id="res-asig">S/ 0.00</span>
+            </div>
+            <div class="breakdown-subitem">
+              <span>• 1/6 Gratificación:</span>
+              <span id="res-sexto">S/ 0.00</span>
+            </div>
+            <div class="breakdown-subitem">
+              <span>• Promedio variables:</span>
+              <span id="res-variables">S/ 0.00</span>
+            </div>
+          </div>
+
+          <div class="breakdown-item">
+            <span>Por meses completos laborados:</span>
+            <strong id="res-meses">S/ 0.00</strong>
+          </div>
+          <div class="breakdown-item">
+            <span>Por días de fracción:</span>
+            <strong id="res-dias">S/ 0.00</strong>
+          </div>
+          <div class="breakdown-item text-danger">
+            <span>Deducción por inasistencias:</span>
+            <strong id="res-faltas">- S/ 0.00</strong>
+          </div>
+          <div class="breakdown-item" id="co-intereses-row" style="display: none;">
+            <span>Intereses de cesantías (12% anual):</span>
+            <strong id="res-intereses-co">$ 0.00</strong>
+          </div>
+        </div>
+
+        <div class="action-buttons-row">
+          <button type="button" class="btn-action" id="btn-copy-cts">
+            <Icon name="copy" size={16} />
+            <span>Copiar desglose</span>
+          </button>
+          <button type="button" class="btn-action" onclick="window.print()">
+            <Icon name="download" size={16} />
+            <span>Imprimir</span>
+          </button>
+        </div>
+
+        <div class="legal-notice">
+          <strong>Marco Legal (Perú):</strong> El depósito de CTS se realiza en la entidad financiera elegida por el trabajador en los primeros 15 días calendario de mayo y noviembre. La omisión genera intereses laborales e infracción grave ante SUNAFIL.
+        </div>
+      </div>
+    </div>
+
+    <!-- Guía y Cómo Usar (Estándar UtiliaOnline) -->
+    <section class="seo-section">
+      <h2>Guía completa: ¿Cómo calcular tu CTS y cuándo se paga en Perú?</h2>
+      <p>
+        La <strong>Compensación por Tiempo de Servicios (CTS)</strong> es un beneficio social laboral de previsión ante el cese, regulado en el Perú por el <strong>Decreto Legislativo N° 650</strong> y su reglamento (D.S. 001-97-TR). Su objetivo fundamental es constituir un fondo de contingencia que proteja al trabajador y a su familia cuando termine la relación laboral.
+      </p>
+      <p>
+        El empleador está obligado a depositar la CTS semestralmente de manera directa en la cuenta bancaria o caja financiera que el trabajador haya elegido libremente. Los periodos de cómputo son:
+      </p>
+      <ul>
+        <li><strong>Depósito de Mayo:</strong> Computa el semestre laborado del 1 de noviembre al 30 de abril (plazo límite de depósito: 15 de mayo).</li>
+        <li><strong>Depósito de Noviembre:</strong> Computa el semestre laborado del 1 de mayo al 31 de octubre (plazo límite de depósito: 15 de noviembre).</li>
+      </ul>
+
+      <h2>¿Cómo usar esta calculadora paso a paso?</h2>
+      <div class="step-list">
+        <div class="step-card">
+          <span class="step-num">1</span>
+          <div class="step-body">
+            <h4>Selecciona tu régimen laboral y periodo</h4>
+            <p>Elige entre Régimen General (100% de beneficio) o Pequeña Empresa REMYPE (50% de beneficio). Luego indica si calculas el depósito regular de mayo, noviembre o una liquidación trunca por cese.</p>
+          </div>
+        </div>
+        <div class="step-card">
+          <span class="step-num">2</span>
+          <div class="step-body">
+            <h4>Ingresa tu sueldo básico y asignación familiar</h4>
+            <p>Escribe tu remuneración fija mensual vigente. Si tienes hijos menores o dependientes cursando estudios superiores, marca la casilla de Asignación Familiar para sumar los S/ 102.50 de ley.</p>
+          </div>
+        </div>
+        <div class="step-card">
+          <span class="step-num">3</span>
+          <div class="step-body">
+            <h4>Incluye el sexto de gratificación y variables</h4>
+            <p>Digita el monto de la última gratificación ordinaria percibida (la ley ordena sumar 1/6 a la base computable). Si realizaste horas extras o comisiones regulares en al menos 3 meses del semestre, incluye el promedio mensual.</p>
+          </div>
+        </div>
+        <div class="step-card">
+          <span class="step-num">4</span>
+          <div class="step-body">
+            <h4>Obtén el desglose exacto y fecha límite</h4>
+            <p>La calculadora mostrará de forma instantánea tu remuneración computable, el monto correspondiente a meses y días laborados, la deducción de faltas y el importe total neto a depositar.</p>
+          </div>
+        </div>
+      </div>
+
+      <h3>Casos prácticos de cálculo</h3>
+      <div class="guide-grid">
+        <div class="guide-card">
+          <h4>Régimen General (Semestre completo)</h4>
+          <p>Un trabajador con sueldo de S/ 3,000 que laboró los 6 meses completos del semestre y recibió S/ 3,000 de gratificación, tiene una base computable de S/ 3,500 (3,000 + 500 de sexto de gratificación). Su depósito semestral será exactamente <strong>S/ 1,750.00</strong>.</p>
+        </div>
+        <div class="guide-card">
+          <h4>Pequeña Empresa (REMYPE)</h4>
+          <p>Los trabajadores de microempresas no perciben CTS, mientras que los de pequeña empresa inscrita en el REMYPE tienen derecho al 50% de la tasa general (15 días de remuneración computable por año completo de servicios).</p>
+        </div>
+        <div class="guide-card">
+          <h4>CTS Trunca por Renuncia o Despido</h4>
+          <p>Si cesas antes del cierre del semestre, el empleador no deposita en el banco, sino que te paga la CTS trunca directamente en tu liquidación de beneficios sociales dentro de las 48 horas posteriores al cese.</p>
+        </div>
+      </div>
+
+      <h2>Preguntas frecuentes sobre la CTS en Perú</h2>
+      <div class="faq-wrap">
+        <div class="faq-item">
+          <div class="faq-question">¿Hasta qué fecha exacta tiene la empresa para depositar la CTS?</div>
+          <div class="faq-answer">
+            <p>El plazo legal improrrogable vence los días <strong>15 de mayo</strong> (para el semestre nov-abr) y <strong>15 de noviembre</strong> (para el semestre may-oct). Si el día 15 cae en día inhábil (domingo o feriado), el plazo vence el primer día hábil siguiente.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-question">¿Qué multas e intereses aplican si no me depositan la CTS a tiempo?</div>
+          <div class="faq-answer">
+            <p>El incumplimiento califica como <strong>infracción grave en materia de relaciones laborales</strong> ante la SUNAFIL. Además de las multas administrativas (que oscilan según el número de trabajadores afectados), el empleador queda automáticamente obligado a pagar los intereses legales laborales fijados por la SBS hasta el día del abono efectivo.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-question">¿La CTS sufre descuentos de AFP, ONP o Impuesto a la Renta?</div>
+          <div class="faq-answer">
+            <p><strong>No.</strong> Por mandato expreso del artículo 47 del D.Leg. 650, los depósitos de CTS están completamente inafectos de cualquier tributo, aporte previsional (AFP u ONP) o contribución a EsSalud. El dinero depositado entra íntegro y neto a tu cuenta bancaria.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-question">¿Puedo cambiar la entidad financiera donde recibo mi CTS?</div>
+          <div class="faq-answer">
+            <p>Sí, en cualquier momento del año. Puedes solicitar el traslado de tu cuenta de CTS a otro banco, caja municipal o financiera que ofrezca una mejor tasa de interés (TEA). Para ello, solo debes presentar una solicitud escrita a tu empleador adjuntando la copia de tu DNI y la constancia de la nueva entidad.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-question">¿Las faltas injustificadas descuentan el monto de mi CTS?</div>
+          <div class="faq-answer">
+            <p>Sí. Cada día de inasistencia no justificada durante el semestre se deduce a razón de un treintavo de doceavo (1/30 del valor mensual) del importe final a depositar.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</Base>
+
+<style>
+  .tool-container {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 1.5rem 0 3rem;
+  }
+  .breadcrumb {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-bottom: 0.75rem;
+  }
+  .breadcrumb a {
+    color: var(--muted);
+  }
+  .breadcrumb a:hover {
+    color: var(--accent);
+  }
+  .title-row {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+  .tool-icon-badge {
+    width: 58px;
+    height: 58px;
+    border-radius: var(--radius-md);
+    background: linear-gradient(135deg, rgba(56, 189, 248, 0.15), rgba(59, 130, 246, 0.05));
+    border: 1px solid rgba(56, 189, 248, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+  .title-row h1 {
+    font-size: 1.85rem;
+    margin: 0 0 0.35rem 0;
+    letter-spacing: -0.02em;
+  }
+  .tool-desc {
+    color: var(--muted);
+    font-size: 0.95rem;
+    margin: 0;
+    max-width: 75ch;
+  }
+
+  .country-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 0.75rem;
+  }
+  .country-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.45rem 0.9rem;
+    border-radius: 9999px;
+    border: 1px solid var(--line);
+    background: var(--surface-card);
+    color: var(--ink);
+    font-size: 0.85rem;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.15s ease;
+  }
+  .country-btn:hover {
+    border-color: var(--accent);
+  }
+  .country-btn.active {
+    background: var(--accent);
+    color: #0b0f19;
+    border-color: var(--accent);
+    font-weight: 700;
+  }
+
+  .calc-grid {
+    display: grid;
+    grid-template-columns: 1.15fr 0.95fr;
+    gap: 1.5rem;
+    align-items: start;
+  }
+  @media (max-width: 860px) {
+    .calc-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .panel-card {
+    background: var(--surface-card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  }
+  .panel-head {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--line);
+    color: var(--accent);
+  }
+  .panel-head h2 {
+    font-size: 1.15rem;
+    color: var(--ink);
+    margin: 0;
+  }
+
+  .form-group {
+    margin-bottom: 1.1rem;
+  }
+  .form-group label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 0.35rem;
+    color: var(--ink);
+  }
+  .form-input, .form-select {
+    width: 100%;
+    padding: 0.6rem 0.85rem;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    color: var(--ink);
+    font-size: 0.95rem;
+    transition: border-color 0.15s;
+  }
+  .form-input:focus, .form-select:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+  .input-prefix-wrap {
+    display: flex;
+    align-items: center;
+    position: relative;
+  }
+  .input-prefix-wrap .prefix {
+    position: absolute;
+    left: 0.85rem;
+    font-weight: 600;
+    color: var(--muted);
+  }
+  .input-prefix-wrap .form-input {
+    padding-left: 2.2rem;
+  }
+
+  .form-row-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.85rem;
+  }
+  .hint-text {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-top: 0.25rem;
+  }
+  .form-check-group {
+    margin: 0.85rem 0 1.1rem;
+  }
+  .checkbox-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: var(--ink);
+    cursor: pointer;
+  }
+
+  /* Result Panel */
+  .result-highlight-card {
+    background: linear-gradient(135deg, rgba(56, 189, 248, 0.1), rgba(16, 185, 129, 0.08));
+    border: 1px solid rgba(56, 189, 248, 0.3);
+    border-radius: var(--radius-sm);
+    padding: 1.25rem;
+    text-align: center;
+    margin-bottom: 1.25rem;
+  }
+  .result-sub-label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .result-main-value {
+    font-size: 2.25rem;
+    font-weight: 800;
+    color: var(--accent);
+    margin: 0.25rem 0;
+    font-family: var(--font-heading, sans-serif);
+  }
+  .result-date-info {
+    font-size: 0.8rem;
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  .breakdown-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    padding: 1rem;
+    margin-bottom: 1.25rem;
+  }
+  .breakdown-item {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.88rem;
+  }
+  .breakdown-subitems {
+    padding-left: 0.75rem;
+    margin: 0.25rem 0;
+    border-left: 2px solid var(--line);
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  .breakdown-subitem {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+  .text-danger {
+    color: #ef4444;
+  }
+
+  .action-buttons-row {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+  }
+  .btn-action {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    padding: 0.55rem 0.85rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--line);
+    background: var(--surface-card);
+    color: var(--ink);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn-action:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .legal-notice {
+    font-size: 0.75rem;
+    color: var(--muted);
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px dashed var(--line);
+    padding: 0.75rem;
+    border-radius: var(--radius-sm);
+    line-height: 1.45;
+  }
+</style>
+
+<script>
+  let activeCountry = 'pe';
+
+  const formatCurrency = (val: number, currency: string = 'S/') => {
+    return `${currency} ${val.toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  };
+
+  const calculateCTS = () => {
+    if (activeCountry === 'pe') {
+      const regimen = (document.getElementById('regimen-pe') as HTMLSelectElement).value;
+      const sueldo = parseFloat((document.getElementById('sueldo-pe') as HTMLInputElement).value) || 0;
+      const tieneAsig = (document.getElementById('asig-fam-pe') as HTMLInputElement).checked;
+      const gratif = parseFloat((document.getElementById('gratif-pe') as HTMLInputElement).value) || 0;
+      const variables = parseFloat((document.getElementById('prom-variables-pe') as HTMLInputElement).value) || 0;
+      const meses = parseInt((document.getElementById('meses-pe') as HTMLInputElement).value) || 0;
+      const dias = parseInt((document.getElementById('dias-pe') as HTMLInputElement).value) || 0;
+      const faltas = parseInt((document.getElementById('faltas-pe') as HTMLInputElement).value) || 0;
+      const periodo = (document.getElementById('periodo-pe') as HTMLSelectElement).value;
+
+      if (regimen === 'micro') {
+        document.getElementById('res-total')!.textContent = 'S/ 0.00';
+        document.getElementById('res-computable')!.textContent = 'S/ 0.00';
+        document.getElementById('res-fecha-limite')!.textContent = 'Microempresa: no corresponde CTS por ley';
+        return;
+      }
+
+      const asigMonto = tieneAsig ? 102.50 : 0;
+      const sextoGratif = gratif / 6;
+      let computable = sueldo + asigMonto + sextoGratif + variables;
+
+      let factorRegimen = regimen === 'pequena' ? 0.5 : 1.0;
+
+      // CTS por meses = (computable / 12) * meses * factor
+      const montoMeses = (computable / 12) * meses * factorRegimen;
+      // CTS por dias = (computable / 360) * dias * factor
+      const montoDias = (computable / 360) * dias * factorRegimen;
+      // Faltas se descuentan = (computable / 360) * faltas * factor
+      const montoFaltas = (computable / 360) * faltas * factorRegimen;
+
+      const total = Math.max(0, montoMeses + montoDias - montoFaltas);
+
+      document.getElementById('res-total')!.textContent = formatCurrency(total, 'S/');
+      document.getElementById('res-computable')!.textContent = formatCurrency(computable, 'S/');
+      document.getElementById('res-sueldo')!.textContent = formatCurrency(sueldo, 'S/');
+      document.getElementById('res-asig')!.textContent = formatCurrency(asigMonto, 'S/');
+      document.getElementById('res-sexto')!.textContent = formatCurrency(sextoGratif, 'S/');
+      document.getElementById('res-variables')!.textContent = formatCurrency(variables, 'S/');
+      document.getElementById('res-meses')!.textContent = formatCurrency(montoMeses, 'S/');
+      document.getElementById('res-dias')!.textContent = formatCurrency(montoDias, 'S/');
+      document.getElementById('res-faltas')!.textContent = `- ${formatCurrency(montoFaltas, 'S/')}`;
+
+      const fechaEl = document.getElementById('res-fecha-limite');
+      if (fechaEl) {
+        if (periodo === 'mayo') fechaEl.textContent = 'Fecha límite legal: 15 de Mayo';
+        else if (periodo === 'noviembre') fechaEl.textContent = 'Fecha límite legal: 15 de Noviembre';
+        else fechaEl.textContent = 'Abono dentro de las 48h de cese';
+      }
+    } else {
+      // Colombia: Cesantías = (Salario + Aux) * Días / 360
+      const salario = parseFloat((document.getElementById('salario-co') as HTMLInputElement).value) || 0;
+      const tieneAux = (document.getElementById('aux-transporte-co') as HTMLInputElement).checked;
+      const auxTransporte = tieneAux ? 162000 : 0;
+      const dias = parseInt((document.getElementById('dias-co') as HTMLInputElement).value) || 0;
+
+      const base = salario + auxTransporte;
+      const cesantias = (base * dias) / 360;
+      const intereses = (cesantias * dias * 0.12) / 360;
+
+      document.getElementById('res-total')!.textContent = formatCurrency(cesantias, '$');
+      document.getElementById('res-computable')!.textContent = formatCurrency(base, '$');
+      document.getElementById('res-intereses-co')!.textContent = formatCurrency(intereses, '$');
+      document.getElementById('res-fecha-limite')!.textContent = 'Consignación al fondo: máx. 14 de febrero';
+    }
+  };
+
+  // Switch tabs
+  const tabButtons = document.querySelectorAll('.country-btn');
+  tabButtons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      tabButtons.forEach((b) => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeCountry = (btn as HTMLElement).dataset.country || 'pe';
+
+      const secPe = document.getElementById('section-pe');
+      const secCo = document.getElementById('section-co');
+      const rowCo = document.getElementById('co-intereses-row');
+      const peBreakdown = document.getElementById('pe-breakdown-details');
+      const label = document.getElementById('result-badge-label');
+
+      if (activeCountry === 'pe') {
+        if (secPe) secPe.style.display = 'block';
+        if (secCo) secCo.style.display = 'none';
+        if (rowCo) rowCo.style.display = 'none';
+        if (peBreakdown) peBreakdown.style.display = 'flex';
+        if (label) label.textContent = 'CTS Semestral a Depositar';
+      } else {
+        if (secPe) secPe.style.display = 'none';
+        if (secCo) secCo.style.display = 'block';
+        if (rowCo) rowCo.style.display = 'flex';
+        if (peBreakdown) peBreakdown.style.display = 'none';
+        if (label) label.textContent = 'Cesantías Anuales a Consignar';
+      }
+      calculateCTS();
+    });
+  });
+
+  // Listen to inputs
+  const inputs = document.querySelectorAll('#cts-form input, #cts-form select');
+  inputs.forEach((inp) => {
+    inp.addEventListener('input', calculateCTS);
+    inp.addEventListener('change', calculateCTS);
+  });
+
+  // Copy button
+  const copyBtn = document.getElementById('btn-copy-cts');
+  if (copyBtn) {
+    copyBtn.addEventListener('click', () => {
+      const total = document.getElementById('res-total')?.textContent || '';
+      const comp = document.getElementById('res-computable')?.textContent || '';
+      const text = `Cálculo de CTS (UtiliaOnline):\n- Remuneración Computable: ${comp}\n- Total a Depositar: ${total}\nCalculado en: ${window.location.href}`;
+      navigator.clipboard.writeText(text).then(() => {
+        copyBtn.innerHTML = '<span>¡Copiado!</span>';
+        setTimeout(() => {
+          copyBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>Copiar desglose</span>';
+        }, 2000);
+      });
+    });
+  }
+
+  // Initial calculation
+  calculateCTS();
+</script>

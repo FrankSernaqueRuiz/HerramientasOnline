@@ -1,0 +1,747 @@
+---
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+---
+
+<Base
+  title="Calculadora de Sueldo Neto 2025 - 2026 (AFP, ONP y Renta 5ta) · UtiliaOnline"
+  description="Calcula tu sueldo líquido en mano en Perú tras descuentos de AFP (Habitat, Prima, Integra, Profuturo), ONP y retención Sunat de Renta de 5ta categoría. Multipaís."
+  keywords="calculadora sueldo neto peru, calcular renta 5ta categoria sunat, descuentos afp onp 2025, simulador sueldo liquido, tramos renta 5ta"
+>
+  <div class="tool-container">
+    <div class="tool-header">
+      <div class="breadcrumb">
+        <a href="/">Inicio</a> / <a href="/simuladores">Simuladores</a> / <span>Calculadora de Sueldo Neto</span>
+      </div>
+      <div class="title-row">
+        <div class="tool-icon-badge">
+          <Icon name="dollar-sign" size={28} />
+        </div>
+        <div>
+          <h1>Calculadora de Sueldo Neto (Descuentos y Renta 5ta)</h1>
+          <p class="tool-desc">
+            Calcula tu sueldo líquido exacto con retenciones del Sistema de Pensiones (ONP o AFPs) y la escala progresiva Sunat de Renta de 5ta categoría. Con selector multipaís.
+          </p>
+        </div>
+      </div>
+
+      <!-- Country Switcher -->
+      <div class="country-tabs" role="tablist">
+        <button type="button" class="country-btn active" data-country="pe">
+          <span class="flag">🇵🇪</span> Perú (Sunat & AFP/ONP)
+        </button>
+        <button type="button" class="country-btn" data-country="co">
+          <span class="flag">🇨🇴</span> Colombia (Salud & Pensión)
+        </button>
+        <button type="button" class="country-btn" data-country="mx">
+          <span class="flag">🇲🇽</span> México (IMSS & ISR)
+        </button>
+        <button type="button" class="country-btn" data-country="cl">
+          <span class="flag">🇨🇱</span> Chile (AFP & Fonasa)
+        </button>
+        <button type="button" class="country-btn" data-country="es">
+          <span class="flag">🇪🇸</span> España (IRPF & Seg. Social)
+        </button>
+      </div>
+    </div>
+
+    <div class="calc-grid">
+      <!-- Input Panel -->
+      <div class="panel-card input-panel">
+        <div class="panel-head">
+          <Icon name="file-text" size={18} />
+          <h2>Ingresos y Parámetros</h2>
+        </div>
+
+        <form id="sueldo-form" class="calc-form" onsubmit="event.preventDefault()">
+          <div class="form-group">
+            <label for="sueldo-bruto">Sueldo Bruto Mensual</label>
+            <div class="input-prefix-wrap">
+              <span class="prefix" id="currency-prefix">S/</span>
+              <input type="number" id="sueldo-bruto" class="form-input" value="4500" min="0" step="0.01" required />
+            </div>
+          </div>
+
+          <!-- Peru Specific Inputs -->
+          <div id="section-pe-inputs">
+            <div class="form-check-group">
+              <label class="checkbox-label">
+                <input type="checkbox" id="asig-fam-sueldo" />
+                <span>¿Percibe Asignación Familiar? (+ S/ 102.50 = 10% RMV)</span>
+              </label>
+            </div>
+
+            <div class="form-group">
+              <label for="afp-select">Sistema de Pensiones</label>
+              <select id="afp-select" class="form-select">
+                <option value="onp">ONP - Sistema Nacional (13.00%)</option>
+                <option value="prima" selected>AFP Prima (Aporte 10% + Seguro 1.40% + Flujo 1.60%)</option>
+                <option value="integra">AFP Integra (Aporte 10% + Seguro 1.40% + Flujo 1.55%)</option>
+                <option value="profuturo">AFP Profuturo (Aporte 10% + Seguro 1.40% + Flujo 1.69%)</option>
+                <option value="habitat">AFP Habitat (Aporte 10% + Seguro 1.40% + Flujo 1.47%)</option>
+                <option value="afp-mixta">AFP Comisión Mixta / Cero Flujo (11.40%)</option>
+                <option value="exonerado">Exonerado de aportes previsionales (0%)</option>
+              </select>
+            </div>
+
+            <div class="form-section-title">Parámetros Sunat (Renta de 5ta Categoría)</div>
+
+            <div class="form-row-2">
+              <div class="form-group">
+                <label for="uit-val">Valor de la UIT (2025/2026)</label>
+                <input type="number" id="uit-val" class="form-input" value="5350" min="1000" step="50" />
+                <small class="hint-text">Deducción de ley: 7 UIT (S/ 37,450)</small>
+              </div>
+              <div class="form-group">
+                <label for="deduccion-adicional">Deducción Adicional 3 UIT (S/)</label>
+                <input type="number" id="deduccion-adicional" class="form-input" value="0" min="0" max="16050" step="100" />
+                <small class="hint-text">Gastos sustentados con boleta electrónica.</small>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Result Panel -->
+      <div class="panel-card result-panel">
+        <div class="panel-head">
+          <Icon name="dollar-sign" size={18} />
+          <h2>Desglose de tu Boleta de Pago</h2>
+        </div>
+
+        <div class="result-highlight-card">
+          <span class="result-sub-label">Sueldo Neto a Recibir (En Mano)</span>
+          <div class="result-main-value" id="res-sueldo-neto">S/ 0.00</div>
+          <div class="result-date-info">Descuentos totales: <span id="res-total-descuentos" class="text-danger">- S/ 0.00</span></div>
+        </div>
+
+        <div class="breakdown-list">
+          <div class="breakdown-item">
+            <span>Sueldo Bruto Computable:</span>
+            <strong id="res-bruto-total">S/ 0.00</strong>
+          </div>
+          <div class="breakdown-item text-danger">
+            <span id="label-descuento-pension">Descuento Pensión (AFP/ONP):</span>
+            <strong id="res-monto-pension">- S/ 0.00</strong>
+          </div>
+          <div class="breakdown-item text-danger">
+            <span id="label-descuento-impuesto">Retención Renta 5ta Categoría:</span>
+            <strong id="res-monto-renta">- S/ 0.00</strong>
+          </div>
+          <div class="breakdown-item" id="row-essalud-empleador">
+            <span>Aporte EsSalud (A cargo de la empresa 9%):</span>
+            <strong class="text-free" id="res-monto-essalud">S/ 0.00</strong>
+          </div>
+        </div>
+
+        <!-- Annual Summary -->
+        <div class="annual-summary-box">
+          <div class="annual-row">
+            <span>Proyección Ingreso Anual (con 2 Gratificaciones):</span>
+            <strong id="res-anual-bruto">S/ 0.00</strong>
+          </div>
+          <div class="annual-row">
+            <span>Impuesto Anual a la Renta de 5ta Proyectado:</span>
+            <strong id="res-anual-renta" class="text-danger">S/ 0.00</strong>
+          </div>
+        </div>
+
+        <div class="action-buttons-row">
+          <button type="button" class="btn-action" id="btn-copy-sueldo">
+            <Icon name="copy" size={16} />
+            <span>Copiar Boleta</span>
+          </button>
+          <button type="button" class="btn-action" onclick="window.print()">
+            <Icon name="download" size={16} />
+            <span>Imprimir</span>
+          </button>
+        </div>
+
+        <div class="legal-notice">
+          <strong>Escala Progresiva Sunat (Art. 53 LIR):</strong>
+          De 0 a 5 UIT: 8% | De más de 5 a 20 UIT: 14% | De más de 20 a 35 UIT: 17% | De más de 35 a 45 UIT: 20% | Más de 45 UIT: 30%. Si tus ingresos anuales son menores a 7 UIT no pagas Renta de 5ta.
+        </div>
+      </div>
+    </div>
+
+    <!-- Guía y Cómo Usar (Estándar UtiliaOnline) -->
+    <section class="seo-section">
+      <h2>Guía completa: ¿Cómo pasar de Sueldo Bruto a Sueldo Neto en Perú?</h2>
+      <p>
+        El <strong>sueldo bruto</strong> es la remuneración total pactada en tu contrato de trabajo, mientras que el <strong>sueldo neto</strong> (o líquido) es el dinero real que recibes depositado en tu cuenta bancaria a fin de mes tras deducir las retenciones obligatorias de ley:
+      </p>
+      <ul>
+        <li><strong>Aporte Previsional Obligatorio:</strong> Puedes optar por la <strong>ONP (13.00% fijo)</strong> o por una <strong>AFP (Prima, Integra, Profuturo, Habitat)</strong> donde aportas un 10% a tu fondo individual, más un ~1.40% de prima de seguro de invalidez y sobrevivencia (SIS) y la comisión por administración.</li>
+        <li><strong>Impuesto a la Renta de 5ta Categoría:</strong> Tributo progresivo y acumulativo cobrado por la SUNAT sobre los ingresos anuales que superan las <strong>7 Unidades Impositivas Tributarias (7 UIT)</strong>.</li>
+        <li><strong>EsSalud (9%):</strong> Es un aporte obligatorio que paga <em>exclusivamente el empleador</em>. No debe descontarse de tu sueldo.</li>
+      </ul>
+
+      <h2>¿Cómo usar esta calculadora paso a paso?</h2>
+      <div class="step-list">
+        <div class="step-card">
+          <span class="step-num">1</span>
+          <div class="step-body">
+            <h4>Selecciona tu país de residencia</h4>
+            <p>Utiliza las pestañas superiores para alternar entre Perú (Sunat y AFP/ONP), Colombia (Salud y Pensión), México (IMSS e ISR), Chile (AFP y Fonasa) o España (IRPF y Seguridad Social).</p>
+          </div>
+        </div>
+        <div class="step-card">
+          <span class="step-num">2</span>
+          <div class="step-body">
+            <h4>Escribe tu sueldo bruto mensual</h4>
+            <p>Ingresa la cifra mensual convenida antes de cualquier deducción impositiva o previsional.</p>
+          </div>
+        </div>
+        <div class="step-card">
+          <span class="step-num">3</span>
+          <div class="step-body">
+            <h4>Elige tu fondo de pensión (AFP u ONP)</h4>
+            <p>Selecciona la AFP en la que estás afiliado para aplicar sus tasas exactas de comisión y seguro, o elige la ONP (13%).</p>
+          </div>
+        </div>
+        <div class="step-card">
+          <span class="step-num">4</span>
+          <div class="step-body">
+            <h4>Verifica la proyección de Renta de 5ta</h4>
+            <p>La calculadora proyectará tus ingresos anuales considerando tus 2 gratificaciones y deducirá las 7 UIT de ley (más gastos sustentados si los tienes) para mostrar la retención mensual exacta.</p>
+          </div>
+        </div>
+      </div>
+
+      <h3>Escala de retención de Renta de 5ta Categoría (Sunat)</h3>
+      <div class="guide-grid">
+        <div class="guide-card">
+          <h4>Tramo 1 (Hasta 5 UIT de exceso)</h4>
+          <p>La ganancia imponible que supere las 7 UIT deducibles y se encuentre en las primeras 5 UIT tributa una tasa del <strong>8%</strong>.</p>
+        </div>
+        <div class="guide-card">
+          <h4>Tramos 2 y 3 (De 5 a 35 UIT)</h4>
+          <p>De más de 5 a 20 UIT la tasa es del <strong>14%</strong>, y el exceso que se sitúe entre 20 y 35 UIT tributa al <strong>17%</strong>.</p>
+        </div>
+        <div class="guide-card">
+          <h4>Tramos 4 y 5 (Altos ingresos)</h4>
+          <p>De más de 35 a 45 UIT aplica el <strong>20%</strong>, y cualquier excedente superior a 45 UIT tributa la tasa máxima del <strong>30%</strong>.</p>
+        </div>
+      </div>
+
+      <h2>Preguntas frecuentes sobre el Sueldo Neto</h2>
+      <div class="faq-wrap">
+        <div class="faq-item">
+          <div class="faq-question">¿A partir de qué sueldo mensual se empieza a pagar Renta de 5ta categoría?</div>
+          <div class="faq-answer">
+            <p>Considerando la deducción fija de 7 UIT (S/ 37,450) y los 14 sueldos que se perciben al año (12 salarios ordinarios + 2 gratificaciones con bonificación del 9%), un trabajador dependiente empieza a tributar Renta de 5ta categoría a partir de un sueldo bruto aproximado de <strong>S/ 2,650 a S/ 2,700 mensuales</strong>.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-question">¿Cómo puedo pagar menos Renta de 5ta categoría de forma legal?</div>
+          <div class="faq-answer">
+            <p>Puedes deducir hasta <strong>3 UIT adicionales</strong> cada año sustentando gastos con boleta electrónica con tu DNI en: restaurantes, bares y hoteles (15%), servicios profesionales independientes con recibo por honorarios (30%), alquiler de inmuebles (30%) y aportes a EsSalud por trabajadoras del hogar (100%).</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-question">¿El seguro de salud de EsSalud (9%) se descuenta de mi sueldo?</div>
+          <div class="faq-answer">
+            <p><strong>No.</strong> EsSalud es una contribución patronal a cargo exclusivo de la empresa. Ningún empleador puede descontar ese 9% del salario pactado con el trabajador.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</Base>
+
+<style>
+  .tool-container {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 1.5rem 0 3rem;
+  }
+  .breadcrumb {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-bottom: 0.75rem;
+  }
+  .breadcrumb a {
+    color: var(--muted);
+  }
+  .breadcrumb a:hover {
+    color: var(--accent);
+  }
+  .title-row {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+  .tool-icon-badge {
+    width: 58px;
+    height: 58px;
+    border-radius: var(--radius-md);
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(56, 189, 248, 0.05));
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #10b981;
+    flex-shrink: 0;
+  }
+  .title-row h1 {
+    font-size: 1.85rem;
+    margin: 0 0 0.35rem 0;
+    letter-spacing: -0.02em;
+  }
+  .tool-desc {
+    color: var(--muted);
+    font-size: 0.95rem;
+    margin: 0;
+    max-width: 75ch;
+  }
+
+  .country-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 0.75rem;
+    overflow-x: auto;
+  }
+  .country-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.45rem 0.9rem;
+    border-radius: 9999px;
+    border: 1px solid var(--line);
+    background: var(--surface-card);
+    color: var(--ink);
+    font-size: 0.85rem;
+    cursor: pointer;
+    font-weight: 500;
+    white-space: nowrap;
+    transition: all 0.15s ease;
+  }
+  .country-btn:hover {
+    border-color: var(--accent);
+  }
+  .country-btn.active {
+    background: var(--accent);
+    color: #0b0f19;
+    border-color: var(--accent);
+    font-weight: 700;
+  }
+
+  .calc-grid {
+    display: grid;
+    grid-template-columns: 1.15fr 0.95fr;
+    gap: 1.5rem;
+    align-items: start;
+  }
+  @media (max-width: 860px) {
+    .calc-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .panel-card {
+    background: var(--surface-card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  }
+  .panel-head {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--line);
+    color: var(--accent);
+  }
+  .panel-head h2 {
+    font-size: 1.15rem;
+    color: var(--ink);
+    margin: 0;
+  }
+
+  .form-group {
+    margin-bottom: 1.1rem;
+  }
+  .form-group label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 0.35rem;
+    color: var(--ink);
+  }
+  .form-input, .form-select {
+    width: 100%;
+    padding: 0.6rem 0.85rem;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    color: var(--ink);
+    font-size: 0.95rem;
+    transition: border-color 0.15s;
+  }
+  .form-input:focus, .form-select:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+  .input-prefix-wrap {
+    display: flex;
+    align-items: center;
+    position: relative;
+  }
+  .input-prefix-wrap .prefix {
+    position: absolute;
+    left: 0.85rem;
+    font-weight: 600;
+    color: var(--muted);
+  }
+  .input-prefix-wrap .form-input {
+    padding-left: 2.2rem;
+  }
+
+  .form-row-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.85rem;
+  }
+  .form-section-title {
+    font-size: 0.82rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--accent);
+    margin: 1.1rem 0 0.65rem;
+    padding-top: 0.45rem;
+    border-top: 1px solid var(--line);
+  }
+  .hint-text {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-top: 0.25rem;
+  }
+  .form-check-group {
+    margin: 0.85rem 0 1.1rem;
+  }
+  .checkbox-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: var(--ink);
+    cursor: pointer;
+  }
+
+  /* Result Panel */
+  .result-highlight-card {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.12), rgba(56, 189, 248, 0.08));
+    border: 1px solid rgba(16, 185, 129, 0.35);
+    border-radius: var(--radius-sm);
+    padding: 1.25rem;
+    text-align: center;
+    margin-bottom: 1.25rem;
+  }
+  .result-sub-label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .result-main-value {
+    font-size: 2.25rem;
+    font-weight: 800;
+    color: #10b981;
+    margin: 0.25rem 0;
+    font-family: var(--font-heading, sans-serif);
+  }
+  .result-date-info {
+    font-size: 0.82rem;
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  .breakdown-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    padding: 1rem;
+    margin-bottom: 1.25rem;
+  }
+  .breakdown-item {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.88rem;
+  }
+  .text-danger {
+    color: #ef4444;
+  }
+  .text-free {
+    color: #38bdf8;
+  }
+
+  .annual-summary-box {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    padding: 0.85rem 1rem;
+    margin-bottom: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+  }
+  .annual-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+  .annual-row strong {
+    color: var(--ink);
+  }
+
+  .action-buttons-row {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+  }
+  .btn-action {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    padding: 0.55rem 0.85rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--line);
+    background: var(--surface-card);
+    color: var(--ink);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn-action:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .legal-notice {
+    font-size: 0.75rem;
+    color: var(--muted);
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px dashed var(--line);
+    padding: 0.75rem;
+    border-radius: var(--radius-sm);
+    line-height: 1.45;
+  }
+</style>
+
+<script>
+  let activeCountry = 'pe';
+
+  const formatCurrency = (val: number, cur: string = 'S/') => {
+    return `${cur} ${val.toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  };
+
+  const calculateSueldo = () => {
+    const sueldoBruto = parseFloat((document.getElementById('sueldo-bruto') as HTMLInputElement).value) || 0;
+
+    if (activeCountry === 'pe') {
+      const tieneAsig = (document.getElementById('asig-fam-sueldo') as HTMLInputElement).checked;
+      const afpType = (document.getElementById('afp-select') as HTMLSelectElement).value;
+      const uit = parseFloat((document.getElementById('uit-val') as HTMLInputElement).value) || 5350;
+      const deducAdicional = parseFloat((document.getElementById('deduccion-adicional') as HTMLInputElement).value) || 0;
+
+      const asig = tieneAsig ? 102.50 : 0;
+      const computable = sueldoBruto + asig;
+
+      // Tasas de pensión
+      let tasaPension = 0;
+      if (afpType === 'onp') tasaPension = 0.13;
+      else if (afpType === 'prima') tasaPension = 0.10 + 0.014 + 0.0160;
+      else if (afpType === 'integra') tasaPension = 0.10 + 0.014 + 0.0155;
+      else if (afpType === 'profuturo') tasaPension = 0.10 + 0.014 + 0.0169;
+      else if (afpType === 'habitat') tasaPension = 0.10 + 0.014 + 0.0147;
+      else if (afpType === 'afp-mixta') tasaPension = 0.114;
+      else tasaPension = 0;
+
+      const montoPension = computable * tasaPension;
+
+      // Cálculo Renta de 5ta Categoría:
+      // Ingreso anual proyectado: (sueldo * 12) + (2 * sueldo * 1.09) gratificaciones con bonif
+      const ingresoAnual = (computable * 12) + (2 * computable * 1.09);
+      const deduccion7uit = 7 * uit;
+      const deduccionTotal = deduccion7uit + Math.min(deducAdicional, 3 * uit);
+      const rentaImponible = Math.max(0, ingresoAnual - deduccionTotal);
+
+      // Tramos Sunat:
+      // 0 a 5 UIT: 8%
+      // 5 a 20 UIT: 14%
+      // 20 a 35 UIT: 17%
+      // 35 a 45 UIT: 20%
+      // Mas de 45 UIT: 30%
+      let impuestoAnual = 0;
+      const tramo1 = 5 * uit;
+      const tramo2 = 20 * uit;
+      const tramo3 = 35 * uit;
+      const tramo4 = 45 * uit;
+
+      if (rentaImponible > 0) {
+        const parte1 = Math.min(rentaImponible, tramo1);
+        impuestoAnual += parte1 * 0.08;
+
+        if (rentaImponible > tramo1) {
+          const parte2 = Math.min(rentaImponible - tramo1, tramo2 - tramo1);
+          impuestoAnual += parte2 * 0.14;
+
+          if (rentaImponible > tramo2) {
+            const parte3 = Math.min(rentaImponible - tramo2, tramo3 - tramo2);
+            impuestoAnual += parte3 * 0.17;
+
+            if (rentaImponible > tramo3) {
+              const parte4 = Math.min(rentaImponible - tramo3, tramo4 - tramo3);
+              impuestoAnual += parte4 * 0.20;
+
+              if (rentaImponible > tramo4) {
+                const parte5 = rentaImponible - tramo4;
+                impuestoAnual += parte5 * 0.30;
+              }
+            }
+          }
+        }
+      }
+
+      // Retención mensual aproximada (/ 12)
+      const retencionMensual = impuestoAnual / 12;
+      const totalDescuentos = montoPension + retencionMensual;
+      const sueldoNeto = Math.max(0, computable - totalDescuentos);
+      const essaludEmpresa = computable * 0.09;
+
+      document.getElementById('res-sueldo-neto')!.textContent = formatCurrency(sueldoNeto, 'S/');
+      document.getElementById('res-total-descuentos')!.textContent = `- ${formatCurrency(totalDescuentos, 'S/')}`;
+      document.getElementById('res-bruto-total')!.textContent = formatCurrency(computable, 'S/');
+      document.getElementById('res-monto-pension')!.textContent = `- ${formatCurrency(montoPension, 'S/')}`;
+      document.getElementById('res-monto-renta')!.textContent = `- ${formatCurrency(retencionMensual, 'S/')}`;
+      document.getElementById('res-monto-essalud')!.textContent = formatCurrency(essaludEmpresa, 'S/');
+      document.getElementById('res-anual-bruto')!.textContent = formatCurrency(ingresoAnual, 'S/');
+      document.getElementById('res-anual-renta')!.textContent = formatCurrency(impuestoAnual, 'S/');
+    } else if (activeCountry === 'co') {
+      // Colombia: Salud 4% + Pensión 4% (+ retención en la fuente si aplica)
+      const salud = sueldoBruto * 0.04;
+      const pension = sueldoBruto * 0.04;
+      const retencion = sueldoBruto > 6000000 ? (sueldoBruto - 6000000) * 0.19 : 0;
+      const descuentos = salud + pension + retencion;
+      const neto = sueldoBruto - descuentos;
+
+      document.getElementById('res-sueldo-neto')!.textContent = formatCurrency(neto, '$');
+      document.getElementById('res-total-descuentos')!.textContent = `- ${formatCurrency(descuentos, '$')}`;
+      document.getElementById('res-bruto-total')!.textContent = formatCurrency(sueldoBruto, '$');
+      document.getElementById('res-monto-pension')!.textContent = `- ${formatCurrency(salud + pension, '$')}`;
+      document.getElementById('res-monto-renta')!.textContent = `- ${formatCurrency(retencion, '$')}`;
+      document.getElementById('res-anual-bruto')!.textContent = formatCurrency(sueldoBruto * 12, '$');
+      document.getElementById('res-anual-renta')!.textContent = formatCurrency(retencion * 12, '$');
+    } else if (activeCountry === 'mx') {
+      // México: IMSS trabajador ~2.5% + ISR promedio 10-25%
+      const imss = sueldoBruto * 0.0275;
+      const isr = sueldoBruto > 15000 ? sueldoBruto * 0.15 : sueldoBruto * 0.08;
+      const desc = imss + isr;
+      const neto = sueldoBruto - desc;
+
+      document.getElementById('res-sueldo-neto')!.textContent = formatCurrency(neto, '$');
+      document.getElementById('res-total-descuentos')!.textContent = `- ${formatCurrency(desc, '$')}`;
+      document.getElementById('res-bruto-total')!.textContent = formatCurrency(sueldoBruto, '$');
+      document.getElementById('res-monto-pension')!.textContent = `- ${formatCurrency(imss, '$')}`;
+      document.getElementById('res-monto-renta')!.textContent = `- ${formatCurrency(isr, '$')}`;
+      document.getElementById('res-anual-bruto')!.textContent = formatCurrency(sueldoBruto * 12, '$');
+      document.getElementById('res-anual-renta')!.textContent = formatCurrency(isr * 12, '$');
+    } else if (activeCountry === 'cl') {
+      // Chile: AFP ~11.5% + Salud Fonasa/Isapre 7% + Seguro cesantía 0.6%
+      const afp = sueldoBruto * 0.115;
+      const salud = sueldoBruto * 0.07;
+      const cesantia = sueldoBruto * 0.006;
+      const desc = afp + salud + cesantia;
+      const neto = sueldoBruto - desc;
+
+      document.getElementById('res-sueldo-neto')!.textContent = formatCurrency(neto, '$');
+      document.getElementById('res-total-descuentos')!.textContent = `- ${formatCurrency(desc, '$')}`;
+      document.getElementById('res-bruto-total')!.textContent = formatCurrency(sueldoBruto, '$');
+      document.getElementById('res-monto-pension')!.textContent = `- ${formatCurrency(afp + cesantia, '$')}`;
+      document.getElementById('res-monto-renta')!.textContent = `- ${formatCurrency(salud, '$')}`;
+      document.getElementById('res-anual-bruto')!.textContent = formatCurrency(sueldoBruto * 12, '$');
+      document.getElementById('res-anual-renta')!.textContent = formatCurrency(0, '$');
+    } else {
+      // España: Seguridad Social ~6.35% + IRPF según tramos (12% a 25%)
+      const segSocial = sueldoBruto * 0.0635;
+      const irpf = sueldoBruto > 2000 ? sueldoBruto * 0.16 : sueldoBruto * 0.11;
+      const desc = segSocial + irpf;
+      const neto = sueldoBruto - desc;
+
+      document.getElementById('res-sueldo-neto')!.textContent = formatCurrency(neto, '€');
+      document.getElementById('res-total-descuentos')!.textContent = `- ${formatCurrency(desc, '€')}`;
+      document.getElementById('res-bruto-total')!.textContent = formatCurrency(sueldoBruto, '€');
+      document.getElementById('res-monto-pension')!.textContent = `- ${formatCurrency(segSocial, '€')}`;
+      document.getElementById('res-monto-renta')!.textContent = `- ${formatCurrency(irpf, '€')}`;
+      document.getElementById('res-anual-bruto')!.textContent = formatCurrency(sueldoBruto * 12, '€');
+      document.getElementById('res-anual-renta')!.textContent = formatCurrency(irpf * 12, '€');
+    }
+  };
+
+  // Country buttons
+  const countryBtns = document.querySelectorAll('.country-btn');
+  countryBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      countryBtns.forEach((b) => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeCountry = (btn as HTMLElement).dataset.country || 'pe';
+
+      const secPe = document.getElementById('section-pe-inputs');
+      const rowEssalud = document.getElementById('row-essalud-empleador');
+      const curPrefix = document.getElementById('currency-prefix');
+
+      if (curPrefix) {
+        if (activeCountry === 'pe') curPrefix.textContent = 'S/';
+        else if (activeCountry === 'es') curPrefix.textContent = '€';
+        else curPrefix.textContent = '$';
+      }
+
+      if (activeCountry === 'pe') {
+        if (secPe) secPe.style.display = 'block';
+        if (rowEssalud) rowEssalud.style.display = 'flex';
+      } else {
+        if (secPe) secPe.style.display = 'none';
+        if (rowEssalud) rowEssalud.style.display = 'none';
+      }
+      calculateSueldo();
+    });
+  });
+
+  const inputs = document.querySelectorAll('#sueldo-form input, #sueldo-form select');
+  inputs.forEach((inp) => {
+    inp.addEventListener('input', calculateSueldo);
+    inp.addEventListener('change', calculateSueldo);
+  });
+
+  const copyBtn = document.getElementById('btn-copy-sueldo');
+  if (copyBtn) {
+    copyBtn.addEventListener('click', () => {
+      const neto = document.getElementById('res-sueldo-neto')?.textContent || '';
+      const bruto = document.getElementById('res-bruto-total')?.textContent || '';
+      const text = `Sueldo Neto (UtiliaOnline):\n- Bruto: ${bruto}\n- Neto en Mano: ${neto}\nCalculado en: ${window.location.href}`;
+      navigator.clipboard.writeText(text).then(() => {
+        copyBtn.innerHTML = '<span>¡Copiado!</span>';
+        setTimeout(() => {
+          copyBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>Copiar Boleta</span>';
+        }, 2000);
+      });
+    });
+  }
+
+  calculateSueldo();
+</script>

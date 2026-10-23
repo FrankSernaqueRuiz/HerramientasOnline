@@ -1,0 +1,570 @@
+---
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+---
+
+<Base
+  title="Calculadora de Indemnización por Despido Arbitrario Perú · UtiliaOnline"
+  description="Calcula la indemnización legal por despido injustificado o arbitrario en contratos indeterminados o a plazo fijo según D.Leg. 728 y Ley MYPE con topes máximos."
+  keywords="calculadora despido arbitrario, indemnizacion despido peru, calcular despido intempestivo, d leg 728 indemnizacion, tope 12 remuneraciones despido"
+>
+  <div class="tool-container">
+    <div class="tool-header">
+      <div class="breadcrumb">
+        <a href="/">Inicio</a> / <a href="/simuladores">Simuladores</a> / <span>Indemnización por Despido</span>
+      </div>
+      <div class="title-row">
+        <div class="tool-icon-badge">
+          <Icon name="shield" size={28} />
+        </div>
+        <div>
+          <h1>Calculadora de Indemnización por Despido</h1>
+          <p class="tool-desc">
+            Calcula la indemnización económica que te corresponde si fuiste víctima de un despido arbitrario sin causa justa legal comprobada (D.Leg. 728).
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="calc-grid">
+      <!-- Input Panel -->
+      <div class="panel-card input-panel">
+        <div class="panel-head">
+          <Icon name="file-text" size={18} />
+          <h2>Condiciones del Contrato</h2>
+        </div>
+
+        <form id="despido-form" class="calc-form" onsubmit="event.preventDefault()">
+          <div class="form-group">
+            <label for="tipo-contrato">Tipo de Contrato de Trabajo</label>
+            <select id="tipo-contrato" class="form-select">
+              <option value="indeterminado">Contrato a Plazo Indeterminado (Fijo / Estable)</option>
+              <option value="sujeto-modalidad">Contrato a Plazo Fijo / Sujeto a Modalidad</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="regimen-despido">Régimen Laboral de la Empresa</label>
+            <select id="regimen-despido" class="form-select">
+              <option value="general">Régimen Laboral General (1.5 sueldos/año, tope 12 sueldos)</option>
+              <option value="pequena">Pequeña Empresa REMYPE (20 días/año, tope 120 días)</option>
+              <option value="micro">Microempresa REMYPE (10 días/año, tope 90 días)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="sueldo-despido">Última Remuneración Mensual Ordinaria (S/)</label>
+            <div class="input-prefix-wrap">
+              <span class="prefix">S/</span>
+              <input type="number" id="sueldo-despido" class="form-input" value="3200" min="0" step="0.01" required />
+            </div>
+            <small class="hint-text">Sueldo básico + asignación familiar si la percibías.</small>
+          </div>
+
+          <!-- Section for Indeterminado -->
+          <div id="section-indeterminado">
+            <div class="form-section-title">Tiempo de Servicios Acumulado</div>
+            <div class="form-row-3">
+              <div class="form-group">
+                <label for="anos-laborados">Años Completos</label>
+                <input type="number" id="anos-laborados" class="form-input" value="3" min="0" max="40" />
+              </div>
+              <div class="form-group">
+                <label for="meses-laborados">Meses</label>
+                <input type="number" id="meses-laborados" class="form-input" value="4" min="0" max="11" />
+              </div>
+              <div class="form-group">
+                <label for="dias-laborados">Días</label>
+                <input type="number" id="dias-laborados" class="form-input" value="0" min="0" max="29" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Section for Modalidad -->
+          <div id="section-modalidad" style="display: none;">
+            <div class="form-section-title">Tiempo Faltante para Vencimiento</div>
+            <div class="form-group">
+              <label for="meses-faltantes">Meses que faltaban para terminar el contrato</label>
+              <input type="number" id="meses-faltantes" class="form-input" value="5" min="1" max="60" />
+              <small class="hint-text">Se indemniza 1.5 remuneraciones por cada mes faltante.</small>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Result Panel -->
+      <div class="panel-card result-panel">
+        <div class="panel-head">
+          <Icon name="dollar-sign" size={18} />
+          <h2>Indemnización Legal</h2>
+        </div>
+
+        <div class="result-highlight-card">
+          <span class="result-sub-label">Monto de la Indemnización</span>
+          <div class="result-main-value" id="res-despido-total">S/ 0.00</div>
+          <div class="result-date-info text-free">¡Totalmente Inafecta de Impuestos y AFP!</div>
+        </div>
+
+        <div class="breakdown-list">
+          <div class="breakdown-item">
+            <span>Fórmula legal aplicada:</span>
+            <strong id="res-despido-formula">1.5 sueldos / año</strong>
+          </div>
+          <div class="breakdown-item">
+            <span>Cálculo antes de tope:</span>
+            <strong id="res-despido-pretope">S/ 0.00</strong>
+          </div>
+          <div class="breakdown-item">
+            <span>Tope máximo legal:</span>
+            <strong id="res-despido-tope">S/ 0.00</strong>
+          </div>
+          <div class="breakdown-item text-danger" id="row-ajuste-tope" style="display: none;">
+            <span>Ajuste por exceder tope legal:</span>
+            <strong id="res-despido-ajuste">- S/ 0.00</strong>
+          </div>
+          <div class="breakdown-item">
+            <span>Retención Renta 5ta y Pensión:</span>
+            <strong class="text-free">S/ 0.00 (Exonerado)</strong>
+          </div>
+        </div>
+
+        <div class="action-buttons-row">
+          <button type="button" class="btn-action" id="btn-copy-despido">
+            <Icon name="copy" size={16} />
+            <span>Copiar resultado</span>
+          </button>
+          <button type="button" class="btn-action" onclick="window.print()">
+            <Icon name="download" size={16} />
+            <span>Imprimir</span>
+          </button>
+        </div>
+
+        <div class="legal-notice">
+          <strong>Protección contra el Despido:</strong> Si superaste el periodo de prueba (3 meses para trabajador ordinario, 6 meses para confianza) y eres despedido sin carta de preaviso ni imputación de falta grave, tienes derecho a exigir esta indemnización o demandar la reposición laboral si se califica como despido nulo o incausado.
+        </div>
+      </div>
+    </div>
+
+    <!-- Guía y Cómo Usar (Estándar UtiliaOnline) -->
+    <section class="seo-section">
+      <h2>Guía completa: ¿Cómo se calcula la Indemnización por Despido en Perú?</h2>
+      <p>
+        En el ordenamiento laboral peruano, el <strong>Artículo 38 del Texto Único Ordenado del Decreto Legislativo N° 728</strong> (Ley de Productividad y Competitividad Laboral) establece una protección económica tarifada frente al despido arbitrario o incausado. Esta indemnización busca compensar al trabajador cuando es separado intempestivamente de su puesto sin que medie una causa justa de conducta o capacidad debidamente demostrada.
+      </p>
+      <p>
+        Para tener derecho a la indemnización, el trabajador debe haber superado el <strong>periodo de prueba legal</strong> (3 meses para trabajadores ordinarios, 6 meses para personal calificado o de confianza, y 1 año para personal de dirección) y laborar una jornada promedio no menor a 4 horas diarias.
+      </p>
+
+      <h2>¿Cómo usar esta calculadora paso a paso?</h2>
+      <div class="step-list">
+        <div class="step-card">
+          <span class="step-num">1</span>
+          <div class="step-body">
+            <h4>Elige la modalidad de tu contrato</h4>
+            <p>Selecciona si tu contrato era a <strong>plazo indeterminado</strong> (estable) o <strong>a plazo fijo / sujeto a modalidad</strong> (con fecha de vencimiento acordada).</p>
+          </div>
+        </div>
+        <div class="step-card">
+          <span class="step-num">2</span>
+          <div class="step-body">
+            <h4>Selecciona el régimen laboral</h4>
+            <p>Elige entre Régimen General (1.5 sueldos/año, tope 12 sueldos), Pequeña Empresa REMYPE (20 días/año, tope 120 días) o Microempresa (10 días/año, tope 90 días).</p>
+          </div>
+        </div>
+        <div class="step-card">
+          <span class="step-num">3</span>
+          <div class="step-body">
+            <h4>Ingresa tu última remuneración mensual</h4>
+            <p>Coloca tu salario básico más asignación familiar u otros conceptos remunerativos permanentes que hayas percibido de forma fija.</p>
+          </div>
+        </div>
+        <div class="step-card">
+          <span class="step-num">4</span>
+          <div class="step-body">
+            <h4>Indica el tiempo laborado o meses restantes</h4>
+            <p>En contratos indeterminados, ingresa tus años, meses y días de servicio. En contratos a plazo fijo, escribe cuántos meses faltaban para que venciera tu contrato.</p>
+          </div>
+        </div>
+      </div>
+
+      <h3>Casos prácticos de cálculo</h3>
+      <div class="guide-grid">
+        <div class="guide-card">
+          <h4>Contrato Indeterminado con 4 años y medio</h4>
+          <p>Un trabajador con sueldo de S/ 2,000 en régimen general despedido arbitrariamente tras 4 años y 6 meses recibirá: 4 años × (1.5 × S/ 2,000) = S/ 12,000, más 6 meses = S/ 1,500. Total: <strong>S/ 13,500.00</strong> netos.</p>
+        </div>
+        <div class="guide-card">
+          <h4>Aplicación del Tope Legal de 12 Remuneraciones</h4>
+          <p>Si un colaborador laboró 10 años ganando S/ 4,000, la fórmula daría 15 sueldos (S/ 60,000). Sin embargo, la ley establece un tope máximo estricto de 12 sueldos, por lo que cobrará un máximo de <strong>S/ 48,000.00</strong>.</p>
+        </div>
+        <div class="guide-card">
+          <h4>Despido en Contrato a Plazo Fijo</h4>
+          <p>Si tenías contrato por 1 año y te despidieron faltando 4 meses para vencer, te corresponden 1.5 remuneraciones por cada mes faltante: 4 × (1.5 × tu sueldo), siempre sujeto al tope de 12 sueldos.</p>
+        </div>
+      </div>
+
+      <h2>Preguntas frecuentes sobre la Indemnización por Despido</h2>
+      <div class="faq-wrap">
+        <div class="faq-item">
+          <div class="faq-question">¿La indemnización por despido paga impuesto a la renta o aportes de AFP/ONP?</div>
+          <div class="faq-answer">
+            <p><strong>No, está 100% inafecta.</strong> Al tener naturaleza puramente indemnizatoria y resarcitoria (no remunerativa), no está afecta al Impuesto a la Renta de 5ta categoría ni a ningún descuento de AFP, ONP o EsSalud.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-question">¿Puedo exigir reposición en el empleo en lugar de la indemnización?</div>
+          <div class="faq-answer">
+            <p>Sí, de acuerdo con la jurisprudencia del Tribunal Constitucional peruano, si se trata de un <strong>despido incausado</strong> (sin carta de falta) o <strong>despido fraudulento</strong>, el trabajador puede interponer una demanda de amparo constitucional o laboral para solicitar su reposición efectiva al puesto de trabajo.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-question">¿Tengo derecho a indemnización si renuncio voluntariamente?</div>
+          <div class="faq-answer">
+            <p>No. La indemnización por despido solo se activa cuando el término del contrato es decidido unilateral e injustificadamente por el empleador. Si renuncias o firmas mutuo disenso, solo te corresponde tu liquidación de beneficios sociales ordinarios (CTS, gratificación trunca y vacaciones truncas).</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</Base>
+
+<style>
+  .tool-container {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 1.5rem 0 3rem;
+  }
+  .breadcrumb {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-bottom: 0.75rem;
+  }
+  .breadcrumb a {
+    color: var(--muted);
+  }
+  .breadcrumb a:hover {
+    color: var(--accent);
+  }
+  .title-row {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+  .tool-icon-badge {
+    width: 58px;
+    height: 58px;
+    border-radius: var(--radius-md);
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(249, 115, 22, 0.05));
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ef4444;
+    flex-shrink: 0;
+  }
+  .title-row h1 {
+    font-size: 1.85rem;
+    margin: 0 0 0.35rem 0;
+    letter-spacing: -0.02em;
+  }
+  .tool-desc {
+    color: var(--muted);
+    font-size: 0.95rem;
+    margin: 0;
+    max-width: 75ch;
+  }
+
+  .calc-grid {
+    display: grid;
+    grid-template-columns: 1.15fr 0.95fr;
+    gap: 1.5rem;
+    align-items: start;
+  }
+  @media (max-width: 860px) {
+    .calc-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .panel-card {
+    background: var(--surface-card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  }
+  .panel-head {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--line);
+    color: var(--accent);
+  }
+  .panel-head h2 {
+    font-size: 1.15rem;
+    color: var(--ink);
+    margin: 0;
+  }
+
+  .form-group {
+    margin-bottom: 1.1rem;
+  }
+  .form-group label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 0.35rem;
+    color: var(--ink);
+  }
+  .form-input, .form-select {
+    width: 100%;
+    padding: 0.6rem 0.85rem;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    color: var(--ink);
+    font-size: 0.95rem;
+    transition: border-color 0.15s;
+  }
+  .form-input:focus, .form-select:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+  .input-prefix-wrap {
+    display: flex;
+    align-items: center;
+    position: relative;
+  }
+  .input-prefix-wrap .prefix {
+    position: absolute;
+    left: 0.85rem;
+    font-weight: 600;
+    color: var(--muted);
+  }
+  .input-prefix-wrap .form-input {
+    padding-left: 2.2rem;
+  }
+
+  .form-row-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0.75rem;
+  }
+  .form-section-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--accent);
+    margin: 1.25rem 0 0.75rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--line);
+  }
+  .hint-text {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-top: 0.25rem;
+  }
+
+  /* Result Panel */
+  .result-highlight-card {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.12), rgba(249, 115, 22, 0.08));
+    border: 1px solid rgba(239, 68, 68, 0.35);
+    border-radius: var(--radius-sm);
+    padding: 1.25rem;
+    text-align: center;
+    margin-bottom: 1.25rem;
+  }
+  .result-sub-label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .result-main-value {
+    font-size: 2.25rem;
+    font-weight: 800;
+    color: #ef4444;
+    margin: 0.25rem 0;
+    font-family: var(--font-heading, sans-serif);
+  }
+  .result-date-info {
+    font-size: 0.82rem;
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  .breakdown-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    padding: 1rem;
+    margin-bottom: 1.25rem;
+  }
+  .breakdown-item {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.88rem;
+  }
+  .text-free {
+    color: #10b981;
+    font-weight: 600;
+  }
+  .text-danger {
+    color: #ef4444;
+  }
+
+  .action-buttons-row {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+  }
+  .btn-action {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    padding: 0.55rem 0.85rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--line);
+    background: var(--surface-card);
+    color: var(--ink);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn-action:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .legal-notice {
+    font-size: 0.75rem;
+    color: var(--muted);
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px dashed var(--line);
+    padding: 0.75rem;
+    border-radius: var(--radius-sm);
+    line-height: 1.45;
+  }
+</style>
+
+<script>
+  const formatCurrency = (val: number) => {
+    return `S/ ${val.toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  };
+
+  const calculateDespido = () => {
+    const tipoContrato = (document.getElementById('tipo-contrato') as HTMLSelectElement).value;
+    const regimen = (document.getElementById('regimen-despido') as HTMLSelectElement).value;
+    const sueldo = parseFloat((document.getElementById('sueldo-despido') as HTMLInputElement).value) || 0;
+    const valorDia = sueldo / 30;
+
+    let calculado = 0;
+    let tope = 0;
+    let descFormula = '';
+
+    if (tipoContrato === 'indeterminado') {
+      const anos = parseInt((document.getElementById('anos-laborados') as HTMLInputElement).value) || 0;
+      const meses = parseInt((document.getElementById('meses-laborados') as HTMLInputElement).value) || 0;
+      const dias = parseInt((document.getElementById('dias-laborados') as HTMLInputElement).value) || 0;
+
+      if (regimen === 'general') {
+        // 1.5 sueldos por año + 1.5/12 por mes + 1.5/360 por día. Tope: 12 sueldos
+        const porAno = 1.5 * sueldo * anos;
+        const porMes = (1.5 * sueldo / 12) * meses;
+        const porDia = (1.5 * sueldo / 360) * dias;
+        calculado = porAno + porMes + porDia;
+        tope = 12 * sueldo;
+        descFormula = '1.5 remuneraciones por año (máx 12 sueldos)';
+      } else if (regimen === 'pequena') {
+        // 20 días por año. Tope: 120 días de sueldo
+        const porAno = 20 * valorDia * anos;
+        const porMes = (20 * valorDia / 12) * meses;
+        const porDia = (20 * valorDia / 360) * dias;
+        calculado = porAno + porMes + porDia;
+        tope = 120 * valorDia;
+        descFormula = '20 días de sueldo por año (máx 120 días)';
+      } else {
+        // Microempresa: 10 días por año. Tope: 90 días de sueldo
+        const porAno = 10 * valorDia * anos;
+        const porMes = (10 * valorDia / 12) * meses;
+        const porDia = (10 * valorDia / 360) * dias;
+        calculado = porAno + porMes + porDia;
+        tope = 90 * valorDia;
+        descFormula = '10 días de sueldo por año (máx 90 días)';
+      }
+    } else {
+      // Plazo fijo / Sujeto a modalidad
+      const mesesFaltantes = parseInt((document.getElementById('meses-faltantes') as HTMLInputElement).value) || 0;
+      calculado = 1.5 * sueldo * mesesFaltantes;
+      tope = 12 * sueldo;
+      descFormula = '1.5 remuneraciones por mes faltante (máx 12 sueldos)';
+    }
+
+    const finalMonto = Math.min(calculado, tope);
+    const ajusteTope = Math.max(0, calculado - tope);
+
+    document.getElementById('res-despido-total')!.textContent = formatCurrency(finalMonto);
+    document.getElementById('res-despido-formula')!.textContent = descFormula;
+    document.getElementById('res-despido-pretope')!.textContent = formatCurrency(calculado);
+    document.getElementById('res-despido-tope')!.textContent = formatCurrency(tope);
+
+    const rowAjuste = document.getElementById('row-ajuste-tope');
+    if (rowAjuste) {
+      if (ajusteTope > 0) {
+        rowAjuste.style.display = 'flex';
+        document.getElementById('res-despido-ajuste')!.textContent = `- ${formatCurrency(ajusteTope)}`;
+      } else {
+        rowAjuste.style.display = 'none';
+      }
+    }
+  };
+
+  // Toggle sections
+  const selTipo = document.getElementById('tipo-contrato') as HTMLSelectElement;
+  selTipo.addEventListener('change', () => {
+    const secIndet = document.getElementById('section-indeterminado');
+    const secMod = document.getElementById('section-modalidad');
+    if (selTipo.value === 'indeterminado') {
+      if (secIndet) secIndet.style.display = 'block';
+      if (secMod) secMod.style.display = 'none';
+    } else {
+      if (secIndet) secIndet.style.display = 'none';
+      if (secMod) secMod.style.display = 'block';
+    }
+    calculateDespido();
+  });
+
+  const inputs = document.querySelectorAll('#despido-form input, #despido-form select');
+  inputs.forEach((inp) => {
+    inp.addEventListener('input', calculateDespido);
+    inp.addEventListener('change', calculateDespido);
+  });
+
+  const copyBtn = document.getElementById('btn-copy-despido');
+  if (copyBtn) {
+    copyBtn.addEventListener('click', () => {
+      const total = document.getElementById('res-despido-total')?.textContent || '';
+      const text = `Indemnización por Despido (UtiliaOnline):\n- Monto Total a Percibir: ${total}\nCalculado en: ${window.location.href}`;
+      navigator.clipboard.writeText(text).then(() => {
+        copyBtn.innerHTML = '<span>¡Copiado!</span>';
+        setTimeout(() => {
+          copyBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>Copiar resultado</span>';
+        }, 2000);
+      });
+    });
+  }
+
+  calculateDespido();
+</script>

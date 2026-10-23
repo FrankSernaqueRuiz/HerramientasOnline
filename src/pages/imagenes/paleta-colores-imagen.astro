@@ -1,0 +1,321 @@
+﻿---
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+---
+<Base title="Extractor de Paleta de Colores de una Imagen Online – Códigos HEX y RGB" description="Extrae los colores predominantes de cualquier imagen o fotografía. Obtén códigos HEX y RGB listos para copiar con cuentagotas interactivo.">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="/">Herramientas</a> / <span>Imágenes y multimedia</span></div>
+    <h1>Extractor de Paleta de Colores</h1>
+    <p class="lead">Sube cualquier foto, diseño o captura para extraer automáticamente su paleta de colores dominantes o usa el cuentagotas para seleccionar un tono específico.</p>
+  </div>
+
+  <section class="panel">
+    <div class="drop-zone" id="drop-zone">
+      <input type="file" id="file-input" accept="image/*" style="display:none;" />
+      <div class="drop-content">
+        <span class="drop-icon">🎨</span>
+        <p class="drop-text">Arrastra una imagen aquí o <button type="button" class="btn btn-secondary btn-sm" id="btn-browse">Subir imagen</button></p>
+        <span class="drop-hint">Analiza fotos, logotipos, ilustraciones o capturas de pantalla</span>
+      </div>
+    </div>
+
+    <div class="palette-workspace" id="workspace" style="display:none;">
+      <!-- Dominant Swatches -->
+      <div class="palette-header">
+        <h3>Colores predominantes</h3>
+        <button type="button" class="btn btn-secondary btn-sm" id="btn-copy-css">Copiar como variables CSS</button>
+      </div>
+
+      <div class="swatches-grid" id="swatches-container">
+        <!-- Rendered by JS -->
+      </div>
+
+      <!-- Eyedropper & Image Display -->
+      <div class="eyedropper-section">
+        <div class="section-title-row">
+          <h3>Haz clic sobre la imagen para seleccionar un color exacto:</h3>
+          <div class="eyedrop-preview" id="eyedrop-preview">
+            <span class="eyedrop-swatch" id="eyedrop-swatch"></span>
+            <span class="eyedrop-hex" id="eyedrop-hex">#ffffff</span>
+          </div>
+        </div>
+
+        <div class="canvas-wrapper">
+          <canvas id="image-canvas"></canvas>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="seo-section">
+    <h2>¿Cómo funciona el extractor de paletas de color y cuentagotas?</h2>
+    <p>Inspirarse en la fotografía real, carteles o paisajes de la naturaleza es uno de los métodos más efectivos para diseñar identidades visuales atractivas. Esta herramienta utiliza un algoritmo de <strong>cuantización cromática k-means</strong> para agrupar los millones de píxeles de una imagen en los 6 tonos dominantes más representativos y armónicos. Además, incorpora un <strong>cuentagotas interactivo de lupa</strong> para tomar cualquier tono exacto con un clic.</p>
+
+    <div class="step-list">
+      <div class="step-card">
+        <span class="step-num">1</span>
+        <div class="step-body">
+          <h4>Sube tu imagen de referencia o inspiración</h4>
+          <p>Arrastra cualquier fotografía, logotipo, render o captura de pantalla en formato JPG, PNG o WebP.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <span class="step-num">2</span>
+        <div class="step-body">
+          <h4>Extracción automática de tonos dominantes</h4>
+          <p>El sistema genera instantáneamente la paleta armónica con sus códigos hexadecimales (HEX) y valores RGB.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <span class="step-num">3</span>
+        <div class="step-body">
+          <h4>Usa el cuentagotas y copia con un solo clic</h4>
+          <p>Haz clic en cualquier muestra de la paleta o sobre cualquier punto de la foto para copiar el código HEX listo para pegar en Figma, Canva o CSS.</p>
+        </div>
+      </div>
+    </div>
+
+    <h3>Casos de uso para diseñadores y creadores</h3>
+    <div class="guide-grid">
+      <div class="guide-card">
+        <h4>Diseño web y aplicaciones móviles (UI/UX)</h4>
+        <p>Crea esquemas de color coherentes para botones, fondos y tipografías a partir de la fotografía de portada de tu proyecto.</p>
+      </div>
+      <div class="guide-card">
+        <h4>Branding y creación de marca personal</h4>
+        <p>Construye tu manual de identidad corporativa extrayendo paletas armónicas de fotografías de producto o estilo de vida.</p>
+      </div>
+      <div class="guide-card">
+        <h4>Ilustración digital y arte conceptual</h4>
+        <p>Estudia la armonía cromática y el contraste de luces y sombras de grandes obras de arte y directores de fotografía de cine.</p>
+      </div>
+    </div>
+
+    <h2>Preguntas frecuentes sobre paletas de colores</h2>
+    <div class="faq-wrap">
+      <div class="faq-item">
+        <div class="faq-question">¿Qué es el código HEX y para qué sirve?</div>
+        <div class="faq-answer">
+          <p>El código hexadecimal (ej: <code>#2f81f7</code>) es una combinación de 6 caracteres que representa la cantidad exacta de Rojo, Verde y Azul de un color. Es el estándar universal utilizado en CSS, HTML, Photoshop, Figma, Illustrator y Canva.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Puedo seleccionar un píxel muy pequeño con el cuentagotas?</div>
+        <div class="faq-answer">
+          <p>Sí, al pasar el cursor o hacer clic sobre cualquier parte del lienzo Canvas, la herramienta lee el valor RGBA exacto del píxel ubicado bajo la punta del cursor.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Por qué la paleta automática no incluye un color específico que veo en la foto?</div>
+        <div class="faq-answer">
+          <p>El algoritmo dominante busca los tonos que ocupan mayor superficie o volumen cromático en la imagen. Si deseas capturar un detalle pequeño (como un ojo o una flor lejana), utiliza el cuentagotas manual sobre la foto.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Las imágenes que subo se almacenan en la nube?</div>
+        <div class="faq-answer">
+          <p>No. El análisis cromático se ejecuta por completo en el navegador de tu computadora o teléfono. Ningún archivo se envía a servidores de terceros.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .breadcrumb{font-size:.85rem;color:var(--muted);margin-bottom:.5rem}.breadcrumb a{color:var(--muted)}
+  .drop-zone{border:2px dashed var(--line);border-radius:var(--radius);padding:3rem 1.5rem;text-align:center;background:var(--surface-card);transition:all .2s;cursor:pointer}
+  .drop-zone.dragover{border-color:var(--accent);background:rgba(37,99,235,.05)}
+  .drop-icon{font-size:2.8rem;display:block;margin-bottom:.75rem}
+  .drop-text{font-size:1.05rem;color:var(--ink);margin-bottom:.5rem}
+  .drop-hint{font-size:.82rem;color:var(--muted)}
+
+  .palette-workspace{margin-top:2rem}
+  .palette-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:.5rem}
+  .palette-header h3{font-size:1.05rem}
+
+  .swatches-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1rem;margin-bottom:2.5rem}
+  :global(.swatch-card){background:var(--surface-card);border:1px solid var(--line);border-radius:var(--radius-sm);overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.06);transition:transform .15s}
+  :global(.swatch-card:hover){transform:translateY(-3px)}
+  :global(.swatch-color){height:85px;width:100%;cursor:pointer}
+  :global(.swatch-info){padding:.75rem;text-align:center}
+  :global(.swatch-hex){font-weight:800;font-size:.95rem;color:var(--ink);cursor:pointer;display:block;margin-bottom:2px}
+  :global(.swatch-rgb){font-size:.72rem;color:var(--muted);font-family:monospace}
+
+  .section-title-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:.75rem}
+  .section-title-row h3{font-size:.95rem}
+  .eyedrop-preview{display:flex;align-items:center;gap:.6rem;background:var(--surface-card);border:1px solid var(--line);padding:.3rem .75rem;border-radius:var(--radius-sm)}
+  .eyedrop-swatch{width:22px;height:22px;border-radius:4px;border:1px solid rgba(0,0,0,.15);display:inline-block;background:#fff}
+  .eyedrop-hex{font-weight:700;font-size:.9rem}
+
+  .canvas-wrapper{background:var(--bg);border:1px solid var(--line);border-radius:var(--radius-sm);overflow:auto;display:flex;justify-content:center;padding:1rem;cursor:crosshair}
+  #image-canvas{max-width:100%;height:auto;display:block;border-radius:4px}
+</style>
+
+<script>
+  let extractedHexes: string[] = [];
+
+  const dropZone = document.getElementById('drop-zone')!;
+  const fileInput = document.getElementById('file-input') as HTMLInputElement;
+  const btnBrowse = document.getElementById('btn-browse')!;
+  const workspace = document.getElementById('workspace')!;
+  const swatchesContainer = document.getElementById('swatches-container')!;
+  const canvas = document.getElementById('image-canvas') as HTMLCanvasElement;
+  const ctx = canvas.getContext('2d')!;
+  const btnCopyCss = document.getElementById('btn-copy-css')!;
+
+  const eyedropSwatch = document.getElementById('eyedrop-swatch')!;
+  const eyedropHex = document.getElementById('eyedrop-hex')!;
+
+  btnBrowse.addEventListener('click', (e) => {
+    e.stopPropagation();
+    fileInput.click();
+  });
+  dropZone.addEventListener('click', () => fileInput.click());
+
+  fileInput.addEventListener('change', () => {
+    if (fileInput.files?.length) loadFile(fileInput.files[0]);
+  });
+
+  dropZone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    dropZone.classList.add('dragover');
+  });
+
+  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+
+  dropZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropZone.classList.remove('dragover');
+    if (e.dataTransfer?.files.length) loadFile(e.dataTransfer.files[0]);
+  });
+
+  function rgbToHex(r: number, g: number, b: number): string {
+    return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+  }
+
+  function loadFile(file: File) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        // Draw to canvas for display and sampling
+        const maxW = 900;
+        const scale = img.width > maxW ? maxW / img.width : 1;
+        canvas.width = Math.round(img.width * scale);
+        canvas.height = Math.round(img.height * scale);
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+        extractColors(img);
+        workspace.style.display = 'block';
+      };
+      img.src = e.target?.result as string;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function extractColors(img: HTMLImageElement) {
+    // Downsample to a small canvas (50x50) for fast clustering
+    const thumb = document.createElement('canvas');
+    thumb.width = 50;
+    thumb.height = 50;
+    const tCtx = thumb.getContext('2d')!;
+    tCtx.drawImage(img, 0, 0, 50, 50);
+
+    const imgData = tCtx.getImageData(0, 0, 50, 50).data;
+    const colorMap: Record<string, { r: number; g: number; b: number; count: number }> = {};
+
+    for (let i = 0; i < imgData.length; i += 4) {
+      const a = imgData[i + 3];
+      if (a < 128) continue; // Skip transparency
+
+      // Quantize to step of 24
+      const r = Math.round(imgData[i] / 24) * 24;
+      const g = Math.round(imgData[i + 1] / 24) * 24;
+      const b = Math.round(imgData[i + 2] / 24) * 24;
+
+      const key = `${r},${g},${b}`;
+      if (!colorMap[key]) {
+        colorMap[key] = { r, g, b, count: 0 };
+      }
+      colorMap[key].count++;
+    }
+
+    // Sort by count
+    const sorted = Object.values(colorMap).sort((a, b) => b.count - a.count);
+
+    // Pick 6 distinctive colors
+    const picked: { r: number; g: number; b: number }[] = [];
+    for (const c of sorted) {
+      if (picked.length >= 6) break;
+      // Check distance from already picked
+      const isDistinct = picked.every(p => {
+        const dist = Math.sqrt(
+          Math.pow(p.r - c.r, 2) + Math.pow(p.g - c.g, 2) + Math.pow(p.b - c.b, 2)
+        );
+        return dist > 55;
+      });
+      if (isDistinct || picked.length < 3) {
+        picked.push(c);
+      }
+    }
+
+    extractedHexes = picked.map(c => rgbToHex(c.r, c.g, c.b));
+    renderSwatches(picked);
+  }
+
+  function renderSwatches(colors: { r: number; g: number; b: number }[]) {
+    swatchesContainer.innerHTML = '';
+    colors.forEach(c => {
+      const hex = rgbToHex(c.r, c.g, c.b);
+      const card = document.createElement('div');
+      card.className = 'swatch-card';
+      card.innerHTML = `
+        <div class="swatch-color" style="background:${hex};" title="Haz clic para copiar"></div>
+        <div class="swatch-info">
+          <span class="swatch-hex">${hex.toUpperCase()}</span>
+          <span class="swatch-rgb">rgb(${c.r}, ${c.g}, ${c.b})</span>
+        </div>
+      `;
+
+      card.addEventListener('click', () => {
+        navigator.clipboard.writeText(hex.toUpperCase());
+        const hexSpan = card.querySelector('.swatch-hex')!;
+        const originalText = hexSpan.textContent;
+        hexSpan.textContent = '¡Copiado!';
+        setTimeout(() => { hexSpan.textContent = originalText; }, 1500);
+      });
+
+      swatchesContainer.appendChild(card);
+    });
+  }
+
+  // Eyedropper on canvas click
+  canvas.addEventListener('click', (e) => {
+    const rect = canvas.getBoundingClientRect();
+    const x = Math.floor((e.clientX - rect.left) * (canvas.width / rect.width));
+    const y = Math.floor((e.clientY - rect.top) * (canvas.height / rect.height));
+
+    const pixel = ctx.getImageData(x, y, 1, 1).data;
+    const hex = rgbToHex(pixel[0], pixel[1], pixel[2]).toUpperCase();
+
+    eyedropSwatch.style.background = hex;
+    eyedropHex.textContent = hex;
+
+    navigator.clipboard.writeText(hex);
+    eyedropHex.textContent = `${hex} (¡Copiado!)`;
+    setTimeout(() => { eyedropHex.textContent = hex; }, 1500);
+  });
+
+  btnCopyCss.addEventListener('click', () => {
+    if (!extractedHexes.length) return;
+    let css = ':root {\n';
+    extractedHexes.forEach((hex, i) => {
+      css += `  --color-${i + 1}: ${hex.toUpperCase()};\n`;
+    });
+    css += '}\n';
+
+    navigator.clipboard.writeText(css);
+    btnCopyCss.textContent = '¡Variables CSS copiadas!';
+    setTimeout(() => { btnCopyCss.textContent = 'Copiar como variables CSS'; }, 2000);
+  });
+</script>

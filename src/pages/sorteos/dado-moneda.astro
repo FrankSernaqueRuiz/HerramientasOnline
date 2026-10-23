@@ -1,0 +1,189 @@
+﻿---
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+---
+<Base title="Lanzador de Dados y Moneda Virtual con Animación" description="Lanza dados de 6, 8, 10, 12 o 20 caras y moneda virtual con animación fluida y resultados inmediatos.">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="/">Herramientas</a> / <span>Sorteos y diversión</span></div>
+    <h1>Lanzador de Dados y Moneda</h1>
+    <p class="lead">Selecciona el tipo de dado o lanza una moneda con animación visual y resultado aleatorio criptográfico.</p>
+  </div>
+  <section class="panel">
+    <div class="tabs">
+      <button class="tab active" data-tab="coin">🪙 Moneda</button>
+      <button class="tab" data-tab="dice">🎲 Dados</button>
+    </div>
+
+    <div id="tab-coin" class="tab-content">
+      <div class="coin-area">
+        <div id="coin" class="coin"><div class="coin-face front">CARA</div><div class="coin-face back">CRUZ</div></div>
+        <button type="button" id="btn-flip" class="btn-primary btn-big">Lanzar moneda</button>
+        <div id="coin-result" class="result-text"></div>
+        <div id="coin-stats" class="stats-row">Caras: 0 · Cruces: 0</div>
+      </div>
+    </div>
+
+    <div id="tab-dice" class="tab-content hidden">
+      <div class="dice-config">
+        <div class="field-sm"><label for="dice-type">Tipo:</label>
+          <select id="dice-type"><option value="6">D6 (6 caras)</option><option value="8">D8</option><option value="10">D10</option><option value="12">D12</option><option value="20">D20</option></select>
+        </div>
+        <div class="field-sm"><label for="dice-count">Cantidad:</label><input type="number" id="dice-count" min="1" max="10" value="2" /></div>
+        <button type="button" id="btn-roll" class="btn-primary">🎲 Lanzar</button>
+      </div>
+      <div id="dice-results" class="dice-display"></div>
+      <div id="dice-total" class="result-text"></div>
+      <div id="dice-history" class="history"></div>
+    </div>
+  </section>
+
+  <section class="seo-section">
+    <h2>¿Cómo funciona el simulador de dados y moneda?</h2>
+    <p>Este simulador combina animaciones 3D interactivas con algoritmos de aleatoriedad criptográfica (<code>crypto.getRandomValues</code>). Cada lanzamiento de moneda tiene una probabilidad exacta del 50% (cara o cruz) y cada dado ofrece una distribución uniforme de probabilidad entre 1 y el número de caras seleccionado (D4, D6, D8, D10, D12, D20 o D100).</p>
+
+    <div class="step-list">
+      <div class="step-card">
+        <span class="step-num">1</span>
+        <div class="step-body">
+          <h4>Elige entre modo Moneda o modo Dados</h4>
+          <p>Selecciona la pestaña correspondiente según el tipo de azar que necesites para tu juego o decisión.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <span class="step-num">2</span>
+        <div class="step-body">
+          <h4>Configura el tipo y cantidad de dados</h4>
+          <p>En el modo dados, escoge las caras que deseas (desde dados clásicos D6 hasta dados poliédricos para rol D20) y la cantidad simultánea.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <span class="step-num">3</span>
+        <div class="step-body">
+          <h4>Lanza con animación y consulta la suma total</h4>
+          <p>Haz clic en la moneda para verla girar en el aire, o pulsa "Lanzar dados" para obtener la tirada animada, el desglose y la suma acumulada.</p>
+        </div>
+      </div>
+    </div>
+
+    <h3>Casos de uso para juegos y desempates</h3>
+    <div class="guide-grid">
+      <div class="guide-card">
+        <h4>Partidas de rol (D&D, Pathfinder)</h4>
+        <p>Lanza dados de 4, 8, 10, 12 o 20 caras en cualquier momento cuando olvides tus dados físicos en casa.</p>
+      </div>
+      <div class="guide-card">
+        <h4>Juegos de mesa tradicionales</h4>
+        <p>Sustituye los dados de Monopoly, Generala, Ludo o Catán con tiradas limpias que calculan la suma automáticamente.</p>
+      </div>
+      <div class="guide-card">
+        <h4>Desempates y decisiones instantáneas</h4>
+        <p>Resuelve dilemas rápidos entre dos opciones ("cara o cruz") de forma justa, limpia y transparente.</p>
+      </div>
+    </div>
+
+    <h2>Preguntas frecuentes sobre dados y monedas virtuales</h2>
+    <div class="faq-wrap">
+      <div class="faq-item">
+        <div class="faq-question">¿Los resultados son realmente aleatorios o están programados?</div>
+        <div class="faq-answer">
+          <p>Son 100% aleatorios e impredecibles. Se utiliza la API Web Cryptography de tu navegador, el mismo estándar de entropía que se usa en seguridad informática para generar claves de cifrado.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Puedo lanzar varios dados a la vez?</div>
+        <div class="faq-answer">
+          <p>Sí, puedes lanzar desde 1 hasta 10 dados simultáneamente en una sola tirada. La herramienta sumará automáticamente todos los valores obtenidos.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Queda guardado el historial de tiradas recientes?</div>
+        <div class="faq-answer">
+          <p>Sí, debajo del resultado principal se muestra el historial de tus últimas tiradas para que puedas verificar los turnos anteriores durante tu partida.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Funciona en teléfonos móviles?</div>
+        <div class="faq-answer">
+          <p>Completamente. La interfaz es táctil y ligera, permitiéndote lanzar la moneda o los dados con un solo toque desde cualquier smartphone o tablet.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>
+<style>
+  .breadcrumb{font-size:.85rem;color:var(--muted);margin-bottom:.5rem}.breadcrumb a{color:var(--muted)}
+  .tabs{display:flex;gap:.5rem;margin-bottom:1.5rem}
+  .tab{background:var(--surface-card);border:1px solid var(--line);color:var(--muted);padding:.55rem 1.2rem;border-radius:var(--radius-sm);cursor:pointer;font-weight:600;font-size:.9rem}
+  .tab.active{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+  .hidden{display:none!important}
+  .coin-area{display:flex;flex-direction:column;align-items:center;gap:1.25rem;padding:2rem 0}
+  .coin{width:140px;height:140px;perspective:600px;cursor:pointer;position:relative}
+  .coin-face{position:absolute;inset:0;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.1rem;backface-visibility:hidden;transition:transform .6s}
+  .front{background:linear-gradient(135deg,#f39c12,#e67e22);color:#fff;border:4px solid #d4a017}
+  .back{background:linear-gradient(135deg,#95a5a6,#7f8c8d);color:#fff;border:4px solid #6c7a7a;transform:rotateY(180deg)}
+  .coin.flipping .front{animation:flipFront .6s ease both}
+  .coin.flipping .back{animation:flipBack .6s ease both}
+  .coin.show-back .front{transform:rotateY(180deg)}.coin.show-back .back{transform:rotateY(0)}
+  @keyframes flipFront{0%{transform:rotateY(0)}50%{transform:rotateY(900deg)}100%{transform:rotateY(0)}}
+  @keyframes flipBack{0%{transform:rotateY(180deg)}50%{transform:rotateY(1080deg)}100%{transform:rotateY(180deg)}}
+  .btn-primary{background:var(--accent);color:var(--accent-ink);border:none;border-radius:var(--radius-sm);padding:.7rem 1.4rem;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:.5rem}
+  .btn-big{font-size:1.05rem;padding:.85rem 2rem}
+  .result-text{font-size:1.3rem;font-weight:800;color:var(--accent);min-height:2rem;text-align:center}
+  .stats-row{font-size:.85rem;color:var(--muted)}
+  .dice-config{display:flex;gap:1rem;align-items:end;flex-wrap:wrap;margin-bottom:1.5rem}
+  .field-sm label{display:block;font-size:.85rem;font-weight:600;margin-bottom:.3rem}
+  .field-sm select,.field-sm input[type="number"]{padding:.5rem;background:var(--bg);border:1px solid var(--line);border-radius:var(--radius-sm);color:var(--ink);font:inherit}
+  .field-sm input[type="number"]{width:70px}
+  .dice-display{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;margin-bottom:1rem}
+  :global(.die){width:72px;height:72px;background:linear-gradient(135deg,#2d3436,#636e72);border:2px solid var(--line);border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:1.8rem;font-weight:900;color:#fff;animation:dieRoll .5s ease both}
+  @keyframes dieRoll{0%{transform:rotateZ(0) scale(.5);opacity:0}60%{transform:rotateZ(360deg) scale(1.1)}100%{transform:rotateZ(360deg) scale(1);opacity:1}}
+  .history{font-size:.82rem;color:var(--muted);margin-top:1rem;max-height:120px;overflow-y:auto}
+</style>
+<script>
+  const tabs=document.querySelectorAll<HTMLButtonElement>('.tab');
+  tabs.forEach(t=>t.addEventListener('click',()=>{
+    tabs.forEach(x=>x.classList.remove('active'));t.classList.add('active');
+    document.querySelectorAll('.tab-content').forEach(c=>c.classList.add('hidden'));
+    document.getElementById(`tab-${t.dataset.tab}`)!.classList.remove('hidden');
+  }));
+
+  // Coin
+  let heads=0,tails=0;
+  const coin=document.getElementById('coin')!;const btnFlip=document.getElementById('btn-flip')!;
+  const coinResult=document.getElementById('coin-result')!;const coinStats=document.getElementById('coin-stats')!;
+  btnFlip.addEventListener('click',()=>{
+    const isHeads=crypto.getRandomValues(new Uint8Array(1))[0]>127;
+    coin.className='coin flipping';
+    setTimeout(()=>{
+      coin.classList.remove('flipping');
+      coin.classList.toggle('show-back',!isHeads);
+      if(isHeads){heads++;coinResult.textContent='¡CARA!'}else{tails++;coinResult.textContent='¡CRUZ!'}
+      coinStats.textContent=`Caras: ${heads} · Cruces: ${tails}`;
+    },600);
+  });
+
+  // Dice
+  const diceType=document.getElementById('dice-type') as HTMLSelectElement;
+  const diceCount=document.getElementById('dice-count') as HTMLInputElement;
+  const btnRoll=document.getElementById('btn-roll')!;
+  const diceDisplay=document.getElementById('dice-results')!;
+  const diceTotal=document.getElementById('dice-total')!;
+  const diceHistory=document.getElementById('dice-history')!;
+  const historyLog:string[]=[];
+
+  btnRoll.addEventListener('click',()=>{
+    const faces=parseInt(diceType.value);const n=Math.min(parseInt(diceCount.value)||1,10);
+    const rolls:number[]=[];
+    const rng=new Uint32Array(n);crypto.getRandomValues(rng);
+    for(let i=0;i<n;i++)rolls.push((rng[i]%faces)+1);
+    diceDisplay.innerHTML='';
+    rolls.forEach((r,i)=>{
+      const d=document.createElement('div');d.className='die';d.textContent=String(r);
+      d.style.animationDelay=`${i*.08}s`;diceDisplay.appendChild(d);
+    });
+    const sum=rolls.reduce((a,b)=>a+b,0);
+    diceTotal.textContent=n>1?`Total: ${sum}`:`Resultado: ${sum}`;
+    historyLog.unshift(`${n}d${faces}: [${rolls.join(', ')}] = ${sum}`);
+    diceHistory.innerHTML=historyLog.slice(0,10).map(h=>`<div>${h}</div>`).join('');
+  });
+</script>

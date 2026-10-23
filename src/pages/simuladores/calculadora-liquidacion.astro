@@ -1,0 +1,656 @@
+---
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+---
+
+<Base
+  title="Calculadora de Liquidación de Beneficios Sociales Perú · UtiliaOnline"
+  description="Calcula tu liquidación final al cese laboral: CTS trunca, gratificación proporcional, vacaciones truncas, indemnización y sueldo pendiente con boleta oficial."
+  keywords="calculadora liquidacion peru, liquidacion de beneficios sociales, calcular finiquito liquidacion cese, cts trunca, gratificacion trunca"
+>
+  <div class="tool-container">
+    <div class="tool-header">
+      <div class="breadcrumb">
+        <a href="/">Inicio</a> / <a href="/simuladores">Simuladores</a> / <span>Liquidación de Beneficios</span>
+      </div>
+      <div class="title-row">
+        <div class="tool-icon-badge">
+          <Icon name="file-text" size={28} />
+        </div>
+        <div>
+          <h1>Calculadora de Liquidación de Beneficios Sociales</h1>
+          <p class="tool-desc">
+            Calcula la liquidación laboral completa e integral por renuncia, mutuo disenso, fin de contrato o despido intempestivo en Perú con desglose oficial imprimible.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="calc-grid">
+      <!-- Input Panel -->
+      <div class="panel-card input-panel">
+        <div class="panel-head">
+          <Icon name="file-text" size={18} />
+          <h2>Datos Generales del Cese</h2>
+        </div>
+
+        <form id="liq-form" class="calc-form" onsubmit="event.preventDefault()">
+          <div class="form-group">
+            <label for="motivo-cese">Motivo del Cese Laboral</label>
+            <select id="motivo-cese" class="form-select">
+              <option value="renuncia">Renuncia Voluntaria / Mutuo Disenso</option>
+              <option value="termino">Término de Contrato a Plazo Fijo</option>
+              <option value="despido">Despido Arbitrario / Intempestivo (Con Indemnización)</option>
+            </select>
+          </div>
+
+          <div class="form-row-2">
+            <div class="form-group">
+              <label for="regimen-liq">Régimen Laboral</label>
+              <select id="regimen-liq" class="form-select">
+                <option value="general">Régimen General (100%)</option>
+                <option value="pequena">Pequeña Empresa (50%)</option>
+                <option value="micro">Microempresa</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="pension-liq">Sistema Previsional</label>
+              <select id="pension-liq" class="form-select">
+                <option value="0.13">ONP (13.00%)</option>
+                <option value="0.118">AFP Prima / Integra / Profuturo (~11.8%)</option>
+                <option value="0.115">AFP Habitat (~11.5%)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="salud-liq">Cobertura de Salud (Bonif. Gratificación)</label>
+            <select id="salud-liq" class="form-select">
+              <option value="0.09">EsSalud (+9% bonificación extraordinaria)</option>
+              <option value="0.0675">EPS (+6.75% bonificación)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="sueldo-liq">Última Remuneración Ordinaria (S/)</label>
+            <div class="input-prefix-wrap">
+              <span class="prefix">S/</span>
+              <input type="number" id="sueldo-liq" class="form-input" value="3000" min="0" step="0.01" required />
+            </div>
+          </div>
+
+          <div class="form-check-group">
+            <label class="checkbox-label">
+              <input type="checkbox" id="asig-fam-liq" />
+              <span>¿Percibía Asignación Familiar? (+ S/ 102.50 = 10% RMV)</span>
+            </label>
+          </div>
+
+          <!-- Días trabajados del mes pendiente -->
+          <div class="form-section-title">1. Sueldo Pendiente de Días Trabajados</div>
+          <div class="form-group">
+            <label for="dias-mes-pendiente">Días laborados en el mes del cese</label>
+            <input type="number" id="dias-mes-pendiente" class="form-input" value="12" min="0" max="30" />
+            <small class="hint-text">Días acumulados del último mes que no se han pagado.</small>
+          </div>
+
+          <!-- CTS Trunca -->
+          <div class="form-section-title">2. CTS Trunca (Semestre en curso)</div>
+          <div class="form-row-2">
+            <div class="form-group">
+              <label for="meses-cts-liq">Meses laborados de CTS</label>
+              <input type="number" id="meses-cts-liq" class="form-input" value="3" min="0" max="6" />
+            </div>
+            <div class="form-group">
+              <label for="dias-cts-liq">Días adicionales</label>
+              <input type="number" id="dias-cts-liq" class="form-input" value="12" min="0" max="29" />
+            </div>
+          </div>
+
+          <!-- Gratificación Trunca -->
+          <div class="form-section-title">3. Gratificación Trunca</div>
+          <div class="form-row-2">
+            <div class="form-group">
+              <label for="meses-gratif-liq">Meses completos de Gratif.</label>
+              <input type="number" id="meses-gratif-liq" class="form-input" value="3" min="0" max="6" />
+            </div>
+            <div class="form-group">
+              <label for="dias-gratif-liq">Días de fracción</label>
+              <input type="number" id="dias-gratif-liq" class="form-input" value="12" min="0" max="29" />
+            </div>
+          </div>
+
+          <!-- Vacaciones Truncas -->
+          <div class="form-section-title">4. Vacaciones Truncas y Pendientes</div>
+          <div class="form-row-2">
+            <div class="form-group">
+              <label for="meses-vac-liq">Meses truncos</label>
+              <input type="number" id="meses-vac-liq" class="form-input" value="8" min="0" max="11" />
+            </div>
+            <div class="form-group">
+              <label for="dias-vac-pend">Días pendientes ganados</label>
+              <input type="number" id="dias-vac-pend" class="form-input" value="0" min="0" max="60" />
+            </div>
+          </div>
+
+          <!-- Indemnización por despido opcional -->
+          <div id="section-despido-liq" style="display: none;">
+            <div class="form-section-title">5. Indemnización por Despido</div>
+            <div class="form-row-2">
+              <div class="form-group">
+                <label for="anos-servicio-liq">Años laborados</label>
+                <input type="number" id="anos-servicio-liq" class="form-input" value="2" min="0" max="30" />
+              </div>
+              <div class="form-group">
+                <label for="meses-servicio-liq">Meses adicionales</label>
+                <input type="number" id="meses-servicio-liq" class="form-input" value="5" min="0" max="11" />
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Result Panel -->
+      <div class="panel-card result-panel">
+        <div class="panel-head">
+          <Icon name="dollar-sign" size={18} />
+          <h2>Boleta de Liquidación</h2>
+        </div>
+
+        <div class="result-highlight-card">
+          <span class="result-sub-label">Neto Total a Liquidar</span>
+          <div class="result-main-value" id="res-liq-neto">S/ 0.00</div>
+          <div class="result-date-info">Total Haberes Brutos: <span id="res-liq-bruto">S/ 0.00</span></div>
+        </div>
+
+        <div class="breakdown-list">
+          <div class="breakdown-item">
+            <span>Sueldo días laborados:</span>
+            <strong id="res-liq-dias-sueldo">S/ 0.00</strong>
+          </div>
+          <div class="breakdown-item">
+            <span>CTS Trunca:</span>
+            <strong id="res-liq-cts">S/ 0.00</strong>
+          </div>
+          <div class="breakdown-item">
+            <span>Gratificación Trunca:</span>
+            <strong id="res-liq-gratif">S/ 0.00</strong>
+          </div>
+          <div class="breakdown-item text-success">
+            <span>Bonificación extraordinaria salud:</span>
+            <strong id="res-liq-bonif">+ S/ 0.00</strong>
+          </div>
+          <div class="breakdown-item">
+            <span>Vacaciones truncas y no gozadas:</span>
+            <strong id="res-liq-vac">S/ 0.00</strong>
+          </div>
+          <div class="breakdown-item text-warning" id="row-liq-indemnizacion" style="display: none;">
+            <span>Indemnización por despido:</span>
+            <strong id="res-liq-indem">S/ 0.00</strong>
+          </div>
+          <div class="breakdown-item text-danger">
+            <span id="label-liq-descuento">Descuento de ley (AFP/ONP):</span>
+            <strong id="res-liq-descuento">- S/ 0.00</strong>
+          </div>
+        </div>
+
+        <div class="action-buttons-row">
+          <button type="button" class="btn-action" id="btn-copy-liq">
+            <Icon name="copy" size={16} />
+            <span>Copiar Boleta</span>
+          </button>
+          <button type="button" class="btn-action" onclick="window.print()">
+            <Icon name="download" size={16} />
+            <span>Imprimir Boleta</span>
+          </button>
+        </div>
+
+        <div class="legal-notice">
+          <strong>Plazo de Pago de Liquidación:</strong> Según el D.S. 001-97-TR, el empleador está obligado a pagar la liquidación de beneficios sociales dentro de las <strong>48 horas siguientes</strong> a la terminación del vínculo laboral. De lo contrario, se devengan intereses legales laborales fijados por el BCR.
+        </div>
+      </div>
+    </div>
+
+    <!-- Guía y Cómo Usar (Estándar UtiliaOnline) -->
+    <section class="seo-section">
+      <h2>Guía completa: ¿Cómo se calcula la Liquidación de Beneficios Sociales en Perú?</h2>
+      <p>
+        La <strong>Liquidación de Beneficios Sociales</strong> es el documento y pago final que el empleador entrega obligatoriamente al trabajador cuando cesa la relación laboral, sin importar si la causa fue renuncia voluntaria, despido, mutuo disenso, jubilación o vencimiento del contrato.
+      </p>
+      <p>
+        Una liquidación laboral completa e integral en el régimen de la actividad privada (D.Leg. 728) consolida cinco componentes esenciales:
+      </p>
+      <ul>
+        <li><strong>1. Sueldo por días pendientes:</strong> Remuneración ordinaria por los días efectivamente laborados en el mes del cese que aún no han sido cobrados.</li>
+        <li><strong>2. Gratificación trunca:</strong> Proporcional a los meses y días completos trabajados dentro del semestre en curso, más su Bonificación Extraordinaria (9% EsSalud o 6.75% EPS).</li>
+        <li><strong>3. CTS trunca:</strong> Compensación proporcional por el semestre computable en curso (calculada sobre sueldo + asignación familiar + un sexto de gratificación).</li>
+        <li><strong>4. Vacaciones truncas y no gozadas:</strong> Doceavos y treintavos por el récord vacacional en formación, más descansos legalmente devengados que no se llegaron a descansar.</li>
+        <li><strong>5. Indemnización por despido:</strong> Únicamente aplicable si el cese se debió a un despido arbitrario o intempestivo.</li>
+      </ul>
+
+      <h2>¿Cómo usar esta calculadora paso a paso?</h2>
+      <div class="step-list">
+        <div class="step-card">
+          <span class="step-num">1</span>
+          <div class="step-body">
+            <h4>Elige el motivo de cese y régimen de la empresa</h4>
+            <p>Selecciona si cesas por renuncia, término de contrato o despido arbitrario. Elige tu régimen (General o Pequeña Empresa) y tu sistema de pensiones para retener solo los conceptos que la ley grava.</p>
+          </div>
+        </div>
+        <div class="step-card">
+          <span class="step-num">2</span>
+          <div class="step-body">
+            <h4>Ingresa tu sueldo y días pendientes del mes</h4>
+            <p>Escribe tu remuneración mensual habitual y los días trabajados en el mes en que finaliza tu contrato para computar tus haberes regulares devengados.</p>
+          </div>
+        </div>
+        <div class="step-card">
+          <span class="step-num">3</span>
+          <div class="step-body">
+            <h4>Indica meses acumulados de CTS, gratificación y vacaciones</h4>
+            <p>Coloca los meses que transcurrieron desde el último depósito de CTS (mayo o noviembre), desde la última gratificación (enero o julio) y los meses laborados de tu periodo vacacional incompleto.</p>
+          </div>
+        </div>
+        <div class="step-card">
+          <span class="step-num">4</span>
+          <div class="step-body">
+            <h4>Obtén tu boleta consolidada de liquidación</h4>
+            <p>Visualiza el total de haberes brutos, las retenciones de ley de AFP/ONP aplicables a sueldo y vacaciones, y el importe neto total a cobrar. Puedes imprimir o guardar la boleta en PDF.</p>
+          </div>
+        </div>
+      </div>
+
+      <h3>Casos prácticos de liquidación</h3>
+      <div class="guide-grid">
+        <div class="guide-card">
+          <h4>Liquidación por Renuncia Voluntaria</h4>
+          <p>Al renunciar recibes todos tus beneficios truncos adquiridos: CTS trunca, gratificación proporcional (con 9% de bono) y vacaciones truncas. No aplica indemnización por despido.</p>
+        </div>
+        <div class="guide-card">
+          <h4>Liquidación por Término de Contrato</h4>
+          <p>Al vencer el plazo acordado, el empleador abona tus beneficios truncos generados hasta el último día calendario de vigencia de la relación contractual sin penalidades.</p>
+        </div>
+        <div class="guide-card">
+          <h4>Liquidación por Despido Arbitrario</h4>
+          <p>Suma a todos tus beneficios sociales ordinarios truncos la indemnización legal de 1.5 sueldos por año de servicio (tope 12 sueldos), la cual ingresa 100% neta y libre de impuestos.</p>
+        </div>
+      </div>
+
+      <h2>Preguntas frecuentes sobre la Liquidación laboral</h2>
+      <div class="faq-wrap">
+        <div class="faq-item">
+          <div class="faq-question">¿Cuánto tiempo tiene la empresa para pagarme la liquidación tras el cese?</div>
+          <div class="faq-answer">
+            <p>El Decreto Supremo N° 001-97-TR estipula que el empleador debe cancelar la liquidación de beneficios sociales dentro de las <strong>48 horas siguientes</strong> al cese. Si no lo hace, puedes acudir a SUNAFIL para denunciar el hecho o solicitar una audiencia de conciliación ante el Ministerio de Trabajo.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-question">¿Qué conceptos de la liquidación sufren descuentos de AFP u ONP?</div>
+          <div class="faq-answer">
+            <p>Solo sufren retención de pensiones el <strong>sueldo por días trabajados</strong> y las <strong>vacaciones truncas</strong>. La CTS trunca, la gratificación trunca y la indemnización por despido están <strong>exoneradas por ley</strong> de descuentos previsionales.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-question">¿La empresa debe entregarme algún documento adicional?</div>
+          <div class="faq-answer">
+            <p>Sí, junto con tu liquidación de beneficios sociales el empleador debe entregarte obligatoriamente tu <strong>Certificado de Trabajo</strong> y la <strong>Carta de liberación de CTS</strong> para que puedas retirar tu fondo acumulado en el banco.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</Base>
+
+<style>
+  .tool-container {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 1.5rem 0 3rem;
+  }
+  .breadcrumb {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-bottom: 0.75rem;
+  }
+  .breadcrumb a {
+    color: var(--muted);
+  }
+  .breadcrumb a:hover {
+    color: var(--accent);
+  }
+  .title-row {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+  .tool-icon-badge {
+    width: 58px;
+    height: 58px;
+    border-radius: var(--radius-md);
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(56, 189, 248, 0.05));
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #10b981;
+    flex-shrink: 0;
+  }
+  .title-row h1 {
+    font-size: 1.85rem;
+    margin: 0 0 0.35rem 0;
+    letter-spacing: -0.02em;
+  }
+  .tool-desc {
+    color: var(--muted);
+    font-size: 0.95rem;
+    margin: 0;
+    max-width: 75ch;
+  }
+
+  .calc-grid {
+    display: grid;
+    grid-template-columns: 1.15fr 0.95fr;
+    gap: 1.5rem;
+    align-items: start;
+  }
+  @media (max-width: 860px) {
+    .calc-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .panel-card {
+    background: var(--surface-card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  }
+  .panel-head {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--line);
+    color: var(--accent);
+  }
+  .panel-head h2 {
+    font-size: 1.15rem;
+    color: var(--ink);
+    margin: 0;
+  }
+
+  .form-group {
+    margin-bottom: 1rem;
+  }
+  .form-group label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 0.35rem;
+    color: var(--ink);
+  }
+  .form-input, .form-select {
+    width: 100%;
+    padding: 0.55rem 0.85rem;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    color: var(--ink);
+    font-size: 0.92rem;
+    transition: border-color 0.15s;
+  }
+  .form-input:focus, .form-select:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+  .input-prefix-wrap {
+    display: flex;
+    align-items: center;
+    position: relative;
+  }
+  .input-prefix-wrap .prefix {
+    position: absolute;
+    left: 0.85rem;
+    font-weight: 600;
+    color: var(--muted);
+  }
+  .input-prefix-wrap .form-input {
+    padding-left: 2.2rem;
+  }
+
+  .form-row-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.85rem;
+  }
+  .form-section-title {
+    font-size: 0.82rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--accent);
+    margin: 1.1rem 0 0.65rem;
+    padding-top: 0.45rem;
+    border-top: 1px solid var(--line);
+  }
+  .hint-text {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-top: 0.25rem;
+  }
+  .form-check-group {
+    margin: 0.75rem 0 1rem;
+  }
+  .checkbox-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: var(--ink);
+    cursor: pointer;
+  }
+
+  /* Result Panel */
+  .result-highlight-card {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.12), rgba(56, 189, 248, 0.08));
+    border: 1px solid rgba(16, 185, 129, 0.35);
+    border-radius: var(--radius-sm);
+    padding: 1.25rem;
+    text-align: center;
+    margin-bottom: 1.25rem;
+  }
+  .result-sub-label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .result-main-value {
+    font-size: 2.25rem;
+    font-weight: 800;
+    color: #10b981;
+    margin: 0.25rem 0;
+    font-family: var(--font-heading, sans-serif);
+  }
+  .result-date-info {
+    font-size: 0.82rem;
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  .breakdown-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    padding: 1rem;
+    margin-bottom: 1.25rem;
+  }
+  .breakdown-item {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.88rem;
+  }
+  .text-success {
+    color: #10b981;
+  }
+  .text-danger {
+    color: #ef4444;
+  }
+  .text-warning {
+    color: #f59e0b;
+  }
+
+  .action-buttons-row {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+  }
+  .btn-action {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    padding: 0.55rem 0.85rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--line);
+    background: var(--surface-card);
+    color: var(--ink);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn-action:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .legal-notice {
+    font-size: 0.75rem;
+    color: var(--muted);
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px dashed var(--line);
+    padding: 0.75rem;
+    border-radius: var(--radius-sm);
+    line-height: 1.45;
+  }
+</style>
+
+<script>
+  const formatCurrency = (val: number) => {
+    return `S/ ${val.toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  };
+
+  const calculateLiq = () => {
+    const motivo = (document.getElementById('motivo-cese') as HTMLSelectElement).value;
+    const regimen = (document.getElementById('regimen-liq') as HTMLSelectElement).value;
+    const tasaPension = parseFloat((document.getElementById('pension-liq') as HTMLSelectElement).value) || 0;
+    const bonifSalud = parseFloat((document.getElementById('salud-liq') as HTMLSelectElement).value) || 0.09;
+    const sueldo = parseFloat((document.getElementById('sueldo-liq') as HTMLInputElement).value) || 0;
+    const tieneAsig = (document.getElementById('asig-fam-liq') as HTMLInputElement).checked;
+
+    const asigMonto = tieneAsig ? 102.50 : 0;
+    const computable = sueldo + asigMonto;
+    const valorDia = computable / 30;
+
+    const factorRegimen = regimen === 'general' ? 1.0 : (regimen === 'pequena' ? 0.5 : 0.0);
+    const factorVac = regimen === 'general' ? 1.0 : 0.5;
+
+    // 1. Sueldo pendiente
+    const diasPendSueldo = parseInt((document.getElementById('dias-mes-pendiente') as HTMLInputElement).value) || 0;
+    const montoSueldoPend = valorDia * diasPendSueldo;
+
+    // 2. Gratificación trunca
+    const mesesGratif = parseInt((document.getElementById('meses-gratif-liq') as HTMLInputElement).value) || 0;
+    const diasGratif = parseInt((document.getElementById('dias-gratif-liq') as HTMLInputElement).value) || 0;
+    const gratifBase = ((computable / 6) * mesesGratif + (computable / 180) * diasGratif) * factorRegimen;
+    const bonifExtra = gratifBase * bonifSalud;
+
+    // 3. CTS Trunca (con 1/6 gratif)
+    const mesesCts = parseInt((document.getElementById('meses-cts-liq') as HTMLInputElement).value) || 0;
+    const diasCts = parseInt((document.getElementById('dias-cts-liq') as HTMLInputElement).value) || 0;
+    const baseCts = computable + (computable / 6);
+    const montoCts = ((baseCts / 12) * mesesCts + (baseCts / 360) * diasCts) * factorRegimen;
+
+    // 4. Vacaciones truncas y pendientes
+    const mesesVac = parseInt((document.getElementById('meses-vac-liq') as HTMLInputElement).value) || 0;
+    const diasVacPend = parseInt((document.getElementById('dias-vac-pend') as HTMLInputElement).value) || 0;
+    const montoVacTruncas = (computable * factorVac / 12) * mesesVac;
+    const montoVacPend = valorDia * diasVacPend;
+    const totalVac = montoVacTruncas + montoVacPend;
+
+    // 5. Indemnización por despido
+    let montoIndem = 0;
+    const secDespido = document.getElementById('section-despido-liq');
+    const rowIndem = document.getElementById('row-liq-indemnizacion');
+
+    if (motivo === 'despido') {
+      if (secDespido) secDespido.style.display = 'block';
+      if (rowIndem) rowIndem.style.display = 'flex';
+      const anosServ = parseInt((document.getElementById('anos-servicio-liq') as HTMLInputElement).value) || 0;
+      const mesesServ = parseInt((document.getElementById('meses-servicio-liq') as HTMLInputElement).value) || 0;
+      if (regimen === 'general') {
+        montoIndem = Math.min((1.5 * computable * anosServ) + ((1.5 * computable / 12) * mesesServ), 12 * computable);
+      } else if (regimen === 'pequena') {
+        montoIndem = Math.min((20 * valorDia * anosServ) + ((20 * valorDia / 12) * mesesServ), 120 * valorDia);
+      } else {
+        montoIndem = Math.min((10 * valorDia * anosServ) + ((10 * valorDia / 12) * mesesServ), 90 * valorDia);
+      }
+    } else {
+      if (secDespido) secDespido.style.display = 'none';
+      if (rowIndem) rowIndem.style.display = 'none';
+    }
+
+    // Conceptos afectos a pensión: Sueldo pendiente + Vacaciones
+    const baseAfectaPension = montoSueldoPend + totalVac;
+    const descuentoPension = baseAfectaPension * tasaPension;
+
+    const totalHaberes = montoSueldoPend + gratifBase + bonifExtra + montoCts + totalVac + montoIndem;
+    const totalNeto = Math.max(0, totalHaberes - descuentoPension);
+
+    document.getElementById('res-liq-neto')!.textContent = formatCurrency(totalNeto);
+    document.getElementById('res-liq-bruto')!.textContent = formatCurrency(totalHaberes);
+    document.getElementById('res-liq-dias-sueldo')!.textContent = formatCurrency(montoSueldoPend);
+    document.getElementById('res-liq-cts')!.textContent = formatCurrency(montoCts);
+    document.getElementById('res-liq-gratif')!.textContent = formatCurrency(gratifBase);
+    document.getElementById('res-liq-bonif')!.textContent = `+ ${formatCurrency(bonifExtra)}`;
+    document.getElementById('res-liq-vac')!.textContent = formatCurrency(totalVac);
+    document.getElementById('res-liq-indem')!.textContent = formatCurrency(montoIndem);
+    document.getElementById('res-liq-descuento')!.textContent = `- ${formatCurrency(descuentoPension)}`;
+  };
+
+  const selMotivo = document.getElementById('motivo-cese') as HTMLSelectElement;
+  selMotivo.addEventListener('change', calculateLiq);
+
+  const inputs = document.querySelectorAll('#liq-form input, #liq-form select');
+  inputs.forEach((inp) => {
+    inp.addEventListener('input', calculateLiq);
+    inp.addEventListener('change', calculateLiq);
+  });
+
+  const copyBtn = document.getElementById('btn-copy-liq');
+  if (copyBtn) {
+    copyBtn.addEventListener('click', () => {
+      const neto = document.getElementById('res-liq-neto')?.textContent || '';
+      const bruto = document.getElementById('res-liq-bruto')?.textContent || '';
+      const text = `Liquidación de Beneficios Sociales (UtiliaOnline):\n- Total Haberes: ${bruto}\n- Neto Final a Pagar: ${neto}\nCalculado en: ${window.location.href}`;
+      navigator.clipboard.writeText(text).then(() => {
+        copyBtn.innerHTML = '<span>¡Copiado!</span>';
+        setTimeout(() => {
+          copyBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>Copiar Boleta</span>';
+        }, 2000);
+      });
+    });
+  }
+
+  calculateLiq();
+</script>

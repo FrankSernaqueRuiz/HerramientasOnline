@@ -1,0 +1,580 @@
+---
+import Icon from './Icon.astro';
+
+// Lista de idiomas soportados con sus banderas y nombres nativos
+const LANGUAGES = [
+  { code: 'es', name: 'Español', flag: '🇪🇸', autoLabel: 'Original' },
+  { code: 'en', name: 'English', flag: '🇺🇸', autoLabel: 'Page translated to English' },
+  { code: 'zh-CN', name: '中文 (简体)', flag: '🇨🇳', autoLabel: '页面已自动翻译为中文' },
+  { code: 'ru', name: 'Русский', flag: '🇷🇺', autoLabel: 'Страница переведена на русский' },
+  { code: 'pt', name: 'Português', flag: '🇧🇷', autoLabel: 'Página traduzida para português' },
+  { code: 'fr', name: 'Français', flag: '🇫🇷', autoLabel: 'Page traduite en français' },
+  { code: 'de', name: 'Deutsch', flag: '🇩🇪', autoLabel: 'Seite ins Deutsche übersetzt' },
+  { code: 'it', name: 'Italiano', flag: '🇮🇹', autoLabel: 'Pagina tradotta in italiano' },
+  { code: 'ja', name: '日本語', flag: '🇯🇵', autoLabel: '日本語に自動翻訳されました' },
+  { code: 'ko', name: '한국어', flag: '🇰🇷', autoLabel: '한국어로 자동 번역되었습니다' },
+  { code: 'ar', name: 'العربية', flag: '🇸🇦', autoLabel: 'تمت ترجمة الصفحة إلى العربية' },
+  { code: 'hi', name: 'हिन्दी', flag: '🇮🇳', autoLabel: 'पृष्ठ का हिंदी में अनुवाद किया गया' },
+];
+---
+
+<div class="lang-selector-wrapper notranslate" translate="no">
+  <!-- Botón selector de idioma -->
+  <button
+    type="button"
+    class="lang-btn"
+    id="lang-selector-btn"
+    aria-label="Seleccionar idioma / Select language"
+    aria-expanded="false"
+    aria-haspopup="true"
+  >
+    <Icon name="globe" size={16} class="globe-icon" />
+    <span class="lang-current-label" id="lang-current-label">ES</span>
+    <Icon name="chevron-down" size={12} class="lang-chevron" />
+  </button>
+
+  <!-- Menú desplegable -->
+  <div class="lang-dropdown" id="lang-dropdown" role="menu">
+    <div class="lang-dropdown-header">
+      <span>Idioma / Language</span>
+    </div>
+    <div class="lang-list">
+      {LANGUAGES.map((lang) => (
+        <button
+          type="button"
+          class="lang-option"
+          data-lang={lang.code}
+          role="menuitem"
+        >
+          <span class="lang-flag">{lang.flag}</span>
+          <span class="lang-name">{lang.name}</span>
+          <span class="lang-check" aria-hidden="true">✓</span>
+        </button>
+      ))}
+    </div>
+  </div>
+
+  <!-- Banner flotante de auto-traducción si detecta idioma extranjero -->
+  <div class="lang-auto-banner" id="lang-auto-banner" style="display: none;">
+    <div class="lang-auto-content">
+      <span class="lang-auto-icon">🌐</span>
+      <span class="lang-auto-text" id="lang-auto-text">Page translated automatically.</span>
+      <button type="button" class="lang-revert-btn" id="lang-revert-btn">
+        Ver original (ES)
+      </button>
+      <button type="button" class="lang-close-banner" id="lang-close-banner" aria-label="Cerrar aviso">
+        ✕
+      </button>
+    </div>
+  </div>
+
+  <!-- Contenedor oculto del script de Google Translate -->
+  <div id="google_translate_element" style="display: none !important;"></div>
+</div>
+
+<script is:inline>
+  (function () {
+    const SUPPORTED = [
+      { code: 'es', name: 'Español', short: 'ES', flag: '🇪🇸', autoLabel: 'Original' },
+      { code: 'en', name: 'English', short: 'EN', flag: '🇺🇸', autoLabel: 'Page automatically translated to English' },
+      { code: 'zh-CN', name: '中文', short: '中文', flag: '🇨🇳', autoLabel: '页面已自动翻译为中文' },
+      { code: 'ru', name: 'Русский', short: 'RU', flag: '🇷🇺', autoLabel: 'Страница переведена на русский язык' },
+      { code: 'pt', name: 'Português', short: 'PT', flag: '🇧🇷', autoLabel: 'Página traduzida para português' },
+      { code: 'fr', name: 'Français', short: 'FR', flag: '🇫🇷', autoLabel: 'Page automatiquement traduite en français' },
+      { code: 'de', name: 'Deutsch', short: 'DE', flag: '🇩🇪', autoLabel: 'Seite automatisch ins Deutsche übersetzt' },
+      { code: 'it', name: 'Italiano', short: 'IT', flag: '🇮🇹', autoLabel: 'Pagina tradotta automaticamente in italiano' },
+      { code: 'ja', name: '日本語', short: 'JA', flag: '🇯🇵', autoLabel: '日本語に自動翻訳されました' },
+      { code: 'ko', name: '한국어', short: 'KO', flag: '🇰🇷', autoLabel: '한국어로 자동 번역되었습니다' },
+      { code: 'ar', name: 'العربية', short: 'AR', flag: '🇸🇦', autoLabel: 'تمت ترجمة الصفحة تلقائيًا إلى العربية' },
+      { code: 'hi', name: 'हिन्दी', short: 'HI', flag: '🇮🇳', autoLabel: 'पृष्ठ का स्वचालित रूप से हिंदी में अनुवाद' },
+    ];
+
+    function getCookie(name) {
+      const match = document.cookie.match(new RegExp('(^|;\\s*)(' + name + ')=([^;]*)'));
+      return match ? decodeURIComponent(match[3]) : null;
+    }
+
+    function setCookie(name, value) {
+      const hostname = window.location.hostname;
+      const rootDomain = hostname.replace(/^www\./, '');
+      const expires = new Date(Date.now() + 365 * 864e5).toUTCString();
+      
+      document.cookie = name + '=' + value + '; expires=' + expires + '; path=/;';
+      if (hostname !== 'localhost') {
+        document.cookie = name + '=' + value + '; expires=' + expires + '; path=/; domain=' + hostname + ';';
+        document.cookie = name + '=' + value + '; expires=' + expires + '; path=/; domain=.' + rootDomain + ';';
+      }
+    }
+
+    function clearCookie(name) {
+      const hostname = window.location.hostname;
+      const rootDomain = hostname.replace(/^www\./, '');
+      const past = 'Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+      
+      document.cookie = name + '=; expires=' + past;
+      document.cookie = name + '=; expires=' + past + ' domain=' + hostname + ';';
+      document.cookie = name + '=; expires=' + past + ' domain=.' + rootDomain + ';';
+    }
+
+    // Detectar idioma del visitante
+    function detectVisitorLang() {
+      // 1. Si el usuario ya eligió manualmente antes
+      const saved = localStorage.getItem('utilia_lang_choice');
+      if (saved) return { code: saved, isAuto: false };
+
+      // 2. Si no ha elegido, detectar navegador
+      const navLang = (navigator.languages && navigator.languages[0]) || navigator.language || '';
+      const clean = navLang.toLowerCase();
+
+      if (!clean || clean.startsWith('es')) {
+        return { code: 'es', isAuto: false };
+      }
+
+      // Mapeo inteligente
+      if (clean.startsWith('zh')) {
+        return { code: 'zh-CN', isAuto: true };
+      }
+      if (clean.startsWith('ru')) return { code: 'ru', isAuto: true };
+      if (clean.startsWith('en')) return { code: 'en', isAuto: true };
+      if (clean.startsWith('pt')) return { code: 'pt', isAuto: true };
+      if (clean.startsWith('fr')) return { code: 'fr', isAuto: true };
+      if (clean.startsWith('de')) return { code: 'de', isAuto: true };
+      if (clean.startsWith('it')) return { code: 'it', isAuto: true };
+      if (clean.startsWith('ja')) return { code: 'ja', isAuto: true };
+      if (clean.startsWith('ko')) return { code: 'ko', isAuto: true };
+      if (clean.startsWith('ar')) return { code: 'ar', isAuto: true };
+      if (clean.startsWith('hi')) return { code: 'hi', isAuto: true };
+
+      // Si es otro idioma europeo o mundial soportado por 2 letras
+      const twoLetter = clean.split('-')[0];
+      return { code: twoLetter || 'en', isAuto: true };
+    }
+
+    const { code: targetLang, isAuto } = detectVisitorLang();
+
+    // Actualizar cookie de Google Translate si es necesario
+    const currentCookie = getCookie('googtrans');
+    const expectedCookie = targetLang === 'es' ? null : '/es/' + targetLang;
+
+    if (targetLang !== 'es') {
+      if (currentCookie !== expectedCookie) {
+        setCookie('googtrans', expectedCookie);
+      }
+    } else if (currentCookie && localStorage.getItem('utilia_lang_choice') === 'es') {
+      clearCookie('googtrans');
+    }
+
+    // Callback de inicialización de Google Translate
+    window.googleTranslateElementInit = function () {
+      new window.google.translate.TranslateElement(
+        {
+          pageLanguage: 'es',
+          autoDisplay: false,
+          layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE,
+        },
+        'google_translate_element'
+      );
+    };
+
+    // Cargar script de Google Translate si el idioma es distinto a 'es' o si el usuario abre el selector
+    function loadGoogleTranslateScript() {
+      if (document.getElementById('gt-script')) return;
+      const script = document.createElement('script');
+      script.id = 'gt-script';
+      script.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+      script.async = true;
+      document.body.appendChild(script);
+    }
+
+    // Si requiere traducción, cargar inmediatamente
+    if (targetLang !== 'es' || currentCookie) {
+      loadGoogleTranslateScript();
+    }
+
+    // Manejo de la interfaz cuando el DOM esté listo
+    document.addEventListener('DOMContentLoaded', () => {
+      const btn = document.getElementById('lang-selector-btn');
+      const dropdown = document.getElementById('lang-dropdown');
+      const currentLabel = document.getElementById('lang-current-label');
+      const autoBanner = document.getElementById('lang-auto-banner');
+      const autoText = document.getElementById('lang-auto-text');
+      const revertBtn = document.getElementById('lang-revert-btn');
+      const closeBannerBtn = document.getElementById('lang-close-banner');
+      const options = document.querySelectorAll('.lang-option');
+
+      // Obtener idioma activo actual
+      let activeLang = 'es';
+      const cMatch = (getCookie('googtrans') || '').match(/\/es\/([^/]+)/);
+      if (cMatch && cMatch[1]) {
+        activeLang = cMatch[1];
+      } else if (targetLang !== 'es') {
+        activeLang = targetLang;
+      }
+
+      // Actualizar label del botón
+      const currentObj = SUPPORTED.find((l) => l.code === activeLang) || {
+        short: activeLang.toUpperCase(),
+        name: activeLang,
+      };
+      if (currentLabel) {
+        currentLabel.textContent = currentObj.short || activeLang.toUpperCase();
+      }
+
+      // Marcar activo en lista
+      options.forEach((opt) => {
+        if (opt.getAttribute('data-lang') === activeLang) {
+          opt.classList.add('is-active');
+        } else {
+          opt.classList.remove('is-active');
+        }
+      });
+
+      // Si fue auto-detectado y traducido, mostrar el banner informativo
+      if (isAuto && activeLang !== 'es' && !sessionStorage.getItem('utilia_auto_dismissed')) {
+        if (autoBanner && autoText) {
+          autoText.textContent = currentObj.autoLabel || `Page translated to ${currentObj.name}.`;
+          autoBanner.style.display = 'flex';
+        }
+      }
+
+      // Toggle dropdown
+      if (btn && dropdown) {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          loadGoogleTranslateScript(); // Cargar bajo demanda si aún no cargó
+          const isOpen = dropdown.classList.toggle('is-open');
+          btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        });
+
+        document.addEventListener('click', (e) => {
+          if (!dropdown.contains(e.target) && !btn.contains(e.target)) {
+            dropdown.classList.remove('is-open');
+            btn.setAttribute('aria-expanded', 'false');
+          }
+        });
+      }
+
+      // Cambio de idioma al hacer clic en una opción
+      options.forEach((opt) => {
+        opt.addEventListener('click', () => {
+          const newLang = opt.getAttribute('data-lang');
+          if (!newLang) return;
+
+          dropdown.classList.remove('is-open');
+          btn.setAttribute('aria-expanded', 'false');
+
+          if (newLang === 'es') {
+            // Regresar al español original
+            localStorage.setItem('utilia_lang_choice', 'es');
+            clearCookie('googtrans');
+            window.location.reload();
+            return;
+          }
+
+          // Guardar elección manual y aplicar traducción
+          localStorage.setItem('utilia_lang_choice', newLang);
+          setCookie('googtrans', '/es/' + newLang);
+
+          const select = document.querySelector('.goog-te-combo');
+          if (select) {
+            select.value = newLang;
+            select.dispatchEvent(new Event('change'));
+            if (currentLabel) {
+              const obj = SUPPORTED.find((l) => l.code === newLang);
+              currentLabel.textContent = obj ? obj.short : newLang.toUpperCase();
+            }
+            options.forEach((o) => o.classList.toggle('is-active', o === opt));
+          } else {
+            // Si el combo aún no está listo en el DOM, recargamos con la cookie ya puesta
+            window.location.reload();
+          }
+        });
+      });
+
+      // Botón volver a español desde el banner
+      if (revertBtn) {
+        revertBtn.addEventListener('click', () => {
+          localStorage.setItem('utilia_lang_choice', 'es');
+          clearCookie('googtrans');
+          sessionStorage.setItem('utilia_auto_dismissed', 'true');
+          window.location.reload();
+        });
+      }
+
+      // Cerrar banner
+      if (closeBannerBtn && autoBanner) {
+        closeBannerBtn.addEventListener('click', () => {
+          autoBanner.style.display = 'none';
+          sessionStorage.setItem('utilia_auto_dismissed', 'true');
+        });
+      }
+    });
+  })();
+</script>
+
+<style>
+  .lang-selector-wrapper {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    font-family: var(--font-sans);
+  }
+
+  .lang-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.35rem 0.65rem;
+    border-radius: var(--radius-sm);
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--line);
+    color: var(--ink);
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .lang-btn:hover {
+    background: var(--surface-hover);
+    border-color: rgba(56, 189, 248, 0.4);
+    color: var(--accent);
+  }
+
+  .globe-icon {
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+
+  .lang-current-label {
+    letter-spacing: 0.03em;
+  }
+
+  .lang-chevron {
+    color: var(--muted);
+    transition: transform 0.2s ease;
+  }
+
+  .lang-btn[aria-expanded="true"] .lang-chevron {
+    transform: rotate(180deg);
+  }
+
+  /* Dropdown Menu */
+  .lang-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    width: 210px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.4), 0 0 1px rgba(255, 255, 255, 0.1);
+    padding: 0.5rem;
+    z-index: 1000;
+    display: none;
+    flex-direction: column;
+    animation: fadeInSlide 0.18s ease forwards;
+  }
+
+  .lang-dropdown.is-open {
+    display: flex;
+  }
+
+  @keyframes fadeInSlide {
+    from {
+      opacity: 0;
+      transform: translateY(-6px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .lang-dropdown-header {
+    padding: 0.35rem 0.6rem 0.5rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--muted);
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 0.35rem;
+  }
+
+  .lang-list {
+    max-height: 280px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+
+  .lang-list::-webkit-scrollbar {
+    width: 5px;
+  }
+  .lang-list::-webkit-scrollbar-thumb {
+    background: var(--line);
+    border-radius: 4px;
+  }
+
+  .lang-option {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.45rem 0.65rem;
+    border-radius: 6px;
+    background: transparent;
+    border: none;
+    color: var(--ink);
+    font-size: 0.85rem;
+    text-align: left;
+    cursor: pointer;
+    transition: background 0.12s ease;
+    width: 100%;
+  }
+
+  .lang-option:hover {
+    background: var(--surface-card);
+    color: var(--accent);
+  }
+
+  .lang-option.is-active {
+    background: rgba(56, 189, 248, 0.12);
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .lang-flag {
+    font-size: 1.05rem;
+    line-height: 1;
+  }
+
+  .lang-name {
+    flex: 1;
+  }
+
+  .lang-check {
+    font-size: 0.8rem;
+    color: var(--accent);
+    opacity: 0;
+  }
+
+  .lang-option.is-active .lang-check {
+    opacity: 1;
+  }
+
+  /* Floating Auto-Translated Banner */
+  .lang-auto-banner {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 9999;
+    background: var(--surface);
+    border: 1px solid rgba(56, 189, 248, 0.4);
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.45);
+    border-radius: var(--radius-md);
+    padding: 0.75rem 1rem;
+    max-width: 90vw;
+    animation: bannerPop 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  @keyframes bannerPop {
+    from {
+      opacity: 0;
+      transform: translateY(12px) scale(0.96);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  .lang-auto-content {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.85rem;
+    color: var(--ink);
+    flex-wrap: wrap;
+  }
+
+  .lang-auto-icon {
+    font-size: 1.15rem;
+  }
+
+  .lang-auto-text {
+    font-weight: 500;
+  }
+
+  .lang-revert-btn {
+    background: var(--accent);
+    color: var(--accent-ink);
+    border: none;
+    border-radius: 6px;
+    padding: 0.35rem 0.75rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity 0.15s ease;
+  }
+
+  .lang-revert-btn:hover {
+    opacity: 0.9;
+  }
+
+  .lang-close-banner {
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    font-size: 0.95rem;
+    cursor: pointer;
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+    line-height: 1;
+  }
+
+  .lang-close-banner:hover {
+    color: var(--ink);
+    background: var(--surface-card);
+  }
+
+  @media (max-width: 600px) {
+    .lang-auto-banner {
+      left: 12px;
+      right: 12px;
+      bottom: 12px;
+    }
+  }
+</style>
+
+<style is:global>
+  /* Limpieza estética de Google Translate para que no arruine el diseño moderno */
+  .goog-te-banner-frame.skiptranslate,
+  iframe.goog-te-banner-frame {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+  }
+
+  body {
+    top: 0px !important;
+    position: static !important;
+  }
+
+  #goog-gt-tt,
+  .goog-te-balloon-frame {
+    display: none !important;
+  }
+
+  .goog-text-highlight {
+    background: none !important;
+    box-shadow: none !important;
+  }
+
+  /* Evitar que Google altere tipografías con etiquetas font */
+  font {
+    background-color: transparent !important;
+    box-shadow: none !important;
+  }
+</style>

@@ -1,0 +1,141 @@
+﻿---
+import Base from '../../layouts/Base.astro';
+---
+<Base title="Calculadora de Descuentos Online – Precio Final y Ahorro" description="Calcula el precio final tras descuentos simples o encadenados, y cuánto dinero ahorras exactamente.">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="/">Herramientas</a> / <span>Dinero y compras</span></div>
+    <h1>Calculadora de Descuentos</h1>
+    <p class="lead">Ingresa el precio original y uno o varios porcentajes de descuento para ver el precio final y el ahorro total.</p>
+  </div>
+  <section class="panel">
+    <div class="calc-grid">
+      <div>
+        <div class="field"><label for="dc-price">Precio original ($):</label><input type="number" id="dc-price" min="0" step="0.01" value="100"/></div>
+        <div class="field"><label for="dc-pct1">Descuento 1 (%):</label><input type="number" id="dc-pct1" min="0" max="100" step="0.1" value="20"/></div>
+        <div class="field"><label for="dc-pct2">Descuento 2 encadenado (%):</label><input type="number" id="dc-pct2" min="0" max="100" step="0.1" value="0"/><small class="hint">Se aplica sobre el resultado del 1er descuento</small></div>
+        <div class="field"><label for="dc-pct3">Descuento 3 adicional (%):</label><input type="number" id="dc-pct3" min="0" max="100" step="0.1" value="0"/></div>
+      </div>
+      <div class="result-panel">
+        <div class="big-result"><span class="label">Precio final</span><span class="value" id="r-final">$80.00</span></div>
+        <div class="sub-results">
+          <div><span class="label">Ahorro total</span><span class="value green" id="r-saved">$20.00</span></div>
+          <div><span class="label">Descuento real</span><span class="value" id="r-pct">20.0%</span></div>
+        </div>
+        <div id="r-steps" class="steps"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="seo-section">
+    <h2>¿Cómo funciona la calculadora de descuentos?</h2>
+    <p>Esta calculadora determina el precio final a pagar y el ahorro neto en moneda real. Además del descuento individual clásico, permite calcular <strong>descuentos dobles o encadenados</strong> (como "40% de liquidación + 10% adicional con tarjeta"), evitando el error común de sumar los porcentajes de forma directa.</p>
+
+    <div class="step-list">
+      <div class="step-card">
+        <span class="step-num">1</span>
+        <div class="step-body">
+          <h4>Introduce el precio original de lista</h4>
+          <p>Escribe el precio inicial que figura en la etiqueta o anuncio antes de cualquier rebaja.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <span class="step-num">2</span>
+        <div class="step-body">
+          <h4>Indica el porcentaje de descuento principal</h4>
+          <p>Escribe el descuento inicial (ej: 20%, 30% o 50%). El cálculo se actualiza automáticamente.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <span class="step-num">3</span>
+        <div class="step-body">
+          <h4>Añade descuentos sucesivos opcionales</h4>
+          <p>Si la tienda ofrece cupones o beneficios bancarios acumulables, añádelos en los campos de 2º y 3º descuento para ver el precio neto real.</p>
+        </div>
+      </div>
+    </div>
+
+    <h3>Casos de uso para compras inteligentes</h3>
+    <div class="guide-grid">
+      <div class="guide-card">
+        <h4>Temporadas de rebajas (Black Friday, Cyber Monday)</h4>
+        <p>Calcula al instante cuánto pagarás realmente cuando las tiendas combinan rebajas de liquidación con códigos promocionales.</p>
+      </div>
+      <div class="guide-card">
+        <h4>Descuentos de empleado o membresías VIP</h4>
+        <p>Averigua tu precio final aplicando tu descuento corporativo sobre artículos que ya tienen una rebaja vigente en tienda.</p>
+      </div>
+      <div class="guide-card">
+        <h4>Comercio y cotizaciones de clientes</h4>
+        <p>Emprendedores y vendedores pueden calcular con precisión márgenes de descuento por pronto pago o volumen sin cometer errores.</p>
+      </div>
+    </div>
+
+    <h2>Preguntas frecuentes sobre descuentos comerciales</h2>
+    <div class="faq-wrap">
+      <div class="faq-item">
+        <div class="faq-question">¿Por qué un 50% + 20% no equivale a un 70% de descuento?</div>
+        <div class="faq-answer">
+          <p>Porque el segundo descuento se aplica sobre el importe ya rebajado, no sobre el precio original. Por ejemplo, en un producto de $100, el 50% lo deja en $50, y el 20% sobre esos $50 resta $10, dejando el precio final en $40 (lo que representa un 60% de descuento real, no un 70%).</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Cómo se calcula el porcentaje de ahorro si solo sé el precio anterior y el nuevo?</div>
+        <div class="faq-answer">
+          <p>La fórmula matemática es: <code>((Precio Original - Precio Rebajado) / Precio Original) * 100</code>. El resultado es el porcentaje exacto que estás ahorrando.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Puedo ingresar decimales en los porcentajes o precios?</div>
+        <div class="faq-answer">
+          <p>Sí, la calculadora acepta decimales tanto en el precio como en las tasas de descuento (ej: 12.5% o $99.99).</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Se incluyen impuestos o IVA en el cálculo?</div>
+        <div class="faq-answer">
+          <p>Si ingresas el precio con impuestos incluidos (IVA/IGV), el precio final resultante también los incluirá. La proporción matemática del descuento no se altera.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>
+<style>
+  .breadcrumb{font-size:.85rem;color:var(--muted);margin-bottom:.5rem}.breadcrumb a{color:var(--muted)}
+  .calc-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem}@media(max-width:768px){.calc-grid{grid-template-columns:1fr}}
+  .field{margin-bottom:1rem}.field label{display:block;font-weight:600;font-size:.9rem;margin-bottom:.4rem}
+  .field input{width:100%}
+  .hint{font-size:.78rem;color:var(--muted);display:block;margin-top:.25rem}
+  .result-panel{background:var(--surface-card);border:1px solid var(--line);border-radius:var(--radius-sm);padding:1.5rem;display:flex;flex-direction:column;gap:1rem}
+  .big-result{text-align:center}.big-result .label{display:block;font-size:.82rem;color:var(--muted);text-transform:uppercase;font-weight:700;margin-bottom:.25rem}
+  .big-result .value{font-size:2.5rem;font-weight:800;color:var(--accent)}
+  .sub-results{display:grid;grid-template-columns:1fr 1fr;gap:1rem;text-align:center}
+  .sub-results .label{display:block;font-size:.78rem;color:var(--muted);text-transform:uppercase;font-weight:600}
+  .sub-results .value{font-size:1.3rem;font-weight:700}
+  .green{color:#3fb950}
+  .steps{font-size:.85rem;color:var(--muted);border-top:1px solid var(--line);padding-top:.75rem}
+</style>
+<script>
+  const price=document.getElementById('dc-price') as HTMLInputElement;
+  const pct1=document.getElementById('dc-pct1') as HTMLInputElement;
+  const pct2=document.getElementById('dc-pct2') as HTMLInputElement;
+  const pct3=document.getElementById('dc-pct3') as HTMLInputElement;
+  const rFinal=document.getElementById('r-final')!;
+  const rSaved=document.getElementById('r-saved')!;
+  const rPct=document.getElementById('r-pct')!;
+  const rSteps=document.getElementById('r-steps')!;
+
+  function calc(){
+    let p=parseFloat(price.value)||0;const orig=p;const steps:string[]=[];
+    [pct1,pct2,pct3].forEach((el,i)=>{
+      const d=parseFloat(el.value)||0;
+      if(d>0){const off=p*(d/100);p-=off;steps.push(`Descuento ${i+1}: ${d}% → -$${off.toFixed(2)} = $${p.toFixed(2)}`);}
+    });
+    const saved=orig-p;const realPct=orig?((saved/orig)*100):0;
+    rFinal.textContent=`$${p.toFixed(2)}`;
+    rSaved.textContent=`$${saved.toFixed(2)}`;
+    rPct.textContent=`${realPct.toFixed(1)}%`;
+    rSteps.innerHTML=steps.length?steps.map(s=>`<div>→ ${s}</div>`).join(''):'<div>Sin descuento aplicado</div>';
+  }
+  [price,pct1,pct2,pct3].forEach(el=>el.addEventListener('input',calc));
+  calc();
+</script>

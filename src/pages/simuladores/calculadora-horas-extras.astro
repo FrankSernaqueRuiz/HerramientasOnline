@@ -1,0 +1,534 @@
+---
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+---
+
+<Base
+  title="Calculadora de Horas Extras en Perú (25%, 35% y 100%) · UtiliaOnline"
+  description="Calcula el valor exacto de tus horas extras según la ley peruana (D.S. 007-2002-TR): 25% las primeras dos horas, 35% a partir de la tercera y 100% en feriados."
+  keywords="calculadora horas extras peru, calcular horas extras 25 35, valor hora de trabajo, sobretasa horas extras feriado, d s 007 2002 tr"
+>
+  <div class="tool-container">
+    <div class="tool-header">
+      <div class="breadcrumb">
+        <a href="/">Inicio</a> / <a href="/simuladores">Simuladores</a> / <span>Calculadora de Horas Extras</span>
+      </div>
+      <div class="title-row">
+        <div class="tool-icon-badge">
+          <Icon name="clock" size={28} />
+        </div>
+        <div>
+          <h1>Calculadora de Horas Extras (Perú)</h1>
+          <p class="tool-desc">
+            Calcula el valor exacto de tus horas en sobretiempo conforme al D.S. 007-2002-TR. Incluye recargos del 25%, 35%, feriados (100%) y trabajo nocturno.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="calc-grid">
+      <!-- Input Panel -->
+      <div class="panel-card input-panel">
+        <div class="panel-head">
+          <Icon name="file-text" size={18} />
+          <h2>Parámetros de tu Jornada</h2>
+        </div>
+
+        <form id="he-form" class="calc-form" onsubmit="event.preventDefault()">
+          <div class="form-group">
+            <label for="sueldo-he">Sueldo Básico Mensual (S/)</label>
+            <div class="input-prefix-wrap">
+              <span class="prefix">S/</span>
+              <input type="number" id="sueldo-he" class="form-input" value="2400" min="0" step="0.01" required />
+            </div>
+          </div>
+
+          <div class="form-check-group">
+            <label class="checkbox-label">
+              <input type="checkbox" id="asig-fam-he" />
+              <span>¿Percibe Asignación Familiar? (+ S/ 102.50 = 10% RMV)</span>
+            </label>
+          </div>
+
+          <div class="form-row-2">
+            <div class="form-group">
+              <label for="jornada-diaria">Jornada Ordinaria Diaria</label>
+              <select id="jornada-diaria" class="form-select">
+                <option value="8" selected>8 horas diarias (48h / semana)</option>
+                <option value="7">7 horas diarias</option>
+                <option value="6">6 horas diarias</option>
+                <option value="4">4 horas diarias (Part-time)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="dias-mes">Días Laborales Base Mes</label>
+              <input type="number" id="dias-mes" class="form-input" value="30" readonly />
+              <small class="hint-text">Cómputo legal peruano: mes de 30 días.</small>
+            </div>
+          </div>
+
+          <div class="form-section-title">Registro de Horas Extras Realizadas</div>
+
+          <div class="form-group">
+            <label for="he-25">Primeras 2 horas extras del día (Sobretasa 25%)</label>
+            <input type="number" id="he-25" class="form-input" value="10" min="0" step="0.5" />
+            <small class="hint-text">Valor hora ordinaria × 1.25</small>
+          </div>
+
+          <div class="form-group">
+            <label for="he-35">A partir de la 3ra hora extra del día (Sobretasa 35%)</label>
+            <input type="number" id="he-35" class="form-input" value="4" min="0" step="0.5" />
+            <small class="hint-text">Valor hora ordinaria × 1.35</small>
+          </div>
+
+          <div class="form-group">
+            <label for="he-100">Horas en Domingo / Feriado no compensado (Sobretasa 100%)</label>
+            <input type="number" id="he-100" class="form-input" value="0" min="0" step="0.5" />
+            <small class="hint-text">Valor hora ordinaria × 2.00 (sobretasa del 100%)</small>
+          </div>
+        </form>
+      </div>
+
+      <!-- Result Panel -->
+      <div class="panel-card result-panel">
+        <div class="panel-head">
+          <Icon name="dollar-sign" size={18} />
+          <h2>Total Adicional a Percibir</h2>
+        </div>
+
+        <div class="result-highlight-card">
+          <span class="result-sub-label">Total a Cobrar por Horas Extras</span>
+          <div class="result-main-value" id="res-he-total">S/ 0.00</div>
+          <div class="result-date-info">Total horas realizadas: <span id="res-total-horas">0 hrs</span></div>
+        </div>
+
+        <div class="breakdown-list">
+          <div class="breakdown-item">
+            <span>Remuneración mensual computable:</span>
+            <strong id="res-he-comp">S/ 0.00</strong>
+          </div>
+          <div class="breakdown-item">
+            <span>Valor de la hora regular ordinaria:</span>
+            <strong id="res-he-valor-hora">S/ 0.00 / hr</strong>
+          </div>
+          <div class="breakdown-item">
+            <span>Valor hora al 25% (S/ <span id="val-unit-25">0.00</span>):</span>
+            <strong id="res-he-subtotal-25">S/ 0.00</strong>
+          </div>
+          <div class="breakdown-item">
+            <span>Valor hora al 35% (S/ <span id="val-unit-35">0.00</span>):</span>
+            <strong id="res-he-subtotal-35">S/ 0.00</strong>
+          </div>
+          <div class="breakdown-item">
+            <span>Valor hora feriado al 100% (S/ <span id="val-unit-100">0.00</span>):</span>
+            <strong id="res-he-subtotal-100">S/ 0.00</strong>
+          </div>
+        </div>
+
+        <div class="action-buttons-row">
+          <button type="button" class="btn-action" id="btn-copy-he">
+            <Icon name="copy" size={16} />
+            <span>Copiar cálculo</span>
+          </button>
+          <button type="button" class="btn-action" onclick="window.print()">
+            <Icon name="download" size={16} />
+            <span>Imprimir</span>
+          </button>
+        </div>
+
+        <div class="legal-notice">
+          <strong>Regla Legal de Voluntariedad:</strong> Nadie puede ser obligado a trabajar horas extras, salvo caso fortuito o de fuerza mayor que ponga en peligro a personas o bienes de la empresa. El empleador debe registrar el ingreso y salida en el registro de asistencia obligatorio.
+        </div>
+      </div>
+    </div>
+
+    <!-- Guía y Cómo Usar (Estándar UtiliaOnline) -->
+    <section class="seo-section">
+      <h2>Guía completa: ¿Cómo se calculan las Horas Extras en el Perú?</h2>
+      <p>
+        El trabajo en sobretiempo (horas extras) se encuentra normado por el <strong>Decreto Supremo N° 007-2002-TR</strong> (TUO de la Ley de Jornada de Trabajo, Horario y Trabajo en Sobretiempo). Se considera hora extra a toda labor realizada más allá de la jornada ordinaria legal (8 horas diarias o 48 horas semanales) o de la jornada contractual pactada si esta es menor.
+      </p>
+      <p>
+        El marco legal peruano contempla las siguientes sobretasas obligatorias:
+      </p>
+      <ul>
+        <li><strong>Primeras dos (2) horas extras en el día:</strong> Se abonan con una sobretasa no menor del <strong>25%</strong> sobre el valor de la hora ordinaria (Valor hora × 1.25).</li>
+        <li><strong>A partir de la tercera (3ra) hora extra en el día:</strong> Se abonan con una sobretasa no menor del <strong>35%</strong> sobre el valor de la hora ordinaria (Valor hora × 1.35).</li>
+        <li><strong>Labor en domingos o feriados no compensados:</strong> Se remunera con una sobretasa del <strong>100%</strong> (el equivalente a un día adicional de pago o sobretasa doble).</li>
+      </ul>
+
+      <h2>¿Cómo usar esta calculadora paso a paso?</h2>
+      <div class="step-list">
+        <div class="step-card">
+          <span class="step-num">1</span>
+          <div class="step-body">
+            <h4>Ingresa tu sueldo y asignación familiar</h4>
+            <p>Escribe tu remuneración mensual básica y marca la asignación familiar si la percibes, para obtener la base computable real.</p>
+          </div>
+        </div>
+        <div class="step-card">
+          <span class="step-num">2</span>
+          <div class="step-body">
+            <h4>Verifica la jornada ordinaria diaria</h4>
+            <p>Por defecto se calcula con la jornada estándar de 8 horas diarias (240 horas mensuales). Puedes ajustar a 7, 6 o 4 horas si tienes contrato especial.</p>
+          </div>
+        </div>
+        <div class="step-card">
+          <span class="step-num">3</span>
+          <div class="step-body">
+            <h4>Registra la cantidad de horas extras acumuladas</h4>
+            <p>Separa las horas realizadas en los primeros tramos diarios (al 25%) de las horas que superaron las 2 horas diarias (al 35%) y las trabajadas en feriados (al 100%).</p>
+          </div>
+        </div>
+        <div class="step-card">
+          <span class="step-num">4</span>
+          <div class="step-body">
+            <h4>Consulta el valor hora y el total a cobrar</h4>
+            <p>La herramienta te mostrará el valor de tu hora ordinaria, el valor unitario de cada sobretasa y el monto exacto adicional que debe figurar en tu boleta de pago.</p>
+          </div>
+        </div>
+      </div>
+
+      <h3>Casos prácticos de cálculo</h3>
+      <div class="guide-grid">
+        <div class="guide-card">
+          <h4>Sueldo de S/ 2,400 y 2 horas extras en un día</h4>
+          <p>Valor día = S/ 80. Valor hora = S/ 10.00. Las 2 primeras horas extras con el 25% valen S/ 12.50 cada una, generando un pago adicional de <strong>S/ 25.00</strong> por ese día.</p>
+        </div>
+        <div class="guide-card">
+          <h4>Jornada de 4 horas extras en un mismo día</h4>
+          <p>Las 2 primeras horas se pagan con 25% (S/ 12.50 × 2 = S/ 25.00) y las 2 horas siguientes se pagan con 35% (S/ 13.50 × 2 = S/ 27.00), sumando <strong>S/ 52.00</strong> de sobretiempo.</p>
+        </div>
+        <div class="guide-card">
+          <h4>Compensación con descanso físico</h4>
+          <p>El empleador y el trabajador pueden acordar por escrito compensar las horas extras con periodos equivalentes de descanso sustitutorio en lugar de dinero, dentro del mes siguiente.</p>
+        </div>
+      </div>
+
+      <h2>Preguntas frecuentes sobre Horas Extras</h2>
+      <div class="faq-wrap">
+        <div class="faq-item">
+          <div class="faq-question">¿El pago de horas extras suma para la CTS y gratificaciones?</div>
+          <div class="faq-answer">
+            <p><strong>Sí.</strong> Si percibiste horas extras en al menos <strong>tres (3) meses</strong> dentro del semestre correspondiente, se obtiene el promedio mensual de lo cobrado y se suma a la remuneración computable de tu CTS y de tu gratificación.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-question">¿Pueden obligarme a quedarme a hacer horas extras?</div>
+          <div class="faq-answer">
+            <p>No. El trabajo en sobretiempo es <strong>estrictamente voluntario</strong> tanto en su otorgamiento por la empresa como en su prestación por el colaborador. Solo es obligatorio en casos excepcionales de fuerza mayor o desastre que ponga en riesgo vidas o instalaciones.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-question">¿Cómo se calcula el trabajo nocturno?</div>
+          <div class="faq-answer">
+            <p>La jornada cumplida entre las 10:00 p.m. y las 6:00 a.m. debe ser remunerada con una sobretasa no menor al <strong>35% sobre la Remuneración Mínima Vital (RMV)</strong> vigente.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</Base>
+
+<style>
+  .tool-container {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 1.5rem 0 3rem;
+  }
+  .breadcrumb {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-bottom: 0.75rem;
+  }
+  .breadcrumb a {
+    color: var(--muted);
+  }
+  .breadcrumb a:hover {
+    color: var(--accent);
+  }
+  .title-row {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+  .tool-icon-badge {
+    width: 58px;
+    height: 58px;
+    border-radius: var(--radius-md);
+    background: linear-gradient(135deg, rgba(234, 179, 8, 0.15), rgba(245, 158, 11, 0.05));
+    border: 1px solid rgba(234, 179, 8, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #eab308;
+    flex-shrink: 0;
+  }
+  .title-row h1 {
+    font-size: 1.85rem;
+    margin: 0 0 0.35rem 0;
+    letter-spacing: -0.02em;
+  }
+  .tool-desc {
+    color: var(--muted);
+    font-size: 0.95rem;
+    margin: 0;
+    max-width: 75ch;
+  }
+
+  .calc-grid {
+    display: grid;
+    grid-template-columns: 1.15fr 0.95fr;
+    gap: 1.5rem;
+    align-items: start;
+  }
+  @media (max-width: 860px) {
+    .calc-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .panel-card {
+    background: var(--surface-card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  }
+  .panel-head {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--line);
+    color: var(--accent);
+  }
+  .panel-head h2 {
+    font-size: 1.15rem;
+    color: var(--ink);
+    margin: 0;
+  }
+
+  .form-group {
+    margin-bottom: 1.1rem;
+  }
+  .form-group label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 0.35rem;
+    color: var(--ink);
+  }
+  .form-input, .form-select {
+    width: 100%;
+    padding: 0.6rem 0.85rem;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    color: var(--ink);
+    font-size: 0.95rem;
+    transition: border-color 0.15s;
+  }
+  .form-input:focus, .form-select:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+  .input-prefix-wrap {
+    display: flex;
+    align-items: center;
+    position: relative;
+  }
+  .input-prefix-wrap .prefix {
+    position: absolute;
+    left: 0.85rem;
+    font-weight: 600;
+    color: var(--muted);
+  }
+  .input-prefix-wrap .form-input {
+    padding-left: 2.2rem;
+  }
+
+  .form-row-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.85rem;
+  }
+  .form-section-title {
+    font-size: 0.82rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--accent);
+    margin: 1.1rem 0 0.65rem;
+    padding-top: 0.45rem;
+    border-top: 1px solid var(--line);
+  }
+  .hint-text {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-top: 0.25rem;
+  }
+  .form-check-group {
+    margin: 0.85rem 0 1.1rem;
+  }
+  .checkbox-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: var(--ink);
+    cursor: pointer;
+  }
+
+  /* Result Panel */
+  .result-highlight-card {
+    background: linear-gradient(135deg, rgba(234, 179, 8, 0.12), rgba(56, 189, 248, 0.08));
+    border: 1px solid rgba(234, 179, 8, 0.35);
+    border-radius: var(--radius-sm);
+    padding: 1.25rem;
+    text-align: center;
+    margin-bottom: 1.25rem;
+  }
+  .result-sub-label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .result-main-value {
+    font-size: 2.25rem;
+    font-weight: 800;
+    color: #eab308;
+    margin: 0.25rem 0;
+    font-family: var(--font-heading, sans-serif);
+  }
+  .result-date-info {
+    font-size: 0.82rem;
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  .breakdown-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    padding: 1rem;
+    margin-bottom: 1.25rem;
+  }
+  .breakdown-item {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.88rem;
+  }
+
+  .action-buttons-row {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+  }
+  .btn-action {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    padding: 0.55rem 0.85rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--line);
+    background: var(--surface-card);
+    color: var(--ink);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn-action:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .legal-notice {
+    font-size: 0.75rem;
+    color: var(--muted);
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px dashed var(--line);
+    padding: 0.75rem;
+    border-radius: var(--radius-sm);
+    line-height: 1.45;
+  }
+</style>
+
+<script>
+  const formatCurrency = (val: number) => {
+    return `S/ ${val.toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  };
+
+  const calculateHE = () => {
+    const sueldo = parseFloat((document.getElementById('sueldo-he') as HTMLInputElement).value) || 0;
+    const tieneAsig = (document.getElementById('asig-fam-he') as HTMLInputElement).checked;
+    const jornadaDiaria = parseFloat((document.getElementById('jornada-diaria') as HTMLSelectElement).value) || 8;
+    const he25 = parseFloat((document.getElementById('he-25') as HTMLInputElement).value) || 0;
+    const he35 = parseFloat((document.getElementById('he-35') as HTMLInputElement).value) || 0;
+    const he100 = parseFloat((document.getElementById('he-100') as HTMLInputElement).value) || 0;
+
+    const asigMonto = tieneAsig ? 102.50 : 0;
+    const computable = sueldo + asigMonto;
+
+    // Valor hora ordinaria = (computable / 30) / jornadaDiaria
+    const valorHoraOrdinaria = (computable / 30) / jornadaDiaria;
+
+    // Sobretasas
+    const valor25 = valorHoraOrdinaria * 1.25;
+    const valor35 = valorHoraOrdinaria * 1.35;
+    const valor100 = valorHoraOrdinaria * 2.00;
+
+    const subtotal25 = valor25 * he25;
+    const subtotal35 = valor35 * he35;
+    const subtotal100 = valor100 * he100;
+    const totalHE = subtotal25 + subtotal35 + subtotal100;
+    const totalHoras = he25 + he35 + he100;
+
+    document.getElementById('res-he-total')!.textContent = formatCurrency(totalHE);
+    document.getElementById('res-total-horas')!.textContent = `${totalHoras} hrs`;
+    document.getElementById('res-he-comp')!.textContent = formatCurrency(computable);
+    document.getElementById('res-he-valor-hora')!.textContent = `${formatCurrency(valorHoraOrdinaria)} / hr`;
+
+    document.getElementById('val-unit-25')!.textContent = valor25.toFixed(2);
+    document.getElementById('res-he-subtotal-25')!.textContent = formatCurrency(subtotal25);
+
+    document.getElementById('val-unit-35')!.textContent = valor35.toFixed(2);
+    document.getElementById('res-he-subtotal-35')!.textContent = formatCurrency(subtotal35);
+
+    document.getElementById('val-unit-100')!.textContent = valor100.toFixed(2);
+    document.getElementById('res-he-subtotal-100')!.textContent = formatCurrency(subtotal100);
+  };
+
+  const inputs = document.querySelectorAll('#he-form input, #he-form select');
+  inputs.forEach((inp) => {
+    inp.addEventListener('input', calculateHE);
+    inp.addEventListener('change', calculateHE);
+  });
+
+  const copyBtn = document.getElementById('btn-copy-he');
+  if (copyBtn) {
+    copyBtn.addEventListener('click', () => {
+      const total = document.getElementById('res-he-total')?.textContent || '';
+      const text = `Horas Extras (UtiliaOnline):\n- Total a Cobrar: ${total}\nCalculado en: ${window.location.href}`;
+      navigator.clipboard.writeText(text).then(() => {
+        copyBtn.innerHTML = '<span>¡Copiado!</span>';
+        setTimeout(() => {
+          copyBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>Copiar cálculo</span>';
+        }, 2000);
+      });
+    });
+  }
+
+  calculateHE();
+</script>

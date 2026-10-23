@@ -1,0 +1,545 @@
+---
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+---
+
+<Base
+  title="Calculadora de Utilidades 2025 - 2026 Perú (D.Leg. 892) · UtiliaOnline"
+  description="Calcula tu reparto de utilidades según sector empresarial, días trabajados y remuneración percibida conforme al Decreto Legislativo 892 con tope de 18 sueldos."
+  keywords="calculadora utilidades peru, calcular utilidades d leg 892, cuando se pagan utilidades, reparto utilidades porcentaje, tope 18 sueldos utilidades"
+>
+  <div class="tool-container">
+    <div class="tool-header">
+      <div class="breadcrumb">
+        <a href="/">Inicio</a> / <a href="/simuladores">Simuladores</a> / <span>Calculadora de Utilidades</span>
+      </div>
+      <div class="title-row">
+        <div class="tool-icon-badge">
+          <Icon name="pie-chart" size={28} />
+        </div>
+        <div>
+          <h1>Calculadora de Reparto de Utilidades (D.Leg. 892)</h1>
+          <p class="tool-desc">
+            Calcula tu participación en las utilidades de la empresa según los dos factores del 50% (días laborados y remuneraciones percibidas) y verifica el tope legal de 18 remuneraciones.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="calc-grid">
+      <!-- Input Panel -->
+      <div class="panel-card input-panel">
+        <div class="panel-head">
+          <Icon name="file-text" size={18} />
+          <h2>Datos de la Empresa y Trabajador</h2>
+        </div>
+
+        <form id="util-form" class="calc-form" onsubmit="event.preventDefault()">
+          <div class="form-group">
+            <label for="sector-util">Actividad Económica / Sector</label>
+            <select id="sector-util" class="form-select">
+              <option value="0.10">Pesqueras, Telecomunicaciones, Industriales (10%)</option>
+              <option value="0.08" selected>Minería, Comercio al por mayor/menor, Restaurantes (8%)</option>
+              <option value="0.05">Agrarias y Agroindustriales (5%)</option>
+              <option value="0.05">Otras actividades empresariales (5%)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="renta-neta-empresa">Renta Neta Anual de la Empresa antes de Impuestos (S/)</label>
+            <div class="input-prefix-wrap">
+              <span class="prefix">S/</span>
+              <input type="number" id="renta-neta-empresa" class="form-input" value="1500000" min="0" step="1000" />
+            </div>
+            <small class="hint-text">O introduce directamente abajo el Fondo Total de Utilidades a Distribuir.</small>
+          </div>
+
+          <div class="form-group">
+            <label for="fondo-total-util">Monto Total de Utilidades a Distribuir (S/)</label>
+            <div class="input-prefix-wrap">
+              <span class="prefix">S/</span>
+              <input type="number" id="fondo-total-util" class="form-input" value="120000" min="0" step="500" />
+            </div>
+            <small class="hint-text">Se calcula automáticamente: Renta Neta × % Sector.</small>
+          </div>
+
+          <div class="form-section-title">Factor 1: 50% por Días Laborados</div>
+          <div class="form-row-2">
+            <div class="form-group">
+              <label for="dias-trabajador">Tus Días Laborados en el Año</label>
+              <input type="number" id="dias-trabajador" class="form-input" value="280" min="1" max="365" />
+            </div>
+            <div class="form-group">
+              <label for="dias-totales-empresa">Total Días de Todo el Personal</label>
+              <input type="number" id="dias-totales-empresa" class="form-input" value="14000" min="1" />
+            </div>
+          </div>
+
+          <div class="form-section-title">Factor 2: 50% por Remuneraciones</div>
+          <div class="form-row-2">
+            <div class="form-group">
+              <label for="remun-trabajador">Tus Remuneraciones en el Año (S/)</label>
+              <input type="number" id="remun-trabajador" class="form-input" value="38000" min="0" step="100" />
+            </div>
+            <div class="form-group">
+              <label for="remun-totales-empresa">Planilla Total de Todo el Personal (S/)</label>
+              <input type="number" id="remun-totales-empresa" class="form-input" value="1900000" min="1" step="1000" />
+            </div>
+          </div>
+
+          <div class="form-section-title">Verificación de Tope Legal</div>
+          <div class="form-group">
+            <label for="sueldo-mensual-util">Tu Sueldo Mensual Actual (S/)</label>
+            <div class="input-prefix-wrap">
+              <span class="prefix">S/</span>
+              <input type="number" id="sueldo-mensual-util" class="form-input" value="3000" min="0" step="0.01" />
+            </div>
+            <small class="hint-text">Tope máximo legal: 18 remuneraciones mensuales (18 × sueldo).</small>
+          </div>
+        </form>
+      </div>
+
+      <!-- Result Panel -->
+      <div class="panel-card result-panel">
+        <div class="panel-head">
+          <Icon name="dollar-sign" size={18} />
+          <h2>Monto Estimado de Utilidades</h2>
+        </div>
+
+        <div class="result-highlight-card">
+          <span class="result-sub-label">Total Utilidades a Percibir</span>
+          <div class="result-main-value" id="res-util-total">S/ 0.00</div>
+          <div class="result-date-info" id="res-util-fecha">Pago legal: Dentro de los 30 días de la DJ Anual (Marzo/Abril)</div>
+        </div>
+
+        <div class="breakdown-list">
+          <div class="breakdown-item">
+            <span>Masa total a distribuir por la empresa:</span>
+            <strong id="res-util-fondo-total">S/ 0.00</strong>
+          </div>
+          <div class="breakdown-item">
+            <span>50% por tus días laborados:</span>
+            <strong id="res-util-por-dias">S/ 0.00</strong>
+          </div>
+          <div class="breakdown-item">
+            <span>50% por tus remuneraciones percibidas:</span>
+            <strong id="res-util-por-remun">S/ 0.00</strong>
+          </div>
+          <div class="breakdown-item">
+            <span>Tope máximo legal (18 sueldos):</span>
+            <strong id="res-util-tope">S/ 0.00</strong>
+          </div>
+          <div class="breakdown-item text-danger" id="row-tope-util" style="display: none;">
+            <span>Ajuste por exceder tope legal:</span>
+            <strong id="res-util-ajuste">- S/ 0.00</strong>
+          </div>
+        </div>
+
+        <div class="action-buttons-row">
+          <button type="button" class="btn-action" id="btn-copy-util">
+            <Icon name="copy" size={16} />
+            <span>Copiar cálculo</span>
+          </button>
+          <button type="button" class="btn-action" onclick="window.print()">
+            <Icon name="download" size={16} />
+            <span>Imprimir</span>
+          </button>
+        </div>
+
+        <div class="legal-notice">
+          <strong>¿Quiénes tienen derecho?</strong> Trabajadores del régimen de la actividad privada en empresas con más de 20 trabajadores que generen rentas de 3ra categoría. No participan microempresas, cooperativas ni entidades públicas.
+        </div>
+      </div>
+    </div>
+
+    <!-- Guía y Cómo Usar (Estándar UtiliaOnline) -->
+    <section class="seo-section">
+      <h2>Guía completa: ¿Cómo se calculan y reparten las Utilidades en Perú?</h2>
+      <p>
+        La participación de los trabajadores en las utilidades de las empresas es un derecho constitucional regulado por el <strong>Decreto Legislativo N° 892</strong>. Tienen derecho a percibir utilidades los colaboradores del régimen laboral de la actividad privada cuyas empresas cuenten con <strong>más de 20 trabajadores en promedio anual</strong> y hayan obtenido renta neta positiva de tercera categoría en el ejercicio gravable anterior.
+      </p>
+      <p>
+        El porcentaje del fondo a repartir depende estrictamente del sector o actividad económica principal de la empresa:
+      </p>
+      <ul>
+        <li><strong>10%:</strong> Empresas Pesqueras, de Telecomunicaciones y Empresas Industriales.</li>
+        <li><strong>8%:</strong> Empresas Mineras, Comercio al por mayor y menor, y Restaurantes.</li>
+        <li><strong>5%:</strong> Empresas Agrarias y Agroindustriales.</li>
+        <li><strong>5%:</strong> Empresas que realizan otras actividades económicas.</li>
+      </ul>
+
+      <h2>¿Cómo usar esta calculadora paso a paso?</h2>
+      <div class="step-list">
+        <div class="step-card">
+          <span class="step-num">1</span>
+          <div class="step-body">
+            <h4>Elige el sector económico de la empresa</h4>
+            <p>Selecciona la actividad correspondiente a tu empleador (10%, 8% o 5%) para aplicar el porcentaje legal correspondiente.</p>
+          </div>
+        </div>
+        <div class="step-card">
+          <span class="step-num">2</span>
+          <div class="step-body">
+            <h4>Ingresa la masa total de utilidades o renta neta</h4>
+            <p>Escribe el monto total de utilidades a distribuir (informado por la empresa o sindicato) o la renta neta antes de impuestos para obtenerla automáticamente.</p>
+          </div>
+        </div>
+        <div class="step-card">
+          <span class="step-num">3</span>
+          <div class="step-body">
+            <h4>Registra tus días laborados y remuneraciones</h4>
+            <p>Completa tus días trabajados en el año frente al total de días de todo el personal, y tu total de sueldos anuales percibidos frente a la planilla total de la compañía.</p>
+          </div>
+        </div>
+        <div class="step-card">
+          <span class="step-num">4</span>
+          <div class="step-body">
+            <h4>Verifica el tope legal de 18 sueldos</h4>
+            <p>La calculadora aplicará el 50% por días y el 50% por remuneración, comprobando que el monto final no exceda el límite máximo de 18 remuneraciones mensuales.</p>
+          </div>
+        </div>
+      </div>
+
+      <h3>Casos prácticos de reparto de utilidades</h3>
+      <div class="guide-grid">
+        <div class="guide-card">
+          <h4>Factor 1: 50% en función de los días trabajados</h4>
+          <p>Esta mitad se divide entre la suma de días laborados por todo el personal de la empresa y se multiplica por tus días efectivamente trabajados en el año (incluyendo descansos pre y post natal y licencias sindicales).</p>
+        </div>
+        <div class="guide-card">
+          <h4>Factor 2: 50% en función de las remuneraciones</h4>
+          <p>Esta mitad se divide entre la suma total de las remuneraciones percibidas por todo el personal y se multiplica por el total de sueldos que tú percibiste durante todo el año fiscal.</p>
+        </div>
+        <div class="guide-card">
+          <h4>Tope Máximo de 18 Remuneraciones</h4>
+          <p>La ley fija que ningún colaborador puede recibir un monto superior a 18 de sus sueldos mensuales actuales. El remanente que supere dicho tope se destina al fondo nacional de capacitación laboral y empleo.</p>
+        </div>
+      </div>
+
+      <h2>Preguntas frecuentes sobre las Utilidades</h2>
+      <div class="faq-wrap">
+        <div class="faq-item">
+          <div class="faq-question">¿Cuándo se pagan las utilidades a los trabajadores?</div>
+          <div class="faq-answer">
+            <p>El pago debe realizarse dentro de los <strong>30 días naturales posteriores</strong> al vencimiento del plazo fijado por SUNAT para la presentación de la Declaración Jurada Anual del Impuesto a la Renta de la empresa (habitualmente entre fines de <strong>marzo y abril</strong> de cada año).</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-question">¿Los ex trabajadores que ya no laboran en la empresa tienen derecho a utilidades?</div>
+          <div class="faq-answer">
+            <p><strong>Sí.</strong> Todo trabajador que haya laborado al menos un día durante el año fiscal en que se generaron las utilidades tiene derecho a cobrar su parte proporcional. Tienen un plazo de hasta <strong>tres (3) años</strong> para solicitar su cobro antes de que prescriba.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-question">¿Las utilidades pagan Impuesto a la Renta o AFP?</div>
+          <div class="faq-answer">
+            <p>Las utilidades <strong>no están afectas a aportes de AFP ni ONP</strong>. Sin embargo, sí están afectas a la retención de <strong>Renta de 5ta categoría</strong> de la SUNAT, la cual se deduce en la boleta de pago de la liquidación de utilidades.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</Base>
+
+<style>
+  .tool-container {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 1.5rem 0 3rem;
+  }
+  .breadcrumb {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-bottom: 0.75rem;
+  }
+  .breadcrumb a {
+    color: var(--muted);
+  }
+  .breadcrumb a:hover {
+    color: var(--accent);
+  }
+  .title-row {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+  .tool-icon-badge {
+    width: 58px;
+    height: 58px;
+    border-radius: var(--radius-md);
+    background: linear-gradient(135deg, rgba(56, 189, 248, 0.15), rgba(16, 185, 129, 0.05));
+    border: 1px solid rgba(56, 189, 248, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+  .title-row h1 {
+    font-size: 1.85rem;
+    margin: 0 0 0.35rem 0;
+    letter-spacing: -0.02em;
+  }
+  .tool-desc {
+    color: var(--muted);
+    font-size: 0.95rem;
+    margin: 0;
+    max-width: 75ch;
+  }
+
+  .calc-grid {
+    display: grid;
+    grid-template-columns: 1.15fr 0.95fr;
+    gap: 1.5rem;
+    align-items: start;
+  }
+  @media (max-width: 860px) {
+    .calc-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .panel-card {
+    background: var(--surface-card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  }
+  .panel-head {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--line);
+    color: var(--accent);
+  }
+  .panel-head h2 {
+    font-size: 1.15rem;
+    color: var(--ink);
+    margin: 0;
+  }
+
+  .form-group {
+    margin-bottom: 1.1rem;
+  }
+  .form-group label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 0.35rem;
+    color: var(--ink);
+  }
+  .form-input, .form-select {
+    width: 100%;
+    padding: 0.6rem 0.85rem;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    color: var(--ink);
+    font-size: 0.95rem;
+    transition: border-color 0.15s;
+  }
+  .form-input:focus, .form-select:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+  .input-prefix-wrap {
+    display: flex;
+    align-items: center;
+    position: relative;
+  }
+  .input-prefix-wrap .prefix {
+    position: absolute;
+    left: 0.85rem;
+    font-weight: 600;
+    color: var(--muted);
+  }
+  .input-prefix-wrap .form-input {
+    padding-left: 2.2rem;
+  }
+
+  .form-row-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.85rem;
+  }
+  .form-section-title {
+    font-size: 0.82rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--accent);
+    margin: 1.1rem 0 0.65rem;
+    padding-top: 0.45rem;
+    border-top: 1px solid var(--line);
+  }
+  .hint-text {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-top: 0.25rem;
+  }
+
+  /* Result Panel */
+  .result-highlight-card {
+    background: linear-gradient(135deg, rgba(56, 189, 248, 0.12), rgba(16, 185, 129, 0.08));
+    border: 1px solid rgba(56, 189, 248, 0.35);
+    border-radius: var(--radius-sm);
+    padding: 1.25rem;
+    text-align: center;
+    margin-bottom: 1.25rem;
+  }
+  .result-sub-label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .result-main-value {
+    font-size: 2.25rem;
+    font-weight: 800;
+    color: var(--accent);
+    margin: 0.25rem 0;
+    font-family: var(--font-heading, sans-serif);
+  }
+  .result-date-info {
+    font-size: 0.82rem;
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  .breakdown-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    padding: 1rem;
+    margin-bottom: 1.25rem;
+  }
+  .breakdown-item {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.88rem;
+  }
+  .text-danger {
+    color: #ef4444;
+  }
+
+  .action-buttons-row {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+  }
+  .btn-action {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    padding: 0.55rem 0.85rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--line);
+    background: var(--surface-card);
+    color: var(--ink);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn-action:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .legal-notice {
+    font-size: 0.75rem;
+    color: var(--muted);
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px dashed var(--line);
+    padding: 0.75rem;
+    border-radius: var(--radius-sm);
+    line-height: 1.45;
+  }
+</style>
+
+<script>
+  const formatCurrency = (val: number) => {
+    return `S/ ${val.toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  };
+
+  const syncFondo = () => {
+    const rentaNeta = parseFloat((document.getElementById('renta-neta-empresa') as HTMLInputElement).value) || 0;
+    const tasaSector = parseFloat((document.getElementById('sector-util') as HTMLSelectElement).value) || 0.08;
+    const fondo = rentaNeta * tasaSector;
+    (document.getElementById('fondo-total-util') as HTMLInputElement).value = fondo.toFixed(2);
+    calculateUtil();
+  };
+
+  const calculateUtil = () => {
+    const fondoTotal = parseFloat((document.getElementById('fondo-total-util') as HTMLInputElement).value) || 0;
+    const diasTrabajador = parseFloat((document.getElementById('dias-trabajador') as HTMLInputElement).value) || 0;
+    const diasTotalesEmpresa = parseFloat((document.getElementById('dias-totales-empresa') as HTMLInputElement).value) || 1;
+    const remunTrabajador = parseFloat((document.getElementById('remun-trabajador') as HTMLInputElement).value) || 0;
+    const remunTotalesEmpresa = parseFloat((document.getElementById('remun-totales-empresa') as HTMLInputElement).value) || 1;
+    const sueldoMensual = parseFloat((document.getElementById('sueldo-mensual-util') as HTMLInputElement).value) || 0;
+
+    const mitadFondo = fondoTotal / 2;
+
+    // 50% por dias
+    const parteDias = mitadFondo * (diasTrabajador / Math.max(1, diasTotalesEmpresa));
+    // 50% por remuneracion
+    const parteRemun = mitadFondo * (remunTrabajador / Math.max(1, remunTotalesEmpresa));
+
+    const calculado = parteDias + parteRemun;
+    const tope18 = 18 * sueldoMensual;
+    const finalMonto = Math.min(calculado, tope18);
+    const ajusteTope = Math.max(0, calculado - tope18);
+
+    document.getElementById('res-util-total')!.textContent = formatCurrency(finalMonto);
+    document.getElementById('res-util-fondo-total')!.textContent = formatCurrency(fondoTotal);
+    document.getElementById('res-util-por-dias')!.textContent = formatCurrency(parteDias);
+    document.getElementById('res-util-por-remun')!.textContent = formatCurrency(parteRemun);
+    document.getElementById('res-util-tope')!.textContent = formatCurrency(tope18);
+
+    const rowTope = document.getElementById('row-tope-util');
+    if (rowTope) {
+      if (ajusteTope > 0) {
+        rowTope.style.display = 'flex';
+        document.getElementById('res-util-ajuste')!.textContent = `- ${formatCurrency(ajusteTope)}`;
+      } else {
+        rowTope.style.display = 'none';
+      }
+    }
+  };
+
+  document.getElementById('renta-neta-empresa')?.addEventListener('input', syncFondo);
+  document.getElementById('sector-util')?.addEventListener('change', syncFondo);
+
+  const inputs = document.querySelectorAll('#util-form input, #util-form select');
+  inputs.forEach((inp) => {
+    inp.addEventListener('input', calculateUtil);
+    inp.addEventListener('change', calculateUtil);
+  });
+
+  const copyBtn = document.getElementById('btn-copy-util');
+  if (copyBtn) {
+    copyBtn.addEventListener('click', () => {
+      const total = document.getElementById('res-util-total')?.textContent || '';
+      const text = `Cálculo de Utilidades (UtiliaOnline):\n- Total Estimado a Cobrar: ${total}\nCalculado en: ${window.location.href}`;
+      navigator.clipboard.writeText(text).then(() => {
+        copyBtn.innerHTML = '<span>¡Copiado!</span>';
+        setTimeout(() => {
+          copyBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>Copiar cálculo</span>';
+        }, 2000);
+      });
+    });
+  }
+
+  calculateUtil();
+</script>

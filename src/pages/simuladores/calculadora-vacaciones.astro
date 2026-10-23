@@ -1,0 +1,565 @@
+---
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+---
+
+<Base
+  title="Calculadora de Vacaciones Truncas y Récord Vacacional · UtiliaOnline"
+  description="Calcula vacaciones truncas por meses y días, vacaciones no gozadas e indemnización vacacional (triple vacacional) según régimen laboral en Perú (D.Leg. 713)."
+  keywords="calculadora vacaciones truncas, triple vacacional peru, record vacacional, indemnizacion vacacional, d leg 713 vacaciones"
+>
+  <div class="tool-container">
+    <div class="tool-header">
+      <div class="breadcrumb">
+        <a href="/">Inicio</a> / <a href="/simuladores">Simuladores</a> / <span>Calculadora de Vacaciones</span>
+      </div>
+      <div class="title-row">
+        <div class="tool-icon-badge">
+          <Icon name="calendar" size={28} />
+        </div>
+        <div>
+          <h1>Calculadora de Vacaciones Truncas y Récord Vacacional</h1>
+          <p class="tool-desc">
+            Calcula el pago de vacaciones truncas al cese, descansos pendientes acumulados y la indemnización vacacional por falta de descanso oportuno (D.Leg. 713).
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="calc-grid">
+      <!-- Input Panel -->
+      <div class="panel-card input-panel">
+        <div class="panel-head">
+          <Icon name="file-text" size={18} />
+          <h2>Parámetros de Vacaciones</h2>
+        </div>
+
+        <form id="vac-form" class="calc-form" onsubmit="event.preventDefault()">
+          <div class="form-group">
+            <label for="regimen-vac">Régimen Laboral</label>
+            <select id="regimen-vac" class="form-select">
+              <option value="30">Régimen General (30 días de vacaciones por año)</option>
+              <option value="15-pequena">Pequeña Empresa REMYPE (15 días por año)</option>
+              <option value="15-micro">Microempresa REMYPE (15 días por año)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="pension-vac">Sistema de Pensiones (Retención Legal)</label>
+            <select id="pension-vac" class="form-select">
+              <option value="0.13">ONP (13.00%)</option>
+              <option value="0.118">AFP Prima / Integra / Profuturo (~11.80%)</option>
+              <option value="0.115">AFP Habitat (~11.50%)</option>
+              <option value="0">Sin retención / Exonerado</option>
+            </select>
+            <small class="hint-text">A diferencia de la gratificación o CTS, las vacaciones sí están afectas a pensión.</small>
+          </div>
+
+          <div class="form-group">
+            <label for="sueldo-vac">Sueldo Mensual Base (S/)</label>
+            <div class="input-prefix-wrap">
+              <span class="prefix">S/</span>
+              <input type="number" id="sueldo-vac" class="form-input" value="2800" min="0" step="0.01" required />
+            </div>
+          </div>
+
+          <div class="form-check-group">
+            <label class="checkbox-label">
+              <input type="checkbox" id="asig-fam-vac" />
+              <span>¿Percibe Asignación Familiar? (+ S/ 102.50 = 10% RMV)</span>
+            </label>
+          </div>
+
+          <div class="form-section-title">Vacaciones Truncas del Periodo Incompleto</div>
+
+          <div class="form-row-2">
+            <div class="form-group">
+              <label for="meses-vac">Meses Laborados</label>
+              <input type="number" id="meses-vac" class="form-input" value="7" min="0" max="11" />
+            </div>
+            <div class="form-group">
+              <label for="dias-vac">Días Adicionales</label>
+              <input type="number" id="dias-vac" class="form-input" value="15" min="0" max="29" />
+            </div>
+          </div>
+
+          <div class="form-section-title">Periodos Anteriores Pendientes o Vencidos</div>
+
+          <div class="form-row-2">
+            <div class="form-group">
+              <label for="dias-pendientes">Días Pendientes No Gozados</label>
+              <input type="number" id="dias-pendientes" class="form-input" value="0" min="0" max="60" />
+              <small class="hint-text">Vacaciones ganadas dentro del plazo para gozar.</small>
+            </div>
+            <div class="form-group">
+              <label for="meses-vencidos">Años Vencidos (Triple Vacacional)</label>
+              <input type="number" id="meses-vencidos" class="form-input" value="0" min="0" max="5" />
+              <small class="hint-text">Años que pasaron sin que el empleador te dé descanso.</small>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Result Panel -->
+      <div class="panel-card result-panel">
+        <div class="panel-head">
+          <Icon name="dollar-sign" size={18} />
+          <h2>Liquidación de Vacaciones</h2>
+        </div>
+
+        <div class="result-highlight-card">
+          <span class="result-sub-label">Neto a Cobrar en Mano</span>
+          <div class="result-main-value" id="res-vac-neto">S/ 0.00</div>
+          <div class="result-date-info">Total Bruto: <span id="res-vac-bruto">S/ 0.00</span></div>
+        </div>
+
+        <div class="breakdown-list">
+          <div class="breakdown-item">
+            <span>Remuneración mensual base:</span>
+            <strong id="res-vac-comp">S/ 0.00</strong>
+          </div>
+          <div class="breakdown-item">
+            <span>Vacaciones truncas (meses y días):</span>
+            <strong id="res-vac-truncas">S/ 0.00</strong>
+          </div>
+          <div class="breakdown-item">
+            <span>Vacaciones pendientes (días acumulados):</span>
+            <strong id="res-vac-pendientes">S/ 0.00</strong>
+          </div>
+          <div class="breakdown-item text-triple" id="row-triple" style="display: none;">
+            <span>Indemnización vacacional (Ley D.Leg. 713):</span>
+            <strong id="res-vac-indemnizacion">S/ 0.00</strong>
+          </div>
+          <div class="breakdown-item text-danger">
+            <span id="label-retencion-pension">Descuento de pensión (ONP/AFP):</span>
+            <strong id="res-vac-descuento">- S/ 0.00</strong>
+          </div>
+        </div>
+
+        <div class="action-buttons-row">
+          <button type="button" class="btn-action" id="btn-copy-vac">
+            <Icon name="copy" size={16} />
+            <span>Copiar cálculo</span>
+          </button>
+          <button type="button" class="btn-action" onclick="window.print()">
+            <Icon name="download" size={16} />
+            <span>Imprimir</span>
+          </button>
+        </div>
+
+        <div class="legal-notice">
+          <strong>¿Qué es la Triple Vacacional?</strong> Si trabajas 1 año y no te otorgan tus 30 días de descanso en los 12 meses siguientes, la ley exige: 1 remuneración por el trabajo ordinario (ya pagado), 1 remuneración por el descanso vacacional ganado y 1 remuneración adicional como indemnización por no haber descansado.
+        </div>
+      </div>
+    </div>
+
+    <!-- Guía y Cómo Usar (Estándar UtiliaOnline) -->
+    <section class="seo-section">
+      <h2>Guía completa: ¿Cómo se calculan las Vacaciones y la Triple Vacacional en Perú?</h2>
+      <p>
+        El derecho al descanso vacacional anual remunerado está regulado por el <strong>Decreto Legislativo N° 713</strong>. Los trabajadores del régimen general que cumplen una jornada mínima de 4 horas diarias y alcanzan el récord vacacional anual tienen derecho a <strong>30 días calendario de descanso</strong> remunerado por cada año completo de servicios.
+      </p>
+      <p>
+        En el caso de las pequeñas y microempresas inscritas en el REMYPE, el derecho vacacional corresponde a <strong>15 días calendario</strong> por año de servicio.
+      </p>
+
+      <h2>¿Cómo usar esta calculadora paso a paso?</h2>
+      <div class="step-list">
+        <div class="step-card">
+          <span class="step-num">1</span>
+          <div class="step-body">
+            <h4>Selecciona tu régimen laboral y pensión</h4>
+            <p>Indica si perteneces al Régimen General (30 días) o MYPE (15 días), y tu sistema de pensiones (ONP o AFP), ya que el descanso y las vacaciones truncas sí están gravados con aportes previsionales.</p>
+          </div>
+        </div>
+        <div class="step-card">
+          <span class="step-num">2</span>
+          <div class="step-body">
+            <h4>Ingresa tu sueldo y asignación familiar</h4>
+            <p>Escribe tu remuneración mensual básica y marca la asignación familiar si tienes hijos a cargo para obtener la base computable exacta.</p>
+          </div>
+        </div>
+        <div class="step-card">
+          <span class="step-num">3</span>
+          <div class="step-body">
+            <h4>Especifica meses y días del récord trunco</h4>
+            <p>Si la relación laboral terminó antes de cumplir el año, coloca los meses completos y días trabajados para calcular los doceavos y treintavos de vacaciones truncas.</p>
+          </div>
+        </div>
+        <div class="step-card">
+          <span class="step-num">4</span>
+          <div class="step-body">
+            <h4>Agrega vacaciones vencidas o indemnización</h4>
+            <p>Si la empresa te adeudaba periodos pasados sin goce o se venció el plazo legal anual para descansar, agrega los días u años para calcular la indemnización vacacional (triple vacacional).</p>
+          </div>
+        </div>
+      </div>
+
+      <h3>Casos prácticos de cálculo</h3>
+      <div class="guide-grid">
+        <div class="guide-card">
+          <h4>Vacaciones Truncas al Renunciar</h4>
+          <p>Un trabajador que laboró 8 meses y 15 días con un sueldo de S/ 3,000 en el régimen general recibirá 8 doceavos (S/ 2,000) más 15 treintavos de doceavo (S/ 125), sumando S/ 2,125 brutos menos el descuento de pensión.</p>
+        </div>
+        <div class="guide-card">
+          <h4>¿Cuándo se activa la Triple Vacacional?</h4>
+          <p>Se genera cuando el trabajador cumplió el año de récord y transcurrieron los 12 meses posteriores sin que el empleador le otorgara el descanso. Corresponde: 1 sueldo por el trabajo realizado, 1 sueldo por el descanso ganado y 1 sueldo de indemnización inafecta.</p>
+        </div>
+        <div class="guide-card">
+          <h4>Venta de Vacaciones (Fraccionamiento)</h4>
+          <p>La ley peruana permite vender (acordar la compensación económica) de hasta 15 días de vacaciones, debiendo descansar obligatoriamente los otros 15 días restantes en dos bloques mínimos de 7 y 8 días.</p>
+        </div>
+      </div>
+
+      <h2>Preguntas frecuentes sobre las Vacaciones laborales</h2>
+      <div class="faq-wrap">
+        <div class="faq-item">
+          <div class="faq-question">¿Las vacaciones sufren descuentos de AFP u ONP?</div>
+          <div class="faq-answer">
+            <p><strong>Sí.</strong> Tanto la remuneración vacacional ordinaria como las vacaciones truncas tienen carácter remunerativo y están afectas al aporte previsional obligatorio (13% ONP o ~11.8% AFP). Sin embargo, la <strong>indemnización vacacional</strong> por falta de descanso oportuno NO está afecta a descuentos de pensión.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-question">¿Se pueden acumular periodos vacacionales?</div>
+          <div class="faq-answer">
+            <p>Por regla general, el descanso debe gozarse en el año inmediato posterior. Solo se permite acumular hasta dos descansos consecutivos mediante acuerdo escrito con el empleador, siempre que luego de un año de servicios continuo se goce al menos de un descanso de 7 días naturales.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-question">¿El empleador puede decidir unilateralmente cuándo tomo vacaciones?</div>
+          <div class="faq-answer">
+            <p>La oportunidad del descanso vacacional se fija de común acuerdo entre el empleador y el trabajador. A falta de acuerdo, la ley establece que la decisión final corresponde al empleador en uso de su facultad directriz.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</Base>
+
+<style>
+  .tool-container {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 1.5rem 0 3rem;
+  }
+  .breadcrumb {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-bottom: 0.75rem;
+  }
+  .breadcrumb a {
+    color: var(--muted);
+  }
+  .breadcrumb a:hover {
+    color: var(--accent);
+  }
+  .title-row {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+  .tool-icon-badge {
+    width: 58px;
+    height: 58px;
+    border-radius: var(--radius-md);
+    background: linear-gradient(135deg, rgba(168, 85, 247, 0.15), rgba(139, 92, 246, 0.05));
+    border: 1px solid rgba(168, 85, 247, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #a855f7;
+    flex-shrink: 0;
+  }
+  .title-row h1 {
+    font-size: 1.85rem;
+    margin: 0 0 0.35rem 0;
+    letter-spacing: -0.02em;
+  }
+  .tool-desc {
+    color: var(--muted);
+    font-size: 0.95rem;
+    margin: 0;
+    max-width: 75ch;
+  }
+
+  .calc-grid {
+    display: grid;
+    grid-template-columns: 1.15fr 0.95fr;
+    gap: 1.5rem;
+    align-items: start;
+  }
+  @media (max-width: 860px) {
+    .calc-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .panel-card {
+    background: var(--surface-card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  }
+  .panel-head {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--line);
+    color: var(--accent);
+  }
+  .panel-head h2 {
+    font-size: 1.15rem;
+    color: var(--ink);
+    margin: 0;
+  }
+
+  .form-group {
+    margin-bottom: 1.1rem;
+  }
+  .form-group label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 0.35rem;
+    color: var(--ink);
+  }
+  .form-input, .form-select {
+    width: 100%;
+    padding: 0.6rem 0.85rem;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    color: var(--ink);
+    font-size: 0.95rem;
+    transition: border-color 0.15s;
+  }
+  .form-input:focus, .form-select:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+  .input-prefix-wrap {
+    display: flex;
+    align-items: center;
+    position: relative;
+  }
+  .input-prefix-wrap .prefix {
+    position: absolute;
+    left: 0.85rem;
+    font-weight: 600;
+    color: var(--muted);
+  }
+  .input-prefix-wrap .form-input {
+    padding-left: 2.2rem;
+  }
+
+  .form-row-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.85rem;
+  }
+  .form-section-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--accent);
+    margin: 1.25rem 0 0.75rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--line);
+  }
+  .hint-text {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-top: 0.25rem;
+  }
+  .form-check-group {
+    margin: 0.85rem 0 1.1rem;
+  }
+  .checkbox-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: var(--ink);
+    cursor: pointer;
+  }
+
+  /* Result Panel */
+  .result-highlight-card {
+    background: linear-gradient(135deg, rgba(168, 85, 247, 0.12), rgba(56, 189, 248, 0.08));
+    border: 1px solid rgba(168, 85, 247, 0.35);
+    border-radius: var(--radius-sm);
+    padding: 1.25rem;
+    text-align: center;
+    margin-bottom: 1.25rem;
+  }
+  .result-sub-label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .result-main-value {
+    font-size: 2.25rem;
+    font-weight: 800;
+    color: #a855f7;
+    margin: 0.25rem 0;
+    font-family: var(--font-heading, sans-serif);
+  }
+  .result-date-info {
+    font-size: 0.82rem;
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  .breakdown-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    padding: 1rem;
+    margin-bottom: 1.25rem;
+  }
+  .breakdown-item {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.88rem;
+  }
+  .text-danger {
+    color: #ef4444;
+  }
+  .text-triple {
+    color: #f59e0b;
+    font-weight: 600;
+  }
+
+  .action-buttons-row {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+  }
+  .btn-action {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    padding: 0.55rem 0.85rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--line);
+    background: var(--surface-card);
+    color: var(--ink);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn-action:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .legal-notice {
+    font-size: 0.75rem;
+    color: var(--muted);
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px dashed var(--line);
+    padding: 0.75rem;
+    border-radius: var(--radius-sm);
+    line-height: 1.45;
+  }
+</style>
+
+<script>
+  const formatCurrency = (val: number) => {
+    return `S/ ${val.toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  };
+
+  const calculateVac = () => {
+    const regimen = (document.getElementById('regimen-vac') as HTMLSelectElement).value;
+    const tasaPension = parseFloat((document.getElementById('pension-vac') as HTMLSelectElement).value) || 0;
+    const sueldo = parseFloat((document.getElementById('sueldo-vac') as HTMLInputElement).value) || 0;
+    const tieneAsig = (document.getElementById('asig-fam-vac') as HTMLInputElement).checked;
+    const meses = parseInt((document.getElementById('meses-vac') as HTMLInputElement).value) || 0;
+    const dias = parseInt((document.getElementById('dias-vac') as HTMLInputElement).value) || 0;
+    const diasPendientes = parseInt((document.getElementById('dias-pendientes') as HTMLInputElement).value) || 0;
+    const anosVencidos = parseInt((document.getElementById('meses-vencidos') as HTMLInputElement).value) || 0;
+
+    const asigMonto = tieneAsig ? 102.50 : 0;
+    const computable = sueldo + asigMonto;
+
+    // Regimen General = 30 dias (1 sueldo). MYPE = 15 dias (0.5 sueldo)
+    const factorAnual = regimen === '30' ? 1.0 : 0.5;
+
+    // Truncas:
+    // Meses = (computable * factorAnual / 12) * meses
+    // Dias = (computable * factorAnual / 360) * dias
+    const truncasMeses = (computable * factorAnual / 12) * meses;
+    const truncasDias = (computable * factorAnual / 360) * dias;
+    const totalTruncas = truncasMeses + truncasDias;
+
+    // Pendientes ganadas
+    const valorDia = computable / 30;
+    const totalPendientes = valorDia * diasPendientes;
+
+    // Indemnización vacacional (triple vacacional): 1 remuneración adicional por cada año no gozado en plazo
+    // (Nota: la indemnización NO está afecta a descuentos de pensión por ley)
+    const totalIndemnizacion = anosVencidos * computable * factorAnual;
+
+    // Base afecta a pensión = Truncas + Pendientes (la indemnización está inafecta)
+    const baseAfecta = totalTruncas + totalPendientes;
+    const descuentoPension = baseAfecta * tasaPension;
+
+    const totalBruto = baseAfecta + totalIndemnizacion;
+    const totalNeto = Math.max(0, totalBruto - descuentoPension);
+
+    document.getElementById('res-vac-neto')!.textContent = formatCurrency(totalNeto);
+    document.getElementById('res-vac-bruto')!.textContent = formatCurrency(totalBruto);
+    document.getElementById('res-vac-comp')!.textContent = formatCurrency(computable);
+    document.getElementById('res-vac-truncas')!.textContent = formatCurrency(totalTruncas);
+    document.getElementById('res-vac-pendientes')!.textContent = formatCurrency(totalPendientes);
+    document.getElementById('res-vac-indemnizacion')!.textContent = formatCurrency(totalIndemnizacion);
+    document.getElementById('res-vac-descuento')!.textContent = `- ${formatCurrency(descuentoPension)}`;
+
+    const rowTriple = document.getElementById('row-triple');
+    if (rowTriple) {
+      rowTriple.style.display = totalIndemnizacion > 0 ? 'flex' : 'none';
+    }
+
+    const labelPension = document.getElementById('label-retencion-pension');
+    if (labelPension) {
+      labelPension.textContent = `Descuento de pensión (${(tasaPension * 100).toFixed(1)}%):`;
+    }
+  };
+
+  const inputs = document.querySelectorAll('#vac-form input, #vac-form select');
+  inputs.forEach((inp) => {
+    inp.addEventListener('input', calculateVac);
+    inp.addEventListener('change', calculateVac);
+  });
+
+  const copyBtn = document.getElementById('btn-copy-vac');
+  if (copyBtn) {
+    copyBtn.addEventListener('click', () => {
+      const neto = document.getElementById('res-vac-neto')?.textContent || '';
+      const bruto = document.getElementById('res-vac-bruto')?.textContent || '';
+      const text = `Cálculo de Vacaciones (UtiliaOnline):\n- Total Bruto: ${bruto}\n- Neto a Percibir: ${neto}\nCalculado en: ${window.location.href}`;
+      navigator.clipboard.writeText(text).then(() => {
+        copyBtn.innerHTML = '<span>¡Copiado!</span>';
+        setTimeout(() => {
+          copyBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>Copiar cálculo</span>';
+        }, 2000);
+      });
+    });
+  }
+
+  calculateVac();
+</script>

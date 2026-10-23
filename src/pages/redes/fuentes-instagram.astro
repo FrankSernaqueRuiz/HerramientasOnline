@@ -1,0 +1,329 @@
+﻿---
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+---
+
+<Base
+  title="Fuentes Estilizadas para Instagram, TikTok y Redes Sociales"
+  description="Convierte tu texto a estilos elegantes, negrita, cursiva, gótica, círculos y más caracteres Unicode listos para copiar y pegar en tu biografía o posts."
+>
+  <div class="page-header">
+    <div class="breadcrumb">
+      <a href="/">Herramientas</a> / <span>Redes sociales</span>
+    </div>
+    <h1>Fuentes Estilizadas para Redes Sociales</h1>
+    <p class="lead">Escribe o pega cualquier frase para transformarla a más de 12 estilos tipográficos Unicode compatibles con Instagram, TikTok, WhatsApp y X.</p>
+  </div>
+
+  <section class="panel">
+    <div class="input-section">
+      <label for="font-input">Escribe tu texto aquí:</label>
+      <textarea id="font-input" rows="3" placeholder="Escribe algo aquí para ver la magia tipográfica...">Diseño y Creatividad Digital</textarea>
+      <div class="quick-tags">
+        <button type="button" class="tag-btn" data-preset="Mi Biografía Oficial ✨">Mi Biografía Oficial ✨</button>
+        <button type="button" class="tag-btn" data-preset="Oferta Especial Limitada 🔥">Oferta Especial Limitada 🔥</button>
+        <button type="button" class="tag-btn" data-preset="Sígueme para más consejos 🚀">Sígueme para más consejos 🚀</button>
+      </div>
+    </div>
+
+    <div class="styles-output-header">
+      <h3>Estilos disponibles para copiar</h3>
+      <span class="copy-hint">Haz clic en cualquier estilo para copiarlo de inmediato</span>
+    </div>
+
+    <div class="font-grid" id="font-results">
+      <!-- Los estilos se renderizan dinámicamente con JS -->
+    </div>
+  </section>
+
+  <section class="seo-section">
+    <h2>¿Cómo funciona el conversor de fuentes para redes sociales?</h2>
+    <p>No se trata de tipografías instalables (como archivos .ttf o .otf), sino de símbolos y glifos matemáticos y alfanuméricos estandarizados por el consorcio internacional <strong>Unicode</strong>. Dado que cada carácter es texto plano universal, puedes copiarlo y pegarlo directamente en cualquier plataforma sin que pierda su formato visual.</p>
+
+    <div class="step-list">
+      <div class="step-card">
+        <span class="step-num">1</span>
+        <div class="step-body">
+          <h4>Escribe o pega tu texto original</h4>
+          <p>Introduce las palabras, frases o tu nombre en el recuadro superior. La conversión se genera al instante a medida que escribes.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <span class="step-num">2</span>
+        <div class="step-body">
+          <h4>Explora los más de 20 estilos Unicode</h4>
+          <p>Revisa la lista de variantes: cursiva elegante, negrita gótica, círculos, texto monoespaciado, invertido o con marcos decorativos.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <span class="step-num">3</span>
+        <div class="step-body">
+          <h4>Copia con un clic y pega donde quieras</h4>
+          <p>Haz clic sobre la tarjeta de tu tipografía favorita para copiarla al portapapeles y pégala en Instagram, TikTok, WhatsApp o Twitter/X.</p>
+        </div>
+      </div>
+    </div>
+
+    <h3>Casos de uso populares</h3>
+    <div class="guide-grid">
+      <div class="guide-card">
+        <h4>Biografías destacadas de Instagram y TikTok</h4>
+        <p>Capta la atención de nuevos seguidores formateando tu profesión, lema o llamada a la acción con letras en negrita o cursiva elegante.</p>
+      </div>
+      <div class="guide-card">
+        <h4>Nombres de usuario y apodos en videojuegos</h4>
+        <p>Crea nicks llamativos y únicos para Discord, Free Fire, Roblox, Steam y perfiles de mensajería privada.</p>
+      </div>
+      <div class="guide-card">
+        <h4>Títulos en publicaciones y estados</h4>
+        <p>Resalta palabras clave, ofertas especiales y subtítulos en publicaciones de Facebook, hilos de X o estados de WhatsApp.</p>
+      </div>
+    </div>
+
+    <h2>Preguntas frecuentes sobre fuentes para redes</h2>
+    <div class="faq-wrap">
+      <div class="faq-item">
+        <div class="faq-question">¿Todos mis seguidores podrán ver estas letras especiales?</div>
+        <div class="faq-answer">
+          <p>Sí. Al tratarse de caracteres oficiales del estándar Unicode, prácticamente todos los smartphones modernos (Android e iOS) y navegadores web los renderizan sin necesidad de instalar apps ni fuentes adicionales.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Instagram o TikTok penalizan el uso de estas tipografías?</div>
+        <div class="faq-answer">
+          <p>No penalizan su uso en biografías, captions o comentarios. Sin embargo, se aconseja usarlas con moderación (para palabras o títulos clave) para mantener una lectura accesible y limpia.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Por qué algunos símbolos aparecen como cuadros con interrogación en dispositivos antiguos?</div>
+        <div class="faq-answer">
+          <p>Si un teléfono muy antiguo no tiene actualizada la tabla Unicode del sistema operativo, puede no reconocer ciertos glifos poco comunes. Los estilos como negrita, cursiva y círculos son los más universales y compatibles.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Puedo usar estas fuentes en mi nombre de usuario de Instagram?</div>
+        <div class="faq-answer">
+          <p>En el campo "Nombre" (el que aparece en negrita debajo de tu foto) sí puedes usar cualquier estilo. En el campo "Nombre de usuario" (@handle) Instagram solo permite letras alfanuméricas estándar, puntos y guiones bajos.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .breadcrumb {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-bottom: 0.5rem;
+  }
+  .breadcrumb a {
+    color: var(--muted);
+  }
+  .input-section label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+  .input-section textarea {
+    font-size: 1.05rem;
+  }
+  .quick-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+  }
+  .tag-btn {
+    background: var(--surface-card);
+    border: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 0.8rem;
+    border-radius: 9999px;
+    padding: 0.3rem 0.75rem;
+    cursor: pointer;
+  }
+  .tag-btn:hover {
+    color: var(--ink);
+    border-color: var(--accent);
+  }
+  .styles-output-header {
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .styles-output-header h3 {
+    margin: 0;
+    font-size: 1.15rem;
+  }
+  .copy-hint {
+    font-size: 0.82rem;
+    color: var(--muted);
+  }
+  .font-grid {
+    display: grid;
+    gap: 0.85rem;
+  }
+  :global(.font-item) {
+    background: var(--surface-card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    transition: border-color 0.15s, transform 0.15s;
+  }
+  :global(.font-item:hover) {
+    border-color: var(--accent);
+    transform: translateX(2px);
+  }
+  :global(.font-meta) {
+    flex: 1;
+    overflow: hidden;
+  }
+  :global(.font-name) {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.25rem;
+  }
+  :global(.font-value) {
+    font-size: 1.15rem;
+    color: var(--ink);
+    word-break: break-word;
+    user-select: all;
+  }
+  :global(.btn-copy-style) {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    color: var(--ink);
+    border-radius: var(--radius-sm);
+    padding: 0.5rem 0.85rem;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: all 0.15s;
+  }
+  :global(.btn-copy-style:hover) {
+    background: var(--accent);
+    color: #ffffff;
+    border-color: var(--accent);
+  }
+  :global(.btn-copy-style.copied) {
+    background: #238636;
+    color: #ffffff;
+    border-color: #238636;
+  }
+</style>
+
+<script>
+  const fontInput = document.getElementById('font-input') as HTMLTextAreaElement;
+  const fontResults = document.getElementById('font-results') as HTMLDivElement;
+  const tagButtons = document.querySelectorAll<HTMLButtonElement>('.tag-btn');
+
+  // Mapas Unicode
+  const normalLetters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+
+  const maps: Record<string, string> = {
+    'Negrita Serif': '𝐚𝐛𝐜𝐝𝐞𝐟𝐠𝐡𝐢𝐣𝐤𝐥𝐦𝐧𝐨𝐩𝐪𝐫𝐬𝐭𝐮𝐯𝐰𝐱𝐲𝐳𝐀𝐁𝐂𝐃𝐄𝐅𝐆𝐇𝐈𝐉𝐊𝐋𝐌𝐍𝐎𝐏𝐐𝐑𝐒𝐓𝐔𝐕𝐖𝐗𝐘𝐙𝟎𝟏𝟐𝟑𝟒𝟓𝟔𝟕𝟖𝟗',
+    'Negrita Sans': '𝗮𝗯𝗰𝗱𝗲𝗳𝗴𝗵𝗶𝗷𝗸𝗹𝗺𝗻𝗼𝗽𝗾𝗿𝘀𝘁𝘂𝘃𝘄𝘅𝘆𝘇𝗔𝗕𝗖𝗗𝗘𝗙𝗚𝗛𝗜𝗝𝗞𝗟𝗠𝗡𝗢𝗣𝗤𝗥𝗦𝗧𝗨𝗩𝗪𝗫𝗬𝗭𝟬𝟭𝟮𝟯𝟰𝟱𝟲𝟳𝟴𝟵',
+    'Cursiva Italic': '𝘢𝘣𝘤𝘥𝘦𝘧𝘨𝘩𝘪𝘫𝘬𝘭𝘮𝘯𝘰𝘱𝘲𝘳𝘴𝘵𝘶𝘷𝘸𝘹𝘺𝘻𝘈𝘉𝘊𝘋𝘌𝘍𝘎𝘏𝘐𝘑𝘒𝘓𝘔𝘕𝘖𝘗𝘘𝘙𝘚𝘛𝘜𝘝𝘞𝘟𝘠𝘡0123456789',
+    'Negrita Cursiva': '𝙖𝙗𝙘𝙙𝙚𝙛𝙜𝙝𝙞𝙟𝙠𝙡𝙢𝙣𝙤𝙥𝙦𝙧𝙨𝙩𝙪𝙫𝙬𝙭𝙮𝙯𝘼𝘽𝘾𝘿𝙀𝙁𝙂𝙃𝙄𝙅𝙆𝙇𝙈𝙉𝙊𝙋𝙌𝙍𝙎𝙏𝙐𝙑𝙒𝙓𝙔𝙕0123456789',
+    'Monospace (Código)': '𝚊𝚋𝚌𝚍𝚎𝚏𝚐𝚑𝚒𝚓𝚔𝚕𝚖𝚗𝚘𝚙𝚚𝚛𝚜𝚝𝚞𝚟𝚠𝚡𝚢𝚣𝙰𝙱𝙲𝙳𝙴𝙵𝙶𝙷𝙸𝙹𝙺𝙻𝙼𝙽𝙾𝙿𝚀𝚁𝚂𝚃𝚄𝚅𝚆𝚇𝚈𝚉𝟶𝟷𝟸𝟹𝟺𝟻𝟼𝟽𝟾𝟿',
+    'Manuscrita (Script)': '𝒶𝒷𝒸𝒹ℯ𝒻ℊ𝒽𝒾𝒿𝓀𝓁𝓂𝓃ℴ𝓅𝓆𝓇𝓈𝓉𝓊𝓋𝓌𝓍𝓎𝓏𝒜ℬ𝒞𝒟ℰℱ𝒢ℋℐ𝒥𝒦ℒℳ𝒩𝒪𝒫𝒬ℛ𝒮𝒯𝒰𝒱𝒲𝒳𝒴𝒵0123456789',
+    'Gótica (Fraktur)': '𝔞𝔟𝔠𝔡𝔢𝔣𝔤𝔥𝔦𝔧𝔨𝔩𝔪𝔫𝔬𝔭𝔮𝔯𝔰𝔱𝔲𝔳𝔴𝔵𝔶𝔷𝔄𝔅ℭ𝔇𝔈𝔉𝔊ℌℑ𝔍𝔎𝔏𝔐𝔑𝔒𝔓𝔔ℜ𝔖𝔗𝔘𝔙𝔚𝔛𝔜ℨ0123456789',
+    'Doble trazo (Blackboard)': '𝕒𝕓𝕔𝕕𝕖𝕗𝕘𝕙𝕚𝕛𝕜𝕝𝕞𝕟𝕠𝕡𝕢𝕣𝕤𝕥𝕦𝕧𝕨𝕩𝕪𝕫𝔸𝔹ℂ𝔻𝔼𝔽𝔾ℍ𝕀𝕁𝕂𝕃𝕄ℕ𝕆ℙℚℝ𝕊𝕋𝕌𝕍𝕎𝕏𝕐ℤ𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡',
+    'Circulares (Burbuja)': 'ⓐⓑⓒⓓⓔⓕⓖⓗⓘⓙⓚⓛⓜⓝⓞⓟⓠⓡⓢⓣⓤⓥⓦⓧⓨⓩⒶⒷⒸⒹⒺⒻⒼⒽⒾⒿⓀⓁⓂⓃⓄⓅⓆⓇⓈⓉⓊⓋⓌⓍⓎⓏ⓪①②③④⑤⑥⑦⑧⑨',
+    'Burbujas Negras': '🅐🅑🅒🅓🅔🅕🅖🅗🅘🅙🅚🅛🅜🅝🅞🅟🅠🅡🅢🅣🅤🅥🅦🅧🅨🅩🅐🅑🅒🅓🅔🅕🅖🅗🅘🅙🅚🅛🅜🅝🅞🅟🅠🅡🅢🅣🅤🅥🅦🅧🅨🅩⓿➊➋➌➍➎➏➐➑➒',
+    'Cuadrados (Bloques)': '🄰🄱🄲🄳🄴🄵🄶🄷🄸🄹🄺🄻🄼🄽🄾🄿🅀🅁🅂🅃🅄🅅🅆🅇🅈🅉🄰🄱🄲🄳🄴🄵🄶🄷🄸🄹🄺🄻🄼🄽🄾🄿🅀🅁🅂🅃🅄🅅🅆🅇🅈🅉0123456789'
+  };
+
+  // Descomponer cadenas teniendo en cuenta caracteres multicarácter Unicode (surrogate pairs)
+  function splitUnicode(str: string): string[] {
+    return Array.from(str);
+  }
+
+  function transformText(text: string, styleMapStr: string): string {
+    const targetArr = splitUnicode(styleMapStr);
+    const sourceArr = normalLetters.split('');
+
+    return Array.from(text).map((char) => {
+      const idx = sourceArr.indexOf(char);
+      if (idx !== -1 && targetArr[idx]) {
+        return targetArr[idx];
+      }
+      return char;
+    }).join('');
+  }
+
+  function renderStyles() {
+    const text = fontInput.value.trim() || 'Texto de ejemplo';
+    fontResults.innerHTML = '';
+
+    for (const [styleName, mapStr] of Object.entries(maps)) {
+      const converted = transformText(text, mapStr);
+
+      const card = document.createElement('div');
+      card.className = 'font-item';
+
+      const meta = document.createElement('div');
+      meta.className = 'font-meta';
+
+      const nameEl = document.createElement('div');
+      nameEl.className = 'font-name';
+      nameEl.textContent = styleName;
+
+      const valEl = document.createElement('div');
+      valEl.className = 'font-value';
+      valEl.textContent = converted;
+
+      meta.appendChild(nameEl);
+      meta.appendChild(valEl);
+
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'btn-copy-style';
+      btn.innerHTML = `<span>Copiar</span>`;
+
+      btn.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(converted);
+          btn.classList.add('copied');
+          btn.innerHTML = `<span>✓ ¡Copiado!</span>`;
+          setTimeout(() => {
+            btn.classList.remove('copied');
+            btn.innerHTML = `<span>Copiar</span>`;
+          }, 2000);
+        } catch {
+          btn.innerHTML = `<span>Error</span>`;
+        }
+      });
+
+      card.appendChild(meta);
+      card.appendChild(btn);
+      fontResults.appendChild(card);
+    }
+  }
+
+  fontInput.addEventListener('input', renderStyles);
+
+  tagButtons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      fontInput.value = btn.dataset.preset || '';
+      renderStyles();
+    });
+  });
+
+  renderStyles();
+</script>

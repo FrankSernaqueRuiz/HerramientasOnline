@@ -1,0 +1,146 @@
+﻿---
+import Base from '../../layouts/Base.astro';
+---
+<Base title="Calculadora de Edad Exacta en Años, Meses y Días" description="Calcula tu edad exacta en años, meses, días y horas, más cuántos días faltan para tu próximo cumpleaños.">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="/">Herramientas</a> / <span>Fechas y tiempo</span></div>
+    <h1>Calculadora de Edad Exacta</h1>
+    <p class="lead">Ingresa tu fecha de nacimiento para conocer tu edad en años, meses, días, horas y la cuenta regresiva a tu próximo cumpleaños.</p>
+  </div>
+  <section class="panel">
+    <div class="age-grid">
+      <div class="field"><label for="birth-date">Fecha de nacimiento:</label><input type="date" id="birth-date"/></div>
+      <div class="results-cards" id="age-results">
+        <p class="placeholder">Selecciona tu fecha de nacimiento</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="seo-section">
+    <h2>¿Cómo funciona la calculadora de edad cronológica exacta?</h2>
+    <p>Esta calculadora determina tu edad precisa en años, meses, días, horas, minutos y segundos transcurridos desde tu nacimiento, teniendo en cuenta la duración real de cada mes del calendario gregoriano y los <strong>años bisiestos</strong>. Además, calcula una cuenta regresiva exacta con los días y el día de la semana en que caerá tu próximo cumpleaños.</p>
+
+    <div class="step-list">
+      <div class="step-card">
+        <span class="step-num">1</span>
+        <div class="step-body">
+          <h4>Selecciona tu fecha de nacimiento</h4>
+          <p>Indica el día, mes y año de tu nacimiento en el selector de fecha del panel principal.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <span class="step-num">2</span>
+        <div class="step-body">
+          <h4>Cálculo cronológico instantáneo</h4>
+          <p>El algoritmo compara la fecha elegida con el momento presente con precisión de milisegundos.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <span class="step-num">3</span>
+        <div class="step-body">
+          <h4>Explora tu desglose en múltiples unidades</h4>
+          <p>Consulta tu edad en años y meses cumplidos, total de semanas vividas, días acumulados y la cuenta atrás para tu próximo aniversario.</p>
+        </div>
+      </div>
+    </div>
+
+    <h3>Casos de uso cotidianos y administrativos</h3>
+    <div class="guide-grid">
+      <div class="guide-card">
+        <h4>Trámites legales, notariales y pensiones</h4>
+        <p>Verifica si cumples los requisitos de mayoría de edad legal (18 o 21 años) o la edad reglamentaria para jubilación y pensiones.</p>
+      </div>
+      <div class="guide-card">
+        <h4>Inscripciones escolares y categorías deportivas</h4>
+        <p>Determina la edad exacta a una fecha de corte específica para matrículas escolares o categorías juveniles por año de nacimiento.</p>
+      </div>
+      <div class="guide-card">
+        <h4>Hitos en bebés y niños pequeños</h4>
+        <p>Calcula con exactitud los meses y semanas de vida de lactantes para calendarios de vacunación y controles pediátricos de desarrollo.</p>
+      </div>
+    </div>
+
+    <h2>Preguntas frecuentes sobre cálculo de edad</h2>
+    <div class="faq-wrap">
+      <div class="faq-item">
+        <div class="faq-question">¿Por qué mi edad en meses no coincide si simplemente divido los días entre 30?</div>
+        <div class="faq-answer">
+          <p>Porque los meses del año tienen entre 28 y 31 días. Nuestra herramienta calcula los aniversarios mensuales reales calendario, garantizando un conteo exacto sin aproximaciones artificiales.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Qué ocurre si nací un 29 de febrero de año bisiesto?</div>
+        <div class="faq-answer">
+          <p>En años no bisiestos, la mayoría de sistemas legales y calendarios computan el cumplimiento de la edad al 1 de marzo o 28 de febrero según la jurisdicción. La calculadora proyecta tu próximo cumpleaños bisiesto fielmente.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Se guarda mi fecha de nacimiento en internet?</div>
+        <div class="faq-answer">
+          <p>No. En UtiliaOnline el cálculo se realiza íntegramente en tu navegador sin almacenar cookies ni transmitir tu información a servidores externos.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Puedo calcular la edad de una mascota o la antigüedad de un evento histórico?</div>
+        <div class="faq-answer">
+          <p>Sí, la calculadora funciona con cualquier fecha del pasado, permitiéndote conocer la antigüedad exacta de una empresa, una relación o el nacimiento de tu mascota.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>
+<style>
+  .breadcrumb{font-size:.85rem;color:var(--muted);margin-bottom:.5rem}.breadcrumb a{color:var(--muted)}
+  .age-grid{display:grid;grid-template-columns:280px 1fr;gap:2rem;align-items:start}@media(max-width:768px){.age-grid{grid-template-columns:1fr}}
+  .field label{display:block;font-weight:600;font-size:.9rem;margin-bottom:.4rem}
+  .field input[type="date"]{width:100%;padding:.65rem;background:var(--bg);border:1px solid var(--line);border-radius:var(--radius-sm);color:var(--ink);font:inherit}
+  .results-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.85rem}
+  .placeholder{color:var(--muted);grid-column:1/-1;text-align:center;padding:2rem}
+  :global(.age-card){background:var(--surface-card);border:1px solid var(--line);border-radius:var(--radius-sm);padding:1rem;text-align:center}
+  :global(.age-card .num){font-size:1.8rem;font-weight:800;color:var(--accent);display:block}
+  :global(.age-card .lbl){font-size:.78rem;color:var(--muted);text-transform:uppercase;font-weight:600}
+  :global(.age-card.highlight){border-color:#e2b714;background:rgba(226,183,20,.08)}
+  :global(.age-card.highlight .num){color:#e2b714}
+</style>
+<script>
+  const input=document.getElementById('birth-date') as HTMLInputElement;
+  const results=document.getElementById('age-results')!;
+  // Set default to a reasonable date
+  const today=new Date();
+  input.max=today.toISOString().split('T')[0];
+
+  function calc(){
+    if(!input.value)return;
+    const birth=new Date(input.value+'T00:00:00');
+    const now=new Date();
+    if(birth>now){results.innerHTML='<p class="placeholder">La fecha debe ser en el pasado</p>';return}
+
+    let years=now.getFullYear()-birth.getFullYear();
+    let months=now.getMonth()-birth.getMonth();
+    let days=now.getDate()-birth.getDate();
+    if(days<0){months--;const prev=new Date(now.getFullYear(),now.getMonth(),0);days+=prev.getDate()}
+    if(months<0){years--;months+=12}
+
+    const diffMs=now.getTime()-birth.getTime();
+    const totalDays=Math.floor(diffMs/86400000);
+    const totalHours=Math.floor(diffMs/3600000);
+    const totalWeeks=Math.floor(totalDays/7);
+
+    // Next birthday
+    let nextBday=new Date(now.getFullYear(),birth.getMonth(),birth.getDate());
+    if(nextBday<=now)nextBday=new Date(now.getFullYear()+1,birth.getMonth(),birth.getDate());
+    const daysToNext=Math.ceil((nextBday.getTime()-now.getTime())/86400000);
+
+    const cards=[
+      {num:`${years}`,lbl:'Años'},
+      {num:`${months}`,lbl:'Meses'},
+      {num:`${days}`,lbl:'Días'},
+      {num:totalDays.toLocaleString(),lbl:'Total de días vividos'},
+      {num:totalWeeks.toLocaleString(),lbl:'Semanas vividas'},
+      {num:totalHours.toLocaleString(),lbl:'Horas vividas'},
+      {num:`🎂 ${daysToNext}`,lbl:'Días para tu cumple',highlight:true},
+    ];
+    results.innerHTML=cards.map(c=>`<div class="age-card ${c.highlight?'highlight':''}"><span class="num">${c.num}</span><span class="lbl">${c.lbl}</span></div>`).join('');
+  }
+  input.addEventListener('input',calc);
+</script>

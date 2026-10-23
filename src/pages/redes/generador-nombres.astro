@@ -1,0 +1,546 @@
+﻿---
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+---
+
+<Base
+  title="Generador de Nombres Originales para Negocios, Mascotas y Usuarios"
+  description="Genera nombres creativos, modernos y pegadizos para tu negocio, proyecto digital, marca, mascota o nombre de usuario de redes."
+>
+  <div class="page-header">
+    <div class="breadcrumb">
+      <a href="/">Herramientas</a> / <span>Redes sociales</span>
+    </div>
+    <h1>Generador de Nombres Creativos</h1>
+    <p class="lead">Combina categorías, estilos y palabras clave para descubrir nombres únicos listos para registrar o usar como nombre de usuario.</p>
+  </div>
+
+  <section class="panel">
+    <div class="config-grid">
+      <div class="field-item">
+        <label for="name-cat">¿Para qué necesitas el nombre?:</label>
+        <select id="name-cat">
+          <option value="negocio">Empresa o Negocio / Startup 🏢</option>
+          <option value="tienda">Tienda Online / Ropa / Retail 🛍️</option>
+          <option value="usuario">Usuario Gamer / Redes (Instagram/TikTok/Twitch) 🎮</option>
+          <option value="mascota">Mascota (Perro, Gato, Exótico) 🐾</option>
+          <option value="podcast">Podcast o Canal de YouTube 🎙️</option>
+        </select>
+      </div>
+
+      <div class="field-item">
+        <label for="name-style">Estilo del nombre:</label>
+        <select id="name-style">
+          <option value="moderno">Moderno y Tecnológico (Sufijos -ly, -ify, -hub)</option>
+          <option value="elegante">Elegante y Premium (Sonoridad suave)</option>
+          <option value="creativo">Creativo y Abstracto</option>
+          <option value="corto">Corto y Minimalista (3-6 letras)</option>
+        </select>
+      </div>
+
+      <div class="field-item">
+        <label for="name-keyword">Palabra clave o concepto (opcional):</label>
+        <input type="text" id="name-keyword" placeholder="Ej: Nova, Luna, Sol, Code, Café, Eco..." />
+      </div>
+    </div>
+
+    <div class="actions">
+      <button id="btn-generate-names" class="btn-primary" type="button">
+        <span class="btn-icon-spin"><Icon name="refresh" size={16} /></span>
+        <span id="btn-generate-text">Generar nuevas opciones</span>
+      </button>
+      <span id="generate-feedback" class="generate-feedback" aria-live="polite"></span>
+    </div>
+
+    <div class="results-header">
+      <div class="results-title-group">
+        <h3>Sugerencias generadas</h3>
+        <span class="names-badge" id="names-count-badge">12 opciones</span>
+      </div>
+      <span class="hint">Haz clic en el botón de cualquier tarjeta para copiar el nombre</span>
+    </div>
+
+    <div class="names-grid" id="names-container">
+      <!-- Nombres inyectados por JS -->
+    </div>
+  </section>
+
+  <section class="seo-section">
+    <h2>¿Cómo funciona el generador de nombres creativos?</h2>
+    <p>El algoritmo de nombres analiza palabras raíz, afijos morfológicos, conceptos evocativos y combinaciones fonéticas agradables al oído. Genera ideas originales estructuradas por estilo y sector de negocio.</p>
+
+    <div class="step-list">
+      <div class="step-card">
+        <span class="step-num">1</span>
+        <div class="step-body">
+          <h4>Introduce palabras clave o conceptos base</h4>
+          <p>Escribe una o dos palabras relacionadas con tu propuesta (ej: "verde", "luz", "cyber", "dulce", "fuerza").</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <span class="step-num">2</span>
+        <div class="step-body">
+          <h4>Elige la categoría y el estilo del nombre</h4>
+          <p>Filtra entre nombres modernos tech, elegantes de lujo, divertidos y memorables, o minimalistas cortos.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <span class="step-num">3</span>
+        <div class="step-body">
+          <h4>Genera y copia tus opciones preferidas</h4>
+          <p>Haz clic en "Generar nombres" para ver decenas de combinaciones únicas listas para registrar como marca o dominio web.</p>
+        </div>
+      </div>
+    </div>
+
+    <h3>Casos de uso para nuevas marcas</h3>
+    <div class="guide-grid">
+      <div class="guide-card">
+        <h4>Startups y proyectos digitales</h4>
+        <p>Encuentra nombres de pronunciación global, limpios y tecnológicos que funcionen bien en aplicaciones y sitios web.</p>
+      </div>
+      <div class="guide-card">
+        <h4>Negocios locales y tiendas físicas</h4>
+        <p>Genera nombres atractivos y cercanos para cafeterías, boutiques, agencias de diseño, salones de belleza y consultorías.</p>
+      </div>
+      <div class="guide-card">
+        <h4>Canales de YouTube, podcasts y proyectos creativos</h4>
+        <p>Descubre títulos pegadizos y diferenciadores para tus espacios de difusión de contenidos y comunidades online.</p>
+      </div>
+    </div>
+
+    <h2>Preguntas frecuentes sobre nombres de marca</h2>
+    <div class="faq-wrap">
+      <div class="faq-item">
+        <div class="faq-question">¿Qué características hacen que un nombre de marca sea memorable?</div>
+        <div class="faq-answer">
+          <p>Los nombres más exitosos suelen tener entre 2 y 3 sílabas, son fáciles de escribir sin faltas de ortografía, no tienen combinaciones confusas de consonantes y evocan una emoción o beneficio sin ser excesivamente literales.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Los nombres generados son libres de derechos?</div>
+        <div class="faq-answer">
+          <p>Sí, las combinaciones son generadas algorítmicamente y eres libre de utilizarlas. No obstante, siempre debes comprobar la disponibilidad legal de marca en la oficina de patentes y marcas de tu país (como INDECOPI en Perú, IMPI en México, SIC en Colombia u OEPM en España).</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Cómo comprobar si el dominio web .com está disponible?</div>
+        <div class="faq-answer">
+          <p>Una vez que elijas tus nombres favoritos, te recomendamos buscar en registradores como Namecheap o Google Domains para confirmar la disponibilidad del dominio web y los usuarios en Instagram y TikTok.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Es mejor un nombre descriptivo o uno abstracto?</div>
+        <div class="faq-answer">
+          <p>Los descriptivos comunican inmediatamente qué haces, pero son más difíciles de registrar legalmente. Los abstractos o neologismos (como Spotify o Kodak) requieren algo más de marketing inicial pero son altamente protegibles y escalables.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .breadcrumb {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-bottom: 0.5rem;
+  }
+  .breadcrumb a {
+    color: var(--muted);
+  }
+  .config-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.25rem;
+    margin-bottom: 1.25rem;
+  }
+  .field-item label {
+    display: block;
+    font-weight: 600;
+    font-size: 0.88rem;
+    margin-bottom: 0.4rem;
+  }
+  .results-header {
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .results-title-group {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .results-header h3 {
+    margin: 0;
+    font-size: 1.15rem;
+  }
+  .names-badge {
+    font-size: 0.78rem;
+    color: var(--muted);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    padding: 2px 8px;
+    border-radius: 9999px;
+  }
+  .hint {
+    font-size: 0.82rem;
+    color: var(--muted);
+  }
+  .names-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 0.85rem;
+  }
+  :global(.name-card) {
+    background: var(--surface-card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    padding: 0.85rem 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+    transition: border-color 0.15s, transform 0.15s;
+    animation: nameCardPop 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  @keyframes nameCardPop {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  :global(.name-card:hover) {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+  :global(.name-text) {
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--ink);
+    word-break: break-word;
+  }
+  :global(.btn-copy-name) {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    color: var(--muted);
+    border-radius: var(--radius-sm);
+    width: 34px;
+    height: 34px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    padding: 0;
+  }
+  :global(.btn-copy-name:hover) {
+    color: #ffffff;
+    border-color: var(--accent);
+    background: var(--accent);
+  }
+  :global(.btn-copy-name:hover svg) {
+    color: #ffffff;
+  }
+  :global(.btn-copy-name.is-copied) {
+    background: #238636 !important;
+    border-color: #2ea043 !important;
+    color: #ffffff !important;
+  }
+  .actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: var(--accent-ink);
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 0.65rem 1.25rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    transition: all 0.18s ease;
+  }
+  .btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    filter: brightness(1.08);
+  }
+  .btn-primary:active {
+    transform: translateY(0);
+  }
+  .btn-icon-spin {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.4s ease;
+  }
+  .btn-primary.is-spinning .btn-icon-spin {
+    transform: rotate(360deg);
+  }
+  .generate-feedback {
+    font-size: 0.84rem;
+    font-weight: 600;
+    color: #3fb950;
+    opacity: 0;
+    transform: translateX(-4px);
+    transition: all 0.25s ease;
+  }
+  .generate-feedback.is-visible {
+    opacity: 1;
+    transform: translateX(0);
+  }
+</style>
+
+<script>
+  const catSelect = document.getElementById('name-cat') as HTMLSelectElement;
+  const styleSelect = document.getElementById('name-style') as HTMLSelectElement;
+  const keywordInput = document.getElementById('name-keyword') as HTMLInputElement;
+  const btnGenerate = document.getElementById('btn-generate-names') as HTMLButtonElement;
+  const container = document.getElementById('names-container') as HTMLDivElement;
+  const countBadge = document.getElementById('names-count-badge') as HTMLSpanElement;
+  const generateFeedback = document.getElementById('generate-feedback') as HTMLSpanElement;
+
+  // Word banks
+  const prefixesTech = ['Aura', 'Nexus', 'Vortex', 'Lumina', 'Zenith', 'Prisma', 'Pulse', 'Velox', 'Orion', 'Kore', 'Soma', 'Omni', 'Hyper', 'Nova', 'Synapse', 'Vertex', 'Astral', 'Aero', 'Krono', 'Spectra'];
+  const prefixesElegance = ['Aura', 'Stella', 'Valence', 'Maison', 'Aeterna', 'Solstice', 'Lumiere', 'Velvet', 'Noble', 'Serena', 'Elysium', 'Aurelia', 'Vogue', 'Opal', 'Civitas', 'Bellagio', 'Veritas', 'Palazzo'];
+  const prefixesCreative = ['Zigzag', 'Komorebi', 'Quirk', 'Bongo', 'Fika', 'Eureka', 'Pixel', 'Mosaic', 'Kaleido', 'Chroma', 'Brio', 'Doodle', 'Spark', 'Whim', 'Plumo', 'Wander', 'Breeze', 'Mango'];
+  const prefixesShort = ['Nox', 'Lux', 'Zen', 'Vex', 'Oxy', 'Zin', 'Rox', 'Sol', 'Neo', 'Kip', 'Pax', 'Ami', 'Tyk', 'Vio', 'Zao', 'Nuv', 'Koa', 'Fly', 'Mav', 'Rio'];
+
+  const suffixesModern = ['ly', 'ify', 'hub', 'lab', 'io', 'flow', 'stack', 'sync', 'craft', 'sphere', 'base', 'nest', 'grid', 'byte', 'works', 'link', 'zone', 'vault', 'line', 'wave'];
+  const suffixesElegant = ['a', 'elle', 'or', 'is', 'aurea', 'val', 'monde', 'lux', 'noir', 'atelier', 'haus', 'stone', 'crest', 'grove', 'court', 'd\'or', 'rose', 'belle'];
+  const suffixesCreative = ['land', 'pop', 'zoo', 'box', 'loop', 'dash', 'bloom', 'twist', 'drop', 'wave', 'mate', 'spot', 'jam', 'hive', 'verse', 'craft', 'mood', 'kit'];
+  const suffixesShort = ['o', 'a', 'x', 'y', 'i', 'u', 'ix', 'on', 'um', 'en', 'ex', 'is', 'ia', 'os', 'ar'];
+
+  const petPrefixes = ['Don', 'Lord', 'Capitán', 'Rey', 'Sir', 'Tío', 'Pequeño', 'Baby', 'Doctor', 'Mister', 'Super', 'Dulce'];
+  const petDiminutives = ['ito', 'ita', 'i', 'y', 'chu', 'quis', 'boo', 'in', 'ina', 'oso'];
+  const petNames = [
+    'Milo', 'Luna', 'Kira', 'Thor', 'Simba', 'Nala', 'Rocky', 'Zoe', 'Bruno', 'Coco',
+    'Oreo', 'Toby', 'Maya', 'Pixel', 'Bimba', 'Max', 'Bella', 'Charlie', 'Loki', 'Mia',
+    'Zeus', 'Daisy', 'Leo', 'Cleo', 'Oliver', 'Chloe', 'Teddy', 'Penny', 'Pippin', 'Mocha',
+    'Charly', 'Romeo', 'Sasha', 'Bingo', 'Pipa', 'Zeus', 'Gatsby', 'Bowie', 'Puff', 'Blanqui'
+  ];
+
+  const gamerPrefixes = ['Shadow', 'Cyber', 'Frost', 'Iron', 'Hyper', 'Ghost', 'Pixel', 'Neon', 'Echo', 'Viper', 'Void', 'Phantom', 'Storm', 'Nova', 'Rogue', 'Apex', 'Titan', 'Drift', 'Venom', 'Omega'];
+  const gamerSuffixes = ['X', 'Z', 'Prime', 'Pro', 'God', 'Strike', 'Blade', 'Vibe', 'Elite', 'King', 'Lord', '99', 'Boss', 'Hunter', 'Claw', 'Wolf', 'Rider', 'Mode', 'Core', 'Master'];
+  const gamerBases = ['Vortex', 'Krono', 'Zero', 'Drift', 'Raven', 'Titan', 'Specter', 'Viper', 'Blaze', 'Phoenix', 'Onyx', 'Axel', 'Raptor', 'Zenith', 'Phantom', 'Blitz'];
+
+  function getRandom<T>(arr: T[]): T {
+    return arr[Math.floor(Math.random() * arr.length)];
+  }
+
+  // Safe clipboard with fallback
+  async function copyText(text: string): Promise<boolean> {
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(text);
+        return true;
+      }
+    } catch {
+      // fallback
+    }
+
+    try {
+      const textArea = document.createElement('textarea');
+      textArea.value = text;
+      textArea.style.position = 'fixed';
+      textArea.style.left = '-9999px';
+      textArea.style.top = '-9999px';
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      const success = document.execCommand('copy');
+      document.body.removeChild(textArea);
+      return success;
+    } catch {
+      return false;
+    }
+  }
+
+  function generateList(): string[] {
+    const cat = catSelect.value;
+    const style = styleSelect.value;
+    const rawKw = keywordInput.value.trim().replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ0-9]/g, '');
+    const capitalKw = rawKw ? rawKw.charAt(0).toUpperCase() + rawKw.slice(1).toLowerCase() : '';
+
+    const results = new Set<string>();
+    const TARGET_COUNT = 12;
+    const MAX_ATTEMPTS = 150; // Guard against infinite loops
+    let attempts = 0;
+
+    while (results.size < TARGET_COUNT && attempts < MAX_ATTEMPTS) {
+      attempts++;
+      let name = '';
+
+      if (cat === 'mascota') {
+        if (capitalKw) {
+          const type = Math.floor(Math.random() * 5);
+          if (type === 0) name = `${getRandom(petPrefixes)} ${capitalKw}`;
+          else if (type === 1) name = `${capitalKw}${getRandom(petDiminutives)}`;
+          else if (type === 2) name = `${capitalKw} ${getRandom(['Star', 'Boy', 'Girl', 'Gold', 'Paws', 'Fox', 'Bear', 'Fluff'])}`;
+          else if (type === 3) name = `${getRandom(['Mini', 'Gran', 'Dulce', 'Super', 'Tierno'])} ${capitalKw}`;
+          else name = `${capitalKw} ${getRandom(petNames)}`;
+        } else {
+          const type = Math.floor(Math.random() * 4);
+          if (type === 0) name = getRandom(petNames);
+          else if (type === 1) name = `${getRandom(petPrefixes)} ${getRandom(petNames)}`;
+          else if (type === 2) name = `${getRandom(petNames)}${getRandom(petDiminutives)}`;
+          else name = `${getRandom(petNames)} ${getRandom(petNames)}`;
+        }
+      } else if (cat === 'usuario') {
+        const base = capitalKw || getRandom(gamerBases);
+        const type = Math.floor(Math.random() * 6);
+        if (type === 0) name = `${getRandom(gamerPrefixes)}${base}`;
+        else if (type === 1) name = `${base}${getRandom(gamerSuffixes)}`;
+        else if (type === 2) name = `${getRandom(gamerPrefixes)}_${base}`;
+        else if (type === 3) name = `${base}_${getRandom(gamerSuffixes)}`;
+        else if (type === 4) name = `TheReal${base}`;
+        else name = `iAm${base}`;
+      } else {
+        // Negocio, Tienda, Podcast
+        if (style === 'corto') {
+          if (capitalKw) {
+            const root = capitalKw.slice(0, 4);
+            const type = Math.floor(Math.random() * 5);
+            if (type === 0) name = `${root}${getRandom(suffixesShort)}`;
+            else if (type === 1) name = `${getRandom(prefixesShort)}${capitalKw.slice(0, 3)}`;
+            else if (type === 2) name = `${capitalKw.slice(0, 3)}${getRandom(['co', 'go', 'up', 'ix', 'ox', 'on'])}`;
+            else if (type === 3) name = `${getRandom(['Neo', 'Zen', 'Vox', 'Lux', 'Ami', 'Fly'])}${capitalKw.slice(0, 3)}`;
+            else name = `${root}${Math.random() > 0.5 ? 'o' : 'a'}`;
+          } else {
+            const type = Math.floor(Math.random() * 3);
+            if (type === 0) name = `${getRandom(prefixesShort)}${getRandom(suffixesShort)}`;
+            else if (type === 1) name = `${getRandom(prefixesShort)}${getRandom(['co', 'go', 'up', 'ix'])}`;
+            else name = `${getRandom(prefixesShort).slice(0, 3)}${getRandom(suffixesShort)}`;
+          }
+        } else if (style === 'moderno') {
+          const base = capitalKw || getRandom(prefixesTech);
+          const type = Math.floor(Math.random() * 5);
+          if (type === 0) name = `${base}${getRandom(suffixesModern)}`;
+          else if (type === 1) name = `${getRandom(prefixesTech)}${capitalKw || getRandom(suffixesModern)}`;
+          else if (type === 2) name = `${base} ${getRandom(['Studio', 'Labs', 'Digital', 'App', 'Cloud', 'Tech', 'Ventures'])}`;
+          else if (type === 3) name = `Get${base}`;
+          else name = `${base}HQ`;
+        } else if (style === 'elegante') {
+          const base = capitalKw || getRandom(prefixesElegance);
+          const type = Math.floor(Math.random() * 6);
+          if (type === 0) name = `${base}${getRandom(suffixesElegant)}`;
+          else if (type === 1) name = `Maison ${base}`;
+          else if (type === 2) name = `${base} Atelier`;
+          else if (type === 3) name = `${base} & Co.`;
+          else if (type === 4) name = `${getRandom(prefixesElegance)} ${base}`;
+          else name = `${base} Heritage`;
+        } else {
+          // Creativo
+          const base = capitalKw || getRandom(prefixesCreative);
+          const type = Math.floor(Math.random() * 6);
+          if (type === 0) name = `${getRandom(prefixesCreative)} ${base}`;
+          else if (type === 1) name = `${base}${getRandom(suffixesCreative)}`;
+          else if (type === 2) name = `${base} Club`;
+          else if (type === 3) name = `${base}verso`;
+          else if (type === 4) name = `${base} Room`;
+          else name = `${getRandom(prefixesTech)} ${base}`;
+        }
+      }
+
+      if (name && name.trim()) {
+        results.add(name.trim());
+      }
+    }
+
+    return Array.from(results);
+  }
+
+  function renderNames(isButtonTriggered = false) {
+    const names = generateList();
+    container.innerHTML = '';
+
+    if (countBadge) {
+      countBadge.textContent = `${names.length} opciones`;
+    }
+
+    names.forEach((name) => {
+      const card = document.createElement('div');
+      card.className = 'name-card';
+
+      const label = document.createElement('span');
+      label.className = 'name-text';
+      label.textContent = name;
+
+      const copyBtn = document.createElement('button');
+      copyBtn.type = 'button';
+      copyBtn.className = 'btn-copy-name';
+      copyBtn.title = 'Copiar nombre';
+      copyBtn.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>`;
+
+      copyBtn.addEventListener('click', async () => {
+        const ok = await copyText(name);
+        if (ok) {
+          copyBtn.classList.add('is-copied');
+          copyBtn.innerHTML = `✓`;
+          setTimeout(() => {
+            copyBtn.classList.remove('is-copied');
+            copyBtn.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>`;
+          }, 1500);
+        }
+      });
+
+      card.appendChild(label);
+      card.appendChild(copyBtn);
+      container.appendChild(card);
+    });
+
+    if (isButtonTriggered) {
+      btnGenerate.classList.add('is-spinning');
+      if (generateFeedback) {
+        generateFeedback.textContent = '✨ ¡Nuevas opciones listas!';
+        generateFeedback.classList.add('is-visible');
+        setTimeout(() => {
+          generateFeedback.classList.remove('is-visible');
+        }, 2000);
+      }
+      setTimeout(() => {
+        btnGenerate.classList.remove('is-spinning');
+      }, 450);
+    }
+  }
+
+  // Event Listeners
+  btnGenerate.addEventListener('click', () => {
+    renderNames(true);
+  });
+
+  catSelect.addEventListener('change', () => {
+    renderNames(false);
+  });
+
+  styleSelect.addEventListener('change', () => {
+    renderNames(false);
+  });
+
+  // Debounce input to prevent high-frequency regeneration while typing
+  let debounceTimer: ReturnType<typeof setTimeout>;
+  keywordInput.addEventListener('input', () => {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => {
+      renderNames(false);
+    }, 180);
+  });
+
+  // Initial render on load
+  renderNames(false);
+</script>

@@ -1,0 +1,681 @@
+---
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+---
+
+<Base
+  title="Calculadora de Finiquito Laboral con Recibo Imprimible · UtiliaOnline"
+  description="Calcula el finiquito de contrato de trabajo por renuncia o término laboral con desglose contable de haberes, descuentos y constancia legal de no adeudo para imprimir."
+  keywords="calculadora finiquito peru, recibo finiquito laboral, calcular finiquito renuncia, modelo finiquito trabajo, liquidacion finiquito"
+>
+  <div class="tool-container">
+    <div class="tool-header">
+      <div class="breadcrumb">
+        <a href="/">Inicio</a> / <a href="/simuladores">Simuladores</a> / <span>Calculadora de Finiquito</span>
+      </div>
+      <div class="title-row">
+        <div class="tool-icon-badge">
+          <Icon name="briefcase" size={28} />
+        </div>
+        <div>
+          <h1>Calculadora de Finiquito Laboral (con Recibo Oficial)</h1>
+          <p class="tool-desc">
+            Genera la liquidación y recibo de finiquito por término de contrato laboral o renuncia voluntaria con desglose de haberes, retenciones de ley y formato formal para firma.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="calc-grid">
+      <!-- Input Panel -->
+      <div class="panel-card input-panel">
+        <div class="panel-head">
+          <Icon name="file-text" size={18} />
+          <h2>Datos del Trabajador y Finiquito</h2>
+        </div>
+
+        <form id="fini-form" class="calc-form" onsubmit="event.preventDefault()">
+          <div class="form-row-2">
+            <div class="form-group">
+              <label for="nombre-trabajador">Nombre del Trabajador</label>
+              <input type="text" id="nombre-trabajador" class="form-input" value="Juan Carlos Pérez Rodríguez" />
+            </div>
+            <div class="form-group">
+              <label for="dni-trabajador">DNI / Documento</label>
+              <input type="text" id="dni-trabajador" class="form-input" value="45892147" />
+            </div>
+          </div>
+
+          <div class="form-row-2">
+            <div class="form-group">
+              <label for="empresa-nombre">Razón Social Empleador</label>
+              <input type="text" id="empresa-nombre" class="form-input" value="Corporación Comercial del Perú S.A.C." />
+            </div>
+            <div class="form-group">
+              <label for="motivo-finiquito">Causa de Término</label>
+              <select id="motivo-finiquito" class="form-select">
+                <option value="Renuncia voluntaria">Renuncia Voluntaria</option>
+                <option value="Término de contrato">Vencimiento / Término de Contrato</option>
+                <option value="Mutuo disenso">Mutuo Disenso</option>
+                <option value="Despido intempestivo">Despido Arbitrario</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="sueldo-fini">Sueldo Básico Mensual (S/)</label>
+            <div class="input-prefix-wrap">
+              <span class="prefix">S/</span>
+              <input type="number" id="sueldo-fini" class="form-input" value="3200" min="0" step="0.01" required />
+            </div>
+          </div>
+
+          <div class="form-check-group">
+            <label class="checkbox-label">
+              <input type="checkbox" id="asig-fam-fini" checked />
+              <span>¿Percibe Asignación Familiar? (+ S/ 102.50)</span>
+            </label>
+          </div>
+
+          <div class="form-section-title">Haberes Pendientes y Truncos</div>
+
+          <div class="form-row-2">
+            <div class="form-group">
+              <label for="dias-ult-mes">Días laborados mes de cese</label>
+              <input type="number" id="dias-ult-mes" class="form-input" value="15" min="0" max="30" />
+            </div>
+            <div class="form-group">
+              <label for="pension-rate-fini">Sistema Pensionario</label>
+              <select id="pension-rate-fini" class="form-select">
+                <option value="0.13">ONP (13%)</option>
+                <option value="0.118" selected>AFP (~11.8%)</option>
+                <option value="0">Exonerado (0%)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row-2">
+            <div class="form-group">
+              <label for="meses-cts-fini">Meses CTS trunca</label>
+              <input type="number" id="meses-cts-fini" class="form-input" value="4" min="0" max="6" />
+            </div>
+            <div class="form-group">
+              <label for="meses-gratif-fini">Meses Gratificación trunca</label>
+              <input type="number" id="meses-gratif-fini" class="form-input" value="4" min="0" max="6" />
+            </div>
+          </div>
+
+          <div class="form-row-2">
+            <div class="form-group">
+              <label for="meses-vac-fini">Meses Vacaciones truncas</label>
+              <input type="number" id="meses-vac-fini" class="form-input" value="9" min="0" max="11" />
+            </div>
+            <div class="form-group">
+              <label for="dias-vac-pend-fini">Días Vacaciones no gozadas</label>
+              <input type="number" id="dias-vac-pend-fini" class="form-input" value="0" min="0" max="60" />
+            </div>
+          </div>
+
+          <div class="form-section-title">Deducciones Particulares / Préstamos</div>
+          <div class="form-group">
+            <label for="descuentos-varios">Adelanto de Sueldo / Préstamo de Empresa (S/)</label>
+            <div class="input-prefix-wrap">
+              <span class="prefix">S/</span>
+              <input type="number" id="descuentos-varios" class="form-input" value="0" min="0" step="50" />
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Result Panel / Receipt -->
+      <div class="panel-card result-panel">
+        <div class="panel-head">
+          <Icon name="dollar-sign" size={18} />
+          <h2>Recibo Oficial de Finiquito</h2>
+        </div>
+
+        <div class="receipt-box" id="printable-receipt">
+          <div class="receipt-header">
+            <div class="receipt-company" id="rec-empresa">Corporación Comercial del Perú S.A.C.</div>
+            <div class="receipt-title">CONSTANCIA Y RECIBO DE FINIQUITO LABORAL</div>
+            <div class="receipt-sub" id="rec-fecha">Fecha: {new Date().toLocaleDateString('es-PE')}</div>
+          </div>
+
+          <div class="receipt-meta">
+            <div><strong>Trabajador:</strong> <span id="rec-trabajador">Juan Carlos Pérez Rodríguez</span></div>
+            <div><strong>DNI:</strong> <span id="rec-dni">45892147</span></div>
+            <div><strong>Motivo:</strong> <span id="rec-motivo">Renuncia voluntaria</span></div>
+          </div>
+
+          <div class="receipt-table-wrap">
+            <table class="receipt-table">
+              <thead>
+                <tr>
+                  <th>Conceptos / Haberes</th>
+                  <th>Monto (S/)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Sueldo días laborados mes cese</td>
+                  <td id="rec-hab-sueldo">S/ 0.00</td>
+                </tr>
+                <tr>
+                  <td>CTS trunca (con 1/6 gratif.)</td>
+                  <td id="rec-hab-cts">S/ 0.00</td>
+                </tr>
+                <tr>
+                  <td>Gratificación proporcional trunca</td>
+                  <td id="rec-hab-gratif">S/ 0.00</td>
+                </tr>
+                <tr>
+                  <td>Bonificación extraordinaria salud (+9%)</td>
+                  <td id="rec-hab-bonif">S/ 0.00</td>
+                </tr>
+                <tr>
+                  <td>Vacaciones truncas y pendientes</td>
+                  <td id="rec-hab-vac">S/ 0.00</td>
+                </tr>
+                <tr class="row-subtotal">
+                  <td><strong>TOTAL HABERES BRUTOS</strong></td>
+                  <td id="rec-total-hab"><strong>S/ 0.00</strong></td>
+                </tr>
+                <tr>
+                  <td class="text-danger">Retención pensión (ONP / AFP)</td>
+                  <td class="text-danger" id="rec-desc-pension">- S/ 0.00</td>
+                </tr>
+                <tr>
+                  <td class="text-danger">Adelantos / Préstamos deducibles</td>
+                  <td class="text-danger" id="rec-desc-varios">- S/ 0.00</td>
+                </tr>
+                <tr class="row-total-neto">
+                  <td><strong>TOTAL NETO A PAGAR</strong></td>
+                  <td id="rec-neto-cobrar"><strong>S/ 0.00</strong></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="receipt-legal-text">
+            Con el pago del importe neto señalado en la presente liquidación, el trabajador declara haber recibido a su entera y total satisfacción la suma correspondiente a sus beneficios sociales de ley, no teniendo reclamo posterior que formular.
+          </div>
+
+          <div class="signatures-row">
+            <div class="sig-block">
+              <div class="sig-line"></div>
+              <span>Firma del Empleador</span>
+            </div>
+            <div class="sig-block">
+              <div class="sig-line"></div>
+              <span>Firma del Trabajador</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="action-buttons-row">
+          <button type="button" class="btn-action" id="btn-copy-fini">
+            <Icon name="copy" size={16} />
+            <span>Copiar recibo</span>
+          </button>
+          <button type="button" class="btn-action" onclick="window.print()">
+            <Icon name="download" size={16} />
+            <span>Imprimir Recibo</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Guía y Cómo Usar (Estándar UtiliaOnline) -->
+    <section class="seo-section">
+      <h2>Guía completa: ¿Qué es el finiquito laboral y qué documentos deben entregarte en Perú?</h2>
+      <p>
+        El <strong>finiquito o liquidación de beneficios sociales</strong> es el documento y comprobante formal que extingue el vínculo contractual entre el trabajador y el empleador. En él se detallan minuciosamente todos los haberes acumulados pendientes de pago (sueldos por días laborados, CTS trunca, gratificaciones truncas proporcionales y vacaciones pendientes o truncas), así como los descuentos de ley permitidos.
+      </p>
+      <p>
+        De acuerdo con la legislación laboral peruana (Decreto Supremo N° 001-97-TR), el empleador tiene la obligación legal estricta de efectuar el pago íntegro de la liquidación y ponerla a disposición del trabajador dentro de las <strong>48 horas siguientes al cese laboral</strong>, independientemente del motivo de desvinculación (renuncia voluntaria, despido o vencimiento de contrato).
+      </p>
+
+      <h2>¿Cómo usar esta calculadora de finiquito paso a paso?</h2>
+      <div class="step-list">
+        <div class="step-card">
+          <span class="step-num">1</span>
+          <div class="step-body">
+            <h4>Ingresa los datos del trabajador y de la empresa</h4>
+            <p>Escribe el nombre de la empresa, el nombre del colaborador, DNI y el motivo de término del vínculo laboral para personalizar el recibo oficial.</p>
+          </div>
+        </div>
+        <div class="step-card">
+          <span class="step-num">2</span>
+          <div class="step-body">
+            <h4>Especifica los haberes computables del mes</h4>
+            <p>Indica la remuneración mensual, los días trabajados en el mes de salida y marca si percibía asignación familiar de ley.</p>
+          </div>
+        </div>
+        <div class="step-card">
+          <span class="step-num">3</span>
+          <div class="step-body">
+            <h4>Indica los meses acumulados de beneficios truncos</h4>
+            <p>Ingresa los meses computables para CTS trunca, gratificación proporcional y vacaciones pendientes o no gozadas.</p>
+          </div>
+        </div>
+        <div class="step-card">
+          <span class="step-num">4</span>
+          <div class="step-body">
+            <h4>Selecciona el régimen de pensión e imprime el finiquito</h4>
+            <p>Elige AFP u ONP para deducir automáticamente solo los conceptos afectos. Finalmente, imprime el recibo con espacios listos para firmas de ambas partes.</p>
+          </div>
+        </div>
+      </div>
+
+      <h2>Casos prácticos de aplicación</h2>
+      <div class="guide-grid">
+        <div class="guide-card">
+          <h4>Plazo perentorio de 48 horas</h4>
+          <p>Si la empresa no cancela la liquidación dentro de las 48 horas posteriores al cese, se generan intereses laborales automáticos fijados por el BCRP y se configura una infracción grave sancionada por SUNAFIL.</p>
+        </div>
+        <div class="guide-card">
+          <h4>¿Qué conceptos pagan AFP / ONP en el finiquito?</h4>
+          <p>La CTS trunca y las Gratificaciones truncas están <strong>100% inafectas</strong> de descuentos previsionales. Solo los días de sueldo y las vacaciones truncas sufren descuento de AFP u ONP.</p>
+        </div>
+        <div class="guide-card">
+          <h4>Carta de liberación de CTS</h4>
+          <p>Junto con el finiquito, el empleador debe entregarte la carta original dirigida al banco para liberar el saldo acumulado en tu cuenta CTS en un plazo no mayor a 48 horas.</p>
+        </div>
+        <div class="guide-card">
+          <h4>Certificado de trabajo obligatorio</h4>
+          <p>El empleador está obligado a otorgar sin costo el certificado de trabajo que acredite el periodo laborado y el puesto desempeñado, sin emitir apreciaciones subjetivas o perjudiciales.</p>
+        </div>
+      </div>
+
+      <h2>Preguntas frecuentes (FAQ)</h2>
+      <div class="faq-wrap">
+        <div class="faq-item">
+          <button type="button" class="faq-question">
+            <span>¿Puedo firmar el finiquito si no estoy de acuerdo con el monto?</span>
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <p>Sí, puedes recibir el dinero y colocar debajo de tu firma la frase <em>"Recibí conforme a cuenta, sujeto a revisión y reliquidación de beneficios"</em>. Los derechos laborales son irrenunciables según la Constitución, por lo que puedes reclamar judicial o administrativamente cualquier saldo faltante.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button type="button" class="faq-question">
+            <span>¿El empleador puede descontarme pérdidas o roturas en el finiquito?</span>
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <p>No sin tu autorización expresa y por escrito o mediante una orden judicial. Los descuentos unilaterales por inventarios o supuestas faltas cometidas son ilegales según la normativa de SUNAFIL.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button type="button" class="faq-question">
+            <span>¿Qué ocurre si renuncio sin dar los 30 días de anticipación de ley?</span>
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <p>Debes solicitar la exoneración del plazo de 30 días en tu carta de renuncia. Si el empleador no responde por escrito rechazándola en el plazo de 3 días, la exoneración se considera legalmente aceptada y no pueden aplicarte retenciones indebidas.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</Base>
+
+<style>
+  .tool-container {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 1.5rem 0 3rem;
+  }
+  .breadcrumb {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-bottom: 0.75rem;
+  }
+  .breadcrumb a {
+    color: var(--muted);
+  }
+  .breadcrumb a:hover {
+    color: var(--accent);
+  }
+  .title-row {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+  .tool-icon-badge {
+    width: 58px;
+    height: 58px;
+    border-radius: var(--radius-md);
+    background: linear-gradient(135deg, rgba(56, 189, 248, 0.15), rgba(16, 185, 129, 0.05));
+    border: 1px solid rgba(56, 189, 248, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+  .title-row h1 {
+    font-size: 1.85rem;
+    margin: 0 0 0.35rem 0;
+    letter-spacing: -0.02em;
+  }
+  .tool-desc {
+    color: var(--muted);
+    font-size: 0.95rem;
+    margin: 0;
+    max-width: 75ch;
+  }
+
+  .calc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    align-items: start;
+  }
+  @media (max-width: 860px) {
+    .calc-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .panel-card {
+    background: var(--surface-card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  }
+  .panel-head {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--line);
+    color: var(--accent);
+  }
+  .panel-head h2 {
+    font-size: 1.15rem;
+    color: var(--ink);
+    margin: 0;
+  }
+
+  .form-group {
+    margin-bottom: 1rem;
+  }
+  .form-group label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 0.35rem;
+    color: var(--ink);
+  }
+  .form-input, .form-select {
+    width: 100%;
+    padding: 0.55rem 0.85rem;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    color: var(--ink);
+    font-size: 0.92rem;
+    transition: border-color 0.15s;
+  }
+  .form-input:focus, .form-select:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+  .input-prefix-wrap {
+    display: flex;
+    align-items: center;
+    position: relative;
+  }
+  .input-prefix-wrap .prefix {
+    position: absolute;
+    left: 0.85rem;
+    font-weight: 600;
+    color: var(--muted);
+  }
+  .input-prefix-wrap .form-input {
+    padding-left: 2.2rem;
+  }
+
+  .form-row-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.85rem;
+  }
+  .form-section-title {
+    font-size: 0.82rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--accent);
+    margin: 1.1rem 0 0.65rem;
+    padding-top: 0.45rem;
+    border-top: 1px solid var(--line);
+  }
+  .form-check-group {
+    margin: 0.75rem 0 1rem;
+  }
+  .checkbox-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: var(--ink);
+    cursor: pointer;
+  }
+
+  /* Printable Receipt Styles */
+  .receipt-box {
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    padding: 1.25rem;
+    margin-bottom: 1.25rem;
+  }
+  .receipt-header {
+    text-align: center;
+    border-bottom: 2px solid var(--line);
+    padding-bottom: 0.85rem;
+    margin-bottom: 0.85rem;
+  }
+  .receipt-company {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--ink);
+  }
+  .receipt-title {
+    font-size: 0.82rem;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    color: var(--accent);
+    margin: 0.35rem 0;
+  }
+  .receipt-sub {
+    font-size: 0.75rem;
+    color: var(--muted);
+  }
+
+  .receipt-meta {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.45rem;
+    font-size: 0.8rem;
+    color: var(--ink);
+    margin-bottom: 0.85rem;
+    padding-bottom: 0.85rem;
+    border-bottom: 1px dashed var(--line);
+  }
+
+  .receipt-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.82rem;
+    margin-bottom: 0.85rem;
+  }
+  .receipt-table th {
+    background: var(--surface-card);
+    padding: 0.45rem 0.65rem;
+    text-align: left;
+    color: var(--muted);
+  }
+  .receipt-table th:last-child,
+  .receipt-table td:last-child {
+    text-align: right;
+  }
+  .receipt-table td {
+    padding: 0.45rem 0.65rem;
+    border-bottom: 1px solid var(--line);
+    color: var(--ink);
+  }
+  .row-subtotal td {
+    background: rgba(255, 255, 255, 0.02);
+    border-top: 1px solid var(--line);
+  }
+  .row-total-neto td {
+    background: rgba(16, 185, 129, 0.08);
+    color: #10b981;
+    font-size: 0.95rem;
+    border-top: 2px solid #10b981;
+  }
+  .text-danger {
+    color: #ef4444;
+  }
+
+  .receipt-legal-text {
+    font-size: 0.72rem;
+    color: var(--muted);
+    line-height: 1.45;
+    margin: 0.85rem 0 1.5rem;
+    text-align: justify;
+  }
+
+  .signatures-row {
+    display: flex;
+    justify-content: space-around;
+    gap: 1.5rem;
+    padding-top: 2rem;
+  }
+  .sig-block {
+    text-align: center;
+    font-size: 0.75rem;
+    color: var(--muted);
+    width: 140px;
+  }
+  .sig-line {
+    border-top: 1px solid var(--ink);
+    margin-bottom: 0.35rem;
+  }
+
+  .action-buttons-row {
+    display: flex;
+    gap: 0.75rem;
+  }
+  .btn-action {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    padding: 0.55rem 0.85rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--line);
+    background: var(--surface-card);
+    color: var(--ink);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn-action:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+</style>
+
+<script>
+  const formatCurrency = (val: number) => {
+    return `S/ ${val.toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  };
+
+  const calculateFini = () => {
+    // Sync meta
+    const nombre = (document.getElementById('nombre-trabajador') as HTMLInputElement).value || 'Trabajador';
+    const dni = (document.getElementById('dni-trabajador') as HTMLInputElement).value || '-';
+    const empresa = (document.getElementById('empresa-nombre') as HTMLInputElement).value || 'Empresa';
+    const motivo = (document.getElementById('motivo-finiquito') as HTMLSelectElement).value;
+
+    document.getElementById('rec-trabajador')!.textContent = nombre;
+    document.getElementById('rec-dni')!.textContent = dni;
+    document.getElementById('rec-empresa')!.textContent = empresa;
+    document.getElementById('rec-motivo')!.textContent = motivo;
+
+    // Formulas
+    const sueldo = parseFloat((document.getElementById('sueldo-fini') as HTMLInputElement).value) || 0;
+    const tieneAsig = (document.getElementById('asig-fam-fini') as HTMLInputElement).checked;
+    const asig = tieneAsig ? 102.50 : 0;
+    const computable = sueldo + asig;
+    const valorDia = computable / 30;
+
+    const diasMes = parseInt((document.getElementById('dias-ult-mes') as HTMLInputElement).value) || 0;
+    const habSueldo = valorDia * diasMes;
+
+    const mesesCts = parseInt((document.getElementById('meses-cts-fini') as HTMLInputElement).value) || 0;
+    const baseCts = computable + (computable / 6);
+    const habCts = (baseCts / 12) * mesesCts;
+
+    const mesesGratif = parseInt((document.getElementById('meses-gratif-fini') as HTMLInputElement).value) || 0;
+    const habGratif = (computable / 6) * mesesGratif;
+    const habBonif = habGratif * 0.09;
+
+    const mesesVac = parseInt((document.getElementById('meses-vac-fini') as HTMLInputElement).value) || 0;
+    const diasVacPend = parseInt((document.getElementById('dias-vac-pend-fini') as HTMLInputElement).value) || 0;
+    const habVac = ((computable / 12) * mesesVac) + (valorDia * diasVacPend);
+
+    const totalHaberes = habSueldo + habCts + habGratif + habBonif + habVac;
+
+    // Descuentos
+    const tasaPension = parseFloat((document.getElementById('pension-rate-fini') as HTMLSelectElement).value) || 0;
+    const baseAfectaPension = habSueldo + habVac;
+    const descPension = baseAfectaPension * tasaPension;
+
+    const descVarios = parseFloat((document.getElementById('descuentos-varios') as HTMLInputElement).value) || 0;
+    const totalNeto = Math.max(0, totalHaberes - descPension - descVarios);
+
+    document.getElementById('rec-hab-sueldo')!.textContent = formatCurrency(habSueldo);
+    document.getElementById('rec-hab-cts')!.textContent = formatCurrency(habCts);
+    document.getElementById('rec-hab-gratif')!.textContent = formatCurrency(habGratif);
+    document.getElementById('rec-hab-bonif')!.textContent = formatCurrency(habBonif);
+    document.getElementById('rec-hab-vac')!.textContent = formatCurrency(habVac);
+    document.getElementById('rec-total-hab')!.innerHTML = `<strong>${formatCurrency(totalHaberes)}</strong>`;
+    document.getElementById('rec-desc-pension')!.textContent = `- ${formatCurrency(descPension)}`;
+    document.getElementById('rec-desc-varios')!.textContent = `- ${formatCurrency(descVarios)}`;
+    document.getElementById('rec-neto-cobrar')!.innerHTML = `<strong>${formatCurrency(totalNeto)}</strong>`;
+  };
+
+  const inputs = document.querySelectorAll('#fini-form input, #fini-form select');
+  inputs.forEach((inp) => {
+    inp.addEventListener('input', calculateFini);
+    inp.addEventListener('change', calculateFini);
+  });
+
+  const copyBtn = document.getElementById('btn-copy-fini');
+  if (copyBtn) {
+    copyBtn.addEventListener('click', () => {
+      const neto = document.getElementById('rec-neto-cobrar')?.textContent || '';
+      const trab = document.getElementById('rec-trabajador')?.textContent || '';
+      const text = `Recibo de Finiquito (UtiliaOnline):\n- Trabajador: ${trab}\n- Total Neto: ${neto}\nCalculado en: ${window.location.href}`;
+      navigator.clipboard.writeText(text).then(() => {
+        copyBtn.innerHTML = '<span>¡Copiado!</span>';
+        setTimeout(() => {
+          copyBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>Copiar recibo</span>';
+        }, 2000);
+      });
+    });
+  }
+
+  calculateFini();
+</script>

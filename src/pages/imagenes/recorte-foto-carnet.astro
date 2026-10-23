@@ -1,0 +1,352 @@
+﻿---
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+---
+<Base title="Recorte para Foto de Documento, Carnet y Pasaporte Online" description="Encuadra y recorta tu fotografía a las medidas estándar de carnet, DNI o pasaporte (3x4 cm, 35x45 mm, 2x2 pulgadas) y descarga la foto o la plantilla de impresión.">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="/">Herramientas</a> / <span>Imágenes y multimedia</span></div>
+    <h1>Recorte de Foto para Documento o Carnet</h1>
+    <p class="lead">Ajusta tu foto a proporciones oficiales para documentos de identidad, visas y carnets de conducir con encuadre fácil y plantilla para imprimir.</p>
+  </div>
+
+  <section class="panel">
+    <div class="drop-zone" id="drop-zone">
+      <input type="file" id="file-input" accept="image/*" style="display:none;" />
+      <div class="drop-content">
+        <span class="drop-icon">👤</span>
+        <p class="drop-text">Arrastra tu foto de frente aquí o <button type="button" class="btn btn-secondary btn-sm" id="btn-browse">Subir foto</button></p>
+        <span class="drop-hint">Usa una foto con buena iluminación y fondo claro</span>
+      </div>
+    </div>
+
+    <div class="crop-workspace" id="crop-workspace" style="display:none;">
+      <div class="crop-grid">
+        <!-- Interactive Canvas / Viewport -->
+        <div class="viewport-col">
+          <div class="canvas-container">
+            <canvas id="crop-canvas"></canvas>
+            <!-- Face guideline overlay -->
+            <div class="guideline-oval" id="guideline-oval">
+              <span class="guideline-text">Alinea los ojos y el rostro</span>
+            </div>
+          </div>
+
+          <div class="zoom-pan-controls">
+            <label for="zoom-slider">Zoom:</label>
+            <input type="range" id="zoom-slider" min="0.5" max="3" step="0.05" value="1" class="slider" />
+            <button type="button" class="btn btn-secondary btn-sm" id="btn-reset-pos">Centrar</button>
+          </div>
+          <span class="pan-hint">💡 Arrastra la imagen con el ratón o el dedo para centrar tu rostro.</span>
+        </div>
+
+        <!-- Settings & Downloads -->
+        <div class="settings-col">
+          <h3>Formato y país</h3>
+          
+          <div class="field">
+            <label for="format-preset">Tipo de documento:</label>
+            <select id="format-preset" class="form-input">
+              <option value="35|45|Carnet estándar / Visa Europa (35 x 45 mm)" selected>Europa / España (35 x 45 mm)</option>
+              <option value="30|40|DNI / Carnet Latinoamérica (30 x 40 mm)">Latinoamérica (30 x 40 mm / 3x4 cm)</option>
+              <option value="51|51|Visa EE.UU. / Pasaporte (2 x 2 pulgadas)">Visa EE.UU. / Pasaporte (51 x 51 mm / 2x2")</option>
+              <option value="26|32|DNI antiguo España (26 x 32 mm)">DNI clásico (26 x 32 mm)</option>
+              <option value="1|1|Cuadrado digital 1:1">Avatar / Perfil digital (1:1)</option>
+            </select>
+          </div>
+
+          <div class="download-card">
+            <h4>Descargar</h4>
+            <div class="btn-stack">
+              <button type="button" class="btn btn-primary btn-block" id="btn-dl-single">💾 Descargar foto individual</button>
+              <button type="button" class="btn btn-secondary btn-block" id="btn-dl-sheet">🖨️ Descargar plantilla para imprimir (4 fotos)</button>
+            </div>
+            <p class="sheet-desc">La plantilla viene lista para imprimir en papel fotográfico estándar de 10×15 cm (4×6") sin perder la escala real.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="seo-section">
+    <h2>¿Cómo funciona el recortador de fotos para carnet, pasaporte y DNI?</h2>
+    <p>Cada documento oficial exige proporciones geométricas precisas (como la relación estándar 3:4 o formatos cuadrados) y una alineación biomecánica del rostro donde la cabeza ocupe entre el 70% y el 80% de la altura total. Nuestra herramienta incluye un <strong>marcador ovalado inteligente</strong> de guía visual y te permite descargar tanto la foto individual como una <strong>plantilla de 4 fotos lista para imprimir</strong> en tamaño fotográfico estándar de 10×15 cm (4×6 pulgadas) con resolución de 300 DPI.</p>
+
+    <div class="step-list">
+      <div class="step-card">
+        <span class="step-num">1</span>
+        <div class="step-body">
+          <h4>Sube tu fotografía de retrato</h4>
+          <p>Elige una foto reciente tomada de frente, con buena iluminación, fondo claro o blanco y expresión neutral.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <span class="step-num">2</span>
+        <div class="step-body">
+          <h4>Selecciona el país y formato de documento</h4>
+          <p>Elige entre los tamaños oficiales: España/UE (30×40 mm / 35×45 mm), México/Colombia/Perú/Chile (DNI/Cédula) o Visa de EE.UU. (2×2 pulgadas / 50×50 mm).</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <span class="step-num">3</span>
+        <div class="step-body">
+          <h4>Ajusta con el zoom y la guía ovalada</h4>
+          <p>Arrastra la foto y usa el control de zoom para encajar tu rostro dentro de la silueta guía. Luego descarga la foto individual o la plantilla de 4 fotos.</p>
+        </div>
+      </div>
+    </div>
+
+    <h3>Formatos y casos de uso oficiales</h3>
+    <div class="guide-grid">
+      <div class="guide-card">
+        <h4>DNI, Cédula de Identidad y Carnet de Conducir</h4>
+        <p>Recorta fotos en tamaño 30×40 mm o 35×45 mm cumpliendo los estándares de identificación ciudadana.</p>
+      </div>
+      <div class="guide-card">
+        <h4>Pasaportes y Visas Internacionales (EE.UU. / Schengen)</h4>
+        <p>Genera la proporción cuadrada de 50×50 mm (2×2 pulgadas) con fondo blanco requerida por el Departamento de Estado de EE.UU.</p>
+      </div>
+      <div class="guide-card">
+        <h4>Currículum Vitae (CV) y carnet universitario</h4>
+        <p>Crea fotos formales y elegantes para perfiles de LinkedIn, credenciales corporativas o títulos académicos.</p>
+      </div>
+    </div>
+
+    <h2>Preguntas frecuentes sobre fotos de carnet</h2>
+    <div class="faq-wrap">
+      <div class="faq-item">
+        <div class="faq-question">¿Cómo debo imprimir la plantilla de 4 fotos para que mantenga las medidas reales?</div>
+        <div class="faq-answer">
+          <p>Lleva el archivo descargado a cualquier tienda de revelado fotográfico o imprímelo en casa en papel fotográfico estándar de 10×15 cm (4×6"). En las opciones de tu impresora, asegúrate de seleccionar <strong>"Escala: 100%" o "Tamaño real"</strong> (nunca "Ajustar a la página").</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Qué consejos debo seguir para tomarme una buena foto con el móvil?</div>
+        <div class="faq-answer">
+          <p>Colócate frente a una pared blanca o lisa bien iluminada por luz natural (evita sombras duras detrás de ti). Mira directamente a la lente de la cámara a la altura de tus ojos, mantén una expresión neutra y retira el cabello que tape las cejas o las orejas.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Se envían mis fotos personales a algún servidor?</div>
+        <div class="faq-answer">
+          <p>No. En UtiliaOnline valoramos al máximo tu privacidad y seguridad: todo el recorte, rotación y armado de la plantilla se realiza 100% en local dentro de tu navegador web mediante Canvas.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">¿Se aceptan fotos con gafas o sombreros?</div>
+        <div class="faq-answer">
+          <p>Casi todos los organismos oficiales prohíben el uso de gafas de sol, lentes con reflejos, gorras o sombreros (salvo prendas de uso religioso diario que no cubran los rasgos faciales). Se recomienda tomar la foto sin gafas para evitar rechazos.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .breadcrumb{font-size:.85rem;color:var(--muted);margin-bottom:.5rem}.breadcrumb a{color:var(--muted)}
+  .drop-zone{border:2px dashed var(--line);border-radius:var(--radius);padding:3rem 1.5rem;text-align:center;background:var(--surface-card);transition:all .2s;cursor:pointer}
+  .drop-zone.dragover{border-color:var(--accent);background:rgba(37,99,235,.05)}
+  .drop-icon{font-size:2.8rem;display:block;margin-bottom:.75rem}
+  .drop-text{font-size:1.05rem;color:var(--ink);margin-bottom:.5rem}
+  .drop-hint{font-size:.82rem;color:var(--muted)}
+
+  .crop-workspace{margin-top:2rem}
+  .crop-grid{display:grid;grid-template-columns:1fr 320px;gap:2rem;align-items:start}
+  @media(max-width:800px){.crop-grid{grid-template-columns:1fr}}
+
+  .canvas-container{position:relative;background:#000;border-radius:var(--radius-sm);overflow:hidden;display:flex;align-items:center;justify-content:center;height:380px;cursor:grab}
+  .canvas-container:active{cursor:grabbing}
+  #crop-canvas{display:block;max-width:100%;max-height:100%}
+
+  .guideline-oval{position:absolute;width:170px;height:220px;border:2px dashed rgba(255,255,255,.6);border-radius:50%;pointer-events:none;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 9999px rgba(0,0,0,.4)}
+  .guideline-text{color:#fff;font-size:.72rem;background:rgba(0,0,0,.6);padding:2px 8px;border-radius:10px;text-transform:uppercase;font-weight:700}
+
+  .zoom-pan-controls{display:flex;align-items:center;gap:1rem;margin-top:1rem}
+  .slider{flex:1;accent-color:var(--accent)}
+  .pan-hint{font-size:.8rem;color:var(--muted);display:block;margin-top:.4rem}
+
+  .settings-col h3{font-size:1rem;margin-bottom:1rem}
+  .field{margin-bottom:1.5rem}
+  .field label{display:block;font-weight:600;font-size:.84rem;margin-bottom:.35rem}
+  .form-input{width:100%;padding:.6rem .75rem;background:var(--bg);border:1px solid var(--line);border-radius:var(--radius-sm);color:var(--ink);font:inherit}
+
+  .download-card{background:var(--surface-card);border:1px solid var(--line);border-radius:var(--radius-sm);padding:1.25rem}
+  .download-card h4{font-size:.92rem;margin-bottom:.8rem}
+  .btn-stack{display:flex;flex-direction:column;gap:.65rem}
+  .btn-block{width:100%;padding:.65rem;font-size:.88rem;font-weight:700}
+  .sheet-desc{font-size:.78rem;color:var(--muted);margin-top:.8rem;line-height:1.4}
+</style>
+
+<script>
+  let img: HTMLImageElement | null = null;
+  let targetRatio = 35 / 45; // default 35x45
+  let scale = 1;
+  let posX = 0;
+  let posY = 0;
+  let isDragging = false;
+  let startX = 0;
+  let startY = 0;
+
+  const dropZone = document.getElementById('drop-zone')!;
+  const fileInput = document.getElementById('file-input') as HTMLInputElement;
+  const btnBrowse = document.getElementById('btn-browse')!;
+  const workspace = document.getElementById('crop-workspace')!;
+  const canvas = document.getElementById('crop-canvas') as HTMLCanvasElement;
+  const ctx = canvas.getContext('2d')!;
+  const zoomSlider = document.getElementById('zoom-slider') as HTMLInputElement;
+  const btnReset = document.getElementById('btn-reset-pos')!;
+  const presetSelect = document.getElementById('format-preset') as HTMLSelectElement;
+  const btnDlSingle = document.getElementById('btn-dl-single')!;
+  const btnDlSheet = document.getElementById('btn-dl-sheet')!;
+
+  btnBrowse.addEventListener('click', (e) => {
+    e.stopPropagation();
+    fileInput.click();
+  });
+  dropZone.addEventListener('click', () => fileInput.click());
+
+  fileInput.addEventListener('change', () => {
+    if (fileInput.files?.length) loadFile(fileInput.files[0]);
+  });
+
+  function loadFile(file: File) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const image = new Image();
+      image.onload = () => {
+        img = image;
+        workspace.style.display = 'block';
+        resetPosition();
+        render();
+      };
+      image.src = e.target?.result as string;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function resetPosition() {
+    if (!img) return;
+    scale = 1;
+    zoomSlider.value = '1';
+    posX = 0;
+    posY = 0;
+  }
+
+  function updateRatio() {
+    const [w, h] = presetSelect.value.split('|').map(Number);
+    targetRatio = w / h;
+    render();
+  }
+
+  presetSelect.addEventListener('change', updateRatio);
+  btnReset.addEventListener('click', () => {
+    resetPosition();
+    render();
+  });
+
+  zoomSlider.addEventListener('input', () => {
+    scale = parseFloat(zoomSlider.value);
+    render();
+  });
+
+  // Pan dragging
+  const container = canvas.parentElement!;
+  container.addEventListener('mousedown', (e) => {
+    isDragging = true;
+    startX = e.clientX - posX;
+    startY = e.clientY - posY;
+  });
+
+  window.addEventListener('mousemove', (e) => {
+    if (!isDragging) return;
+    posX = e.clientX - startX;
+    posY = e.clientY - startY;
+    render();
+  });
+
+  window.addEventListener('mouseup', () => { isDragging = false; });
+
+  // Touch pan
+  container.addEventListener('touchstart', (e) => {
+    if (e.touches.length === 1) {
+      isDragging = true;
+      startX = e.touches[0].clientX - posX;
+      startY = e.touches[0].clientY - posY;
+    }
+  });
+
+  window.addEventListener('touchmove', (e) => {
+    if (!isDragging || e.touches.length !== 1) return;
+    posX = e.touches[0].clientX - startX;
+    posY = e.touches[0].clientY - startY;
+    render();
+  });
+
+  window.addEventListener('touchend', () => { isDragging = false; });
+
+  function render() {
+    if (!img) return;
+
+    // Fixed canvas height 450px, width determined by ratio
+    const ch = 450;
+    const cw = Math.round(ch * targetRatio);
+    canvas.width = cw;
+    canvas.height = ch;
+
+    ctx.clearRect(0, 0, cw, ch);
+
+    // Compute draw dimensions
+    const baseScale = Math.max(cw / img.width, ch / img.height);
+    const drawW = img.width * baseScale * scale;
+    const drawH = img.height * baseScale * scale;
+
+    const centerX = (cw - drawW) / 2 + posX;
+    const centerY = (ch - drawH) / 2 + posY;
+
+    ctx.drawImage(img, centerX, centerY, drawW, drawH);
+  }
+
+  btnDlSingle.addEventListener('click', () => {
+    if (!canvas) return;
+    const link = document.createElement('a');
+    link.download = `foto_carnet_${Math.round(canvas.width)}x${Math.round(canvas.height)}.jpg`;
+    link.href = canvas.toDataURL('image/jpeg', 0.95);
+    link.click();
+  });
+
+  btnDlSheet.addEventListener('click', () => {
+    if (!canvas) return;
+    // Standard 4x6 inch (1200x1800 px) sheet with 4 photos arranged with cut marks
+    const sheet = document.createElement('canvas');
+    sheet.width = 1800;
+    sheet.height = 1200;
+    const sCtx = sheet.getContext('2d')!;
+    sCtx.fillStyle = '#ffffff';
+    sCtx.fillRect(0, 0, sheet.width, sheet.height);
+
+    const pw = canvas.width * 1.5;
+    const ph = canvas.height * 1.5;
+
+    const startX = 200;
+    const startY = 150;
+    const gapX = 80;
+    const gapY = 80;
+
+    for (let r = 0; r < 2; r++) {
+      for (let c = 0; c < 2; c++) {
+        const x = startX + c * (pw + gapX);
+        const y = startY + r * (ph + gapY);
+        sCtx.drawImage(canvas, x, y, pw, ph);
+
+        // Border / cut guide
+        sCtx.strokeStyle = '#cccccc';
+        sCtx.lineWidth = 1;
+        sCtx.strokeRect(x, y, pw, ph);
+      }
+    }
+
+    const link = document.createElement('a');
+    link.download = 'plantilla_impresion_4x_carnet.jpg';
+    link.href = sheet.toDataURL('image/jpeg', 0.95);
+    link.click();
+  });
+</script>
